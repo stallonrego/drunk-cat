@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Drunk Cat 🐱</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0d0d0d;--surface:#1a1a1a;--surface2:#252525;--surface3:#2e2e2e;
+    --accent:#f5a623;--accent2:#e8435a;--green:#4caf7d;--blue:#4a9eff;--purple:#9b59b6;
+    --text:#f0f0f0;--muted:#888;--border:#333;--r:14px;--rs:8px;
+  }
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+  button{cursor:pointer;border:none;font-family:inherit;font-weight:600;transition:all .15s}
+  input,select{font-family:inherit;background:var(--surface2);border:1.5px solid var(--border);color:var(--text);border-radius:var(--rs);padding:10px 14px;font-size:15px;width:100%;outline:none}
+  input:focus{border-color:var(--accent)}
+  .btn{padding:12px 22px;border-radius:var(--rs);font-size:15px;width:100%}
+  .btn-primary{background:var(--accent);color:#000}
+  .btn-primary:hover{background:#ffb84d}
+  .btn-secondary{background:var(--surface3);color:var(--text);border:1.5px solid var(--border)}
+  .btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+  .card{background:var(--surface);border-radius:var(--r);padding:20px;border:1.5px solid var(--border)}
+  .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+  .screen{display:none;min-height:100vh;padding:20px}
+  .screen.active{display:flex;flex-direction:column}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface3);border:1.5px solid var(--accent);color:var(--text);padding:12px 22px;border-radius:30px;font-size:14px;font-weight:600;z-index:999;transition:transform .3s;white-space:nowrap}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+  .row{display:flex;gap:10px;align-items:center}
+  .col{display:flex;flex-direction:column;gap:10px}
+  .logo{font-size:36px;text-align:center;margin-bottom:4px}
+  .logo-text{font-size:28px;font-weight:900;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--muted);font-size:13px;text-align:center}
+  .action-card{background:var(--surface2);border:2px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .2s}
+  .action-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .action-card.selected{border-color:var(--accent);background:rgba(245,166,35,0.08)}
+  .action-card.dc-only{border-color:var(--purple)}
+  .card-desc{font-size:12px;color:var(--muted);line-height:1.4;margin-top:4px}
+  .player-item{background:var(--surface2);border-radius:var(--rs);padding:12px 14px;display:flex;align-items:center;gap:12px;border:1.5px solid var(--border)}
+  .player-avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .vote-btn{background:var(--surface2);border:2px solid var(--border);border-radius:var(--rs);padding:12px;text-align:center;cursor:pointer;transition:all .2s;font-weight:700;width:100%;margin-bottom:6px}
+  .vote-btn:hover{border-color:var(--accent2)}
+  .vote-btn.voted{border-color:var(--accent2);background:rgba(232,67,90,0.1);color:var(--accent2)}
+  .round-pip{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted)}
+  .round-pip.active{border-color:var(--accent);background:var(--accent);color:#000}
+  .round-pip.done{border-color:var(--green);background:var(--green);color:#fff}
+  .role-card{background:linear-gradient(135deg,#1a1a2e,#16213e);border:2px solid var(--accent);border-radius:20px;padding:26px 20px;text-align:center;margin:8px 0}
+  .role-card.drunk-cat{background:linear-gradient(135deg,#2d1b0e,#3d2010);border-color:var(--accent2)}
+  .penalty-badge{background:rgba(232,67,90,0.15);border:1px solid var(--accent2);border-radius:var(--rs);padding:8px 12px;font-size:13px;color:var(--accent2)}
+  .phase-badge{background:var(--surface2);border:1.5px solid var(--accent);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;color:var(--accent)}
+  .mystery-box{background:var(--surface2);border:2px dashed var(--border);border-radius:var(--r);padding:18px;text-align:center}
+  label{font-size:13px;color:var(--muted);font-weight:600}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- LANDING -->
+<div class="screen active" id="s-landing">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:400px;margin:0 auto;width:100%;gap:20px">
+    <div>
+      <div class="logo">🐱🍺</div>
+      <div class="logo-text">DRUNK CAT</div>
+      <div class="sub">A game for the Drunk Cat crew</div>
+    </div>
+    <div class="card col">
+      <button class="btn btn-primary" id="btn-go-create">🏠 Create Room</button>
+      <button class="btn btn-secondary" id="btn-go-join">📱 Join Room</button>
+    </div>
+    <div class="sub" style="font-size:11px">Dedicated to Stallon, Anuja, Pream, Grace, Dave & Lynn 🥂</div>
+  </div>
+</div>
+
+<!-- CREATE -->
+<div class="screen" id="s-create">
+  <div style="max-width:400px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:14px;padding-top:20px">
+    <div class="row"><button class="btn btn-secondary" id="btn-create-back" style="width:auto;padding:8px 14px">← Back</button><h2>Create Room</h2></div>
+    <div class="card col">
+      <label>YOUR NAME</label>
+      <input id="host-name" placeholder="Enter your name" maxlength="20"/>
+      <div class="mystery-box">
+        <div style="font-size:30px">🎲</div>
+        <div style="font-weight:700;margin:6px 0">Character: Mystery</div>
+        <div style="font-size:12px;color:var(--muted)">Randomly assigned at game start. No one knows who gets what!</div>
+      </div>
+      <button class="btn btn-primary" id="btn-create-room">Create Room 🐱</button>
+    </div>
+  </div>
+</div>
+
+<!-- JOIN -->
+<div class="screen" id="s-join">
+  <div style="max-width:400px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:14px;padding-top:20px">
+    <div class="row"><button class="btn btn-secondary" id="btn-join-back" style="width:auto;padding:8px 14px">← Back</button><h2>Join Room</h2></div>
+    <div class="card col">
+      <label>ROOM CODE</label>
+      <input id="join-code" placeholder="Enter 4-letter code" maxlength="4" style="text-transform:uppercase;font-size:22px;text-align:center;letter-spacing:6px"/>
+      <label>YOUR NAME</label>
+      <input id="join-name" placeholder="Enter your name" maxlength="20"/>
+      <div class="mystery-box">
+        <div style="font-size:30px">🎲</div>
+        <div style="font-weight:700;margin:6px 0">Character: Mystery</div>
+        <div style="font-size:12px;color:var(--muted)">Randomly assigned at game start. No one knows who gets what!</div>
+      </div>
+      <button class="btn btn-primary" id="btn-join-room">Join Room 🍺</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div class="screen" id="s-lobby">
+  <div style="max-width:440px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:16px">
+    <div style="text-align:center;padding-top:10px">
+      <div class="logo" style="font-size:26px">🐱🍺</div>
+      <div class="logo-text" style="font-size:22px">DRUNK CAT</div>
+      <div style="margin-top:8px">
+        <span style="font-size:13px;color:var(--muted)">ROOM CODE: </span>
+        <span id="lobby-code" style="font-size:24px;font-weight:900;color:var(--accent);letter-spacing:4px"></span>
+      </div>
+    </div>
+    <div class="card col">
+      <div class="row" style="justify-content:space-between">
+        <span style="font-weight:700">Players <span id="player-count" style="color:var(--accent)">0</span>/8</span>
+        <span class="tag" style="background:rgba(76,175,125,0.15);color:var(--green)">🟢 Waiting</span>
+      </div>
+      <div id="lobby-players" class="col"></div>
+    </div>
+    <div id="host-controls" style="display:none">
+      <div class="card col" style="background:rgba(245,166,35,0.05);border-color:var(--accent)">
+        <div style="font-size:13px;color:var(--accent);font-weight:700">⚙️ HOST CONTROLS</div>
+        <div class="row">
+          <span style="font-size:13px;color:var(--muted);white-space:nowrap">Rounds:</span>
+          <select id="round-count" style="flex:1">
+            <option value="5" selected>5 Rounds (Recommended)</option>
+            <option value="4">4 Rounds</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="btn-start-game">🐱 Start Game</button>
+      </div>
+    </div>
+    <div id="waiting-msg" class="sub">Waiting for host to start the game...</div>
+  </div>
+</div>
+
+<!-- ROLE REVEAL -->
+<div class="screen" id="s-role">
+  <div style="max-width:400px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px">
+    <div style="text-align:center">
+      <div style="font-size:12px;color:var(--muted);font-weight:700;letter-spacing:2px">ROUND <span id="reveal-round">1</span></div>
+      <h2 style="margin-top:4px">Your Role This Round</h2>
+      <div style="font-size:12px;color:var(--accent);margin-top:4px;font-weight:600">🎲 Randomly assigned — keep it secret!</div>
+    </div>
+    <div id="role-reveal-card" class="role-card"></div>
+    <div class="card col">
+      <div style="font-size:12px;font-weight:700;color:var(--muted)">YOUR STARTING HAND</div>
+      <div id="role-hand" class="col"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-ready">Ready — Let's Play 🍺</button>
+  </div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="s-game">
+  <div style="max-width:440px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:6px">
+      <div>
+        <div style="font-size:11px;color:var(--muted);font-weight:700">ROOM: <span id="g-code" style="color:var(--accent)"></span></div>
+        <div style="font-size:16px;font-weight:800">Round <span id="g-round"></span> <span id="g-phase" class="phase-badge"></span></div>
+      </div>
+      <div style="display:flex;gap:5px" id="round-pips"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:11px;color:var(--muted);font-weight:700;margin-bottom:8px">PLAYERS</div>
+      <div id="g-players" class="col" style="gap:7px"></div>
+    </div>
+    <div class="card" style="border-color:var(--accent)">
+      <div class="row" style="justify-content:space-between;margin-bottom:6px">
+        <div style="font-weight:800;font-size:15px" id="g-myname"></div>
+        <div id="g-myrole-badge"></div>
+      </div>
+      <div id="g-mychar" style="font-size:12px;color:var(--muted);margin-bottom:6px"></div>
+      <div id="g-mypenalty" style="display:none" class="penalty-badge"></div>
+    </div>
+    <div id="g-phase-content" class="col" style="overflow-y:auto;flex:1"></div>
+    <div id="g-bottom" class="col" style="padding-bottom:16px"></div>
+  </div>
+</div>
+
+<!-- ROUND RESULTS -->
+<div class="screen" id="s-results">
+  <div style="max-width:400px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;text-align:center">
+    <div id="result-content"></div>
+    <div class="card col">
+      <div style="font-size:12px;font-weight:700;color:var(--muted)">VOTE TALLY</div>
+      <div id="result-tally" class="col"></div>
+    </div>
+    <div id="result-actions" class="col"></div>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div class="screen" id="s-final">
+  <div style="max-width:400px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px;text-align:center">
+    <div id="final-content"></div>
+    <div class="card col">
+      <div style="font-size:12px;font-weight:700;color:var(--muted)">CHARACTER REVEALS 🎭</div>
+      <div id="final-reveals" class="col"></div>
+    </div>
+    <button class="btn btn-primary" id="btn-play-again">🐱 Play Again</button>
+  </div>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import {getDatabase,ref,set,get,update,onValue} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyD8PYAm3ooJmP6Ktft0ObdriWVSUjzRSAI",
+  authDomain:"drunk-cat.firebaseapp.com",
+  databaseURL:"https://drunk-cat-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"drunk-cat",
+  storageBucket:"drunk-cat.firebasestorage.app",
+  messagingSenderId:"156236362904",
+  appId:"1:156236362904:web:a501717623eec000388ced"
+});
+const db = getDatabase(app);
+
+// ── Characters (named crew) ────────────────────────────────────────────────
+const CHARS = {
+  stallon:{name:"Stallon",title:"The Joker",emoji:"🃏",color:"#f5a623",
+    passive:"Any statement you make that causes laughter cannot be used as evidence against you.",
+    active:"Punchline — Force all players to skip drawing a card this turn."},
+  anuja:{name:"Anuja",title:"The Sleeper",emoji:"😴",color:"#9b59b6",
+    passive:"Draw 1 extra card at start. Your hand size is never revealed to others.",
+    active:"Inner Beast — After your first accusation, all your cards deal double effect."},
+  pream:{name:"Pream",title:"The Mother",emoji:"🕐",color:"#4caf7d",
+    passive:"You always know who played the last action card.",
+    active:"Curfew — Force every player to reveal one card from their hand."},
+  grace:{name:"Grace",title:"The Troublemaker",emoji:"🥃",color:"#e8435a",
+    passive:"Any drinking penalty you trigger is doubled for the target.",
+    active:"Oversized Round — Force a player to drink AND skip their next turn."},
+  dave:{name:"Dave",title:"The Game Master",emoji:"🎮",color:"#4a9eff",
+    passive:"Once per round, challenge any card played and pause its effect for ruling.",
+    active:"House Rules — Change one game rule for this round only (announce aloud)."},
+  lynn:{name:"Lynn",title:"The Strategist",emoji:"⚡",color:"#00bcd4",
+    passive:"Drinking penalties convert to extra action cards instead of drinks.",
+    active:"Chaos Theory — Redirect any card played by anyone to a target of your choice."},
+  wildcard:{name:"Wildcard",title:"The Wildcard",emoji:"🎲",color:"#ff9800",
+    passive:"Draw a random bonus power card at the start of each round.",
+    active:"Wild Play — Copy the last action card played by any player."},
+  ghost:{name:"Ghost",title:"The Ghost",emoji:"👻",color:"#607d8b",
+    passive:"Your vote is always anonymous — no one sees who you voted for.",
+    active:"Phantom — Play any card face-down without revealing its type."}
+};
+const CHAR_KEYS = Object.keys(CHARS);
+
+// ── Action Cards ───────────────────────────────────────────────────────────
+const ALL_CARDS = [
+  {id:"frame",type:"Sabotage",emoji:"🎭",name:"Frame Job",desc:"Plant false evidence on a player. They must defend themselves next turn.",color:"#e8435a"},
+  {id:"swap",type:"Sabotage",emoji:"🔄",name:"Role Swap Rumour",desc:"Whisper to two players that their roles might be swapped.",color:"#e8435a"},
+  {id:"blackout",type:"Sabotage",emoji:"🌑",name:"Blackout",desc:"Target player's hand is hidden from The Mother's passive this round.",color:"#e8435a"},
+  {id:"mimic",type:"Sabotage",emoji:"🪞",name:"Mimic",desc:"Your vote mirrors the next player who votes after you.",color:"#e8435a"},
+  {id:"shield",type:"Shield",emoji:"🛡️",name:"Cat Shield",desc:"You are protected from all card effects this round.",color:"#4a9eff"},
+  {id:"alibi",type:"Shield",emoji:"📋",name:"Alibi",desc:"Reveal anytime to cancel one accusation against you.",color:"#4a9eff"},
+  {id:"deflect",type:"Shield",emoji:"↩️",name:"Deflect",desc:"Return any card played against you back to the sender.",color:"#4a9eff"},
+  {id:"redirect",type:"Redirect",emoji:"🔀",name:"Redirect",desc:"Send any card effect to a different target of your choice.",color:"#9b59b6"},
+  {id:"votechange",type:"Vote Change",emoji:"🗳️",name:"Vote Change",desc:"Change your current vote to any other player. Voting phase only.",color:"#f5a623"},
+  {id:"doublevote",type:"Vote Change",emoji:"⚡",name:"Double Vote",desc:"Your vote counts twice this round. Use wisely.",color:"#f5a623"},
+  {id:"expose",type:"Expose",emoji:"🔍",name:"Expose",desc:"Force a player to reveal one card from their hand to everyone.",color:"#4caf7d"},
+  {id:"interrogate",type:"Expose",emoji:"💬",name:"Interrogate",desc:"Ask any player one yes/no question. They must answer (honour system).",color:"#4caf7d"},
+  {id:"spotlight",type:"Expose",emoji:"🔦",name:"Spotlight",desc:"Target player cannot play action cards next turn.",color:"#4caf7d"},
+  {id:"dc_vanish",type:"Drunk Cat",emoji:"💨",name:"Vanish",desc:"Skip your turn invisibly. No one can target you this round.",color:"#ff6b6b",dcOnly:true},
+  {id:"dc_decoy",type:"Drunk Cat",emoji:"🐈",name:"Decoy",desc:"Plant suspicion on another player. Next accusation redirects to them.",color:"#ff6b6b",dcOnly:true},
+  {id:"dc_purr",type:"Drunk Cat",emoji:"😺",name:"Purr",desc:"Act innocent. The next player who accuses you must drink instead.",color:"#ff6b6b",dcOnly:true},
+];
+
+const cardObj = id => ALL_CARDS.find(c=>c.id===id);
+const shuffle = arr => [...arr].sort(()=>Math.random()-.5);
+const dealHand = isDC => shuffle(isDC ? ALL_CARDS : ALL_CARDS.filter(c=>!c.dcOnly)).slice(0,4).map(c=>c.id);
+
+// Randomly assign unique characters to players
+function assignChars(playerIds) {
+  const pool = shuffle(CHAR_KEYS);
+  const map = {};
+  playerIds.forEach((id,i) => { map[id] = pool[i % pool.length]; });
+  return map;
+}
+
+// ── Local state ────────────────────────────────────────────────────────────
+let myId=null, roomCode=null, myName=null;
+let gameState=null, roomRef=null, unsubFn=null, selectedCard=null;
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+const uid = () => Math.random().toString(36).slice(2,10);
+const genCode = () => Math.random().toString(36).slice(2,6).toUpperCase();
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function toast(msg,dur=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+function mkEl(tag,cls,html){
+  const el=document.createElement(tag);
+  if(cls)el.className=cls;
+  if(html!==undefined)el.innerHTML=html;
+  return el;
+}
+
+// ── Wire buttons ───────────────────────────────────────────────────────────
+function wireButtons(){
+  document.getElementById('btn-go-create').addEventListener('click',()=>showScreen('s-create'));
+  document.getElementById('btn-go-join').addEventListener('click',()=>showScreen('s-join'));
+  document.getElementById('btn-create-back').addEventListener('click',()=>showScreen('s-landing'));
+  document.getElementById('btn-join-back').addEventListener('click',()=>showScreen('s-landing'));
+  document.getElementById('btn-play-again').addEventListener('click',()=>location.reload());
+  document.getElementById('btn-create-room').addEventListener('click',createRoom);
+  document.getElementById('btn-join-room').addEventListener('click',joinRoom);
+  document.getElementById('btn-start-game').addEventListener('click',startGame);
+  document.getElementById('btn-ready').addEventListener('click',goToGame);
+  document.getElementById('join-code').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase());
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', wireButtons);
+} else {
+  wireButtons();
+}
+
+// ── Firebase subscribe ─────────────────────────────────────────────────────
+function subscribeRoom(){
+  if(unsubFn)unsubFn();
+  unsubFn=onValue(roomRef,snap=>{
+    if(!snap.exists())return;
+    gameState=snap.val();
+    route(gameState);
+  });
+}
+
+function route(s){
+  if(s.status==='lobby')renderLobby(s);
+  else if(s.status==='role-reveal')renderRoleReveal(s);
+  else if(s.status==='playing')renderGame(s);
+  else if(s.status==='round-results')renderRoundResults(s);
+  else if(s.status==='final')renderFinal(s);
+}
+
+// ── Create / Join ──────────────────────────────────────────────────────────
+async function createRoom(){
+  const name=document.getElementById('host-name').value.trim();
+  if(!name){toast('Enter your name!');return;}
+  myId=uid(); myName=name; roomCode=genCode();
+  roomRef=ref(db,`rooms/${roomCode}`);
+  const players={};
+  players[myId]={id:myId,name,char:null,isHost:true,penalties:0,hand:[]};
+  await set(roomRef,{
+    code:roomCode,status:'lobby',host:myId,
+    round:0,totalRounds:5,phase:'lobby',
+    players,drunkCat:null,votes:{},playedCards:{}
+  });
+  subscribeRoom();
+  showScreen('s-lobby');
+}
+
+async function joinRoom(){
+  const code=document.getElementById('join-code').value.trim().toUpperCase();
+  const name=document.getElementById('join-name').value.trim();
+  if(!code||!name){toast('Fill in all fields');return;}
+  myId=uid(); myName=name; roomCode=code;
+  roomRef=ref(db,`rooms/${code}`);
+  const snap=await get(roomRef);
+  if(!snap.exists()){toast('Room not found!');return;}
+  const data=snap.val();
+  if(data.status!=='lobby'){toast('Game already started!');return;}
+  await update(ref(db,`rooms/${code}/players/${myId}`),{
+    id:myId,name,char:null,isHost:false,penalties:0,hand:[]
+  });
+  subscribeRoom();
+  showScreen('s-lobby');
+}
+
+// ── Lobby ──────────────────────────────────────────────────────────────────
+function renderLobby(state){
+  showScreen('s-lobby');
+  document.getElementById('lobby-code').textContent=state.code;
+  const players=Object.values(state.players||{});
+  document.getElementById('player-count').textContent=players.length;
+  const container=document.getElementById('lobby-players');
+  container.innerHTML='';
+  players.forEach(p=>{
+    const div=mkEl('div','player-item');
+    div.innerHTML=`<div class="player-avatar" style="width:36px;height:36px;font-size:18px;background:#333;border:2px solid #555">🎲</div>
+      <div style="flex:1">
+        <div style="font-weight:700">${p.name}${p.isHost?' 👑':''}</div>
+        <div style="font-size:11px;color:var(--muted)">Character: Mystery</div>
+      </div>`;
+    container.appendChild(div);
+  });
+  document.getElementById('host-controls').style.display=state.host===myId?'block':'none';
+  document.getElementById('waiting-msg').style.display=state.host===myId?'none':'block';
+}
+
+// ── Start Game ─────────────────────────────────────────────────────────────
+async function startGame(){
+  const players=Object.values(gameState.players||{});
+  if(players.length<2){toast('Need at least 2 players!');return;}
+  const totalRounds=parseInt(document.getElementById('round-count').value);
+
+  // Randomly assign unique characters
+  const charMap=assignChars(players.map(p=>p.id));
+  // Randomly pick Drunk Cat
+  const dcId=players[Math.floor(Math.random()*players.length)].id;
+
+  const updates={};
+  players.forEach(p=>{
+    const ch=charMap[p.id];
+    updates[`rooms/${roomCode}/players/${p.id}/char`]=ch;
+    updates[`rooms/${roomCode}/players/${p.id}/hand`]=dealHand(p.id===dcId);
+  });
+  updates[`rooms/${roomCode}/drunkCat`]=dcId;
+  updates[`rooms/${roomCode}/status`]='role-reveal';
+  updates[`rooms/${roomCode}/round`]=1;
+  updates[`rooms/${roomCode}/totalRounds`]=totalRounds;
+  updates[`rooms/${roomCode}/phase`]='cards';
+  updates[`rooms/${roomCode}/votes`]={};
+  updates[`rooms/${roomCode}/playedCards`]={};
+  await update(ref(db),updates);
+}
+
+// ── Role Reveal ────────────────────────────────────────────────────────────
+function renderRoleReveal(state){
+  showScreen('s-role');
+  document.getElementById('reveal-round').textContent=state.round;
+  const me=state.players[myId]; if(!me)return;
+  const isDC=state.drunkCat===myId;
+  const c=CHARS[me.char]||{name:'?',title:'?',emoji:'?',color:'#888',passive:'',active:''};
+  const card=document.getElementById('role-reveal-card');
+
+  if(isDC){
+    card.className='role-card drunk-cat';
+    card.innerHTML=`<div style="font-size:38px">🐱</div>
+      <div style="font-size:20px;font-weight:900;color:var(--accent2);margin:8px 0">YOU ARE THE DRUNK CAT</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Survive all ${state.totalRounds} rounds without being caught!</div>
+      <div style="background:#1a0a05;border-radius:10px;padding:12px;margin-bottom:8px;text-align:left">
+        <div style="font-size:11px;color:var(--accent2);font-weight:700;margin-bottom:4px">YOUR CHARACTER</div>
+        <div style="font-size:16px;font-weight:800;color:${c.color}">${c.emoji} ${c.name} — ${c.title}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px"><b>Passive:</b> ${c.passive}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px"><b>Active:</b> ${c.active}</div>
+      </div>
+      <div style="font-size:11px;color:var(--accent2);font-weight:700">🤫 KEEP BOTH SECRETS</div>`;
+  } else {
+    card.className='role-card';
+    card.style.borderColor=c.color;
+    card.innerHTML=`<div style="font-size:38px">${c.emoji}</div>
+      <div style="font-size:20px;font-weight:900;color:${c.color};margin:8px 0">${c.name}</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:10px">${c.title}</div>
+      <div style="background:#0d0d1a;border-radius:10px;padding:12px;text-align:left;margin-bottom:10px">
+        <div style="font-size:12px;margin-bottom:6px"><b style="color:var(--muted)">PASSIVE:</b> ${c.passive}</div>
+        <div style="font-size:12px"><b style="color:var(--muted)">ACTIVE:</b> ${c.active}</div>
+      </div>
+      <div style="font-size:12px;color:var(--green);font-weight:700">🔍 HUNTER — Find the Drunk Cat!</div>`;
+  }
+
+  const handEl=document.getElementById('role-hand');
+  handEl.innerHTML='';
+  (me.hand||[]).forEach(cid=>{
+    const cd=cardObj(cid); if(!cd)return;
+    const div=mkEl('div','action-card'+(cd.dcOnly?' dc-only':''));
+    div.innerHTML=`<div style="font-size:10px;font-weight:800;letter-spacing:1px;color:${cd.color};margin-bottom:3px">${cd.type}${cd.dcOnly?' 🐱':''}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:18px">${cd.emoji}</span><span style="font-weight:700">${cd.name}</span></div>
+      <div class="card-desc">${cd.desc}</div>`;
+    handEl.appendChild(div);
+  });
+}
+
+function goToGame(){
+  if(gameState&&gameState.status==='playing'){showScreen('s-game');renderGame(gameState);return;}
+  update(ref(db,`rooms/${roomCode}/players/${myId}`),{ready:true});
+  if(gameState&&gameState.host===myId) update(ref(db,`rooms/${roomCode}`),{status:'playing'});
+}
+
+// ── Game ───────────────────────────────────────────────────────────────────
+function renderGame(state){
+  showScreen('s-game');
+  const me=state.players[myId]; if(!me)return;
+  const isDC=state.drunkCat===myId;
+  const c=CHARS[me.char]||{name:'?',title:'?',emoji:'🎲',color:'#888'};
+
+  document.getElementById('g-code').textContent=state.code;
+  document.getElementById('g-round').textContent=state.round;
+  document.getElementById('g-phase').textContent=state.phase==='voting'?'🗳️ Voting':'🃏 Cards';
+  document.getElementById('g-myname').textContent=`${c.emoji} ${me.name}`;
+  document.getElementById('g-mychar').textContent=`Playing as: ${c.name} — ${c.title}`;
+  document.getElementById('g-myrole-badge').innerHTML=isDC
+    ?`<span class="tag" style="background:rgba(232,67,90,0.15);color:var(--accent2)">🐱 Drunk Cat</span>`
+    :`<span class="tag" style="background:rgba(76,175,125,0.15);color:var(--green)">🔍 Hunter</span>`;
+  const penEl=document.getElementById('g-mypenalty');
+  penEl.style.display=me.penalties>0?'block':'none';
+  if(me.penalties>0) penEl.textContent=`🍺 Penalties: ${me.penalties} drink${me.penalties>1?'s':''}`;
+
+  // Round pips
+  const pips=document.getElementById('round-pips'); pips.innerHTML='';
+  for(let i=1;i<=state.totalRounds;i++){
+    const p=mkEl('div','round-pip'+(i<state.round?' done':i===state.round?' active':''));
+    p.textContent=i; pips.appendChild(p);
+  }
+
+  // Players list
+  const gp=document.getElementById('g-players'); gp.innerHTML='';
+  Object.values(state.players).forEach(p=>{
+    const pc=CHARS[p.char]||{emoji:'🎲',color:'#888',title:'?'};
+    const votes=Object.values(state.votes||{}).filter(v=>v===p.id).length;
+    const played=!!(state.playedCards&&state.playedCards[p.id]);
+    const div=mkEl('div','player-item'); div.style.padding='8px 12px';
+    div.innerHTML=`<div class="player-avatar" style="width:30px;height:30px;font-size:14px;background:${pc.color}22;border:2px solid ${pc.color}">${pc.emoji}</div>
+      <div style="flex:1;font-size:13px;font-weight:700">${p.name}${p.id===myId?' (You)':''}</div>
+      ${votes>0?`<span class="tag" style="background:rgba(232,67,90,0.15);color:var(--accent2);font-size:10px;margin-right:4px">🗳️${votes}</span>`:''}
+      ${played?`<span class="tag" style="background:rgba(76,175,125,0.1);color:var(--green);font-size:10px">✓</span>`:''}`;
+    gp.appendChild(div);
+  });
+
+  const pc=document.getElementById('g-phase-content');
+  const bot=document.getElementById('g-bottom');
+  pc.innerHTML=''; bot.innerHTML='';
+  if(state.phase==='cards') renderCardPhase(state,me,isDC,pc,bot);
+  else if(state.phase==='voting') renderVotingPhase(state,me,isDC,pc,bot);
+}
+
+function renderCardPhase(state,me,isDC,pc,bot){
+  const round=state.round;
+  const alreadyPlayed=state.playedCards&&state.playedCards[myId];
+
+  if(round===4){
+    const n=mkEl('div','card'); n.style.cssText='border-color:var(--accent2);background:rgba(232,67,90,0.05)';
+    n.innerHTML='<div style="font-weight:800;color:var(--accent2)">🔥 PARANOIA ROUND</div><div class="card-desc" style="margin-top:4px">Play up to 3 action cards this turn. Maximum chaos.</div>';
+    pc.appendChild(n);
+  }
+  if(round===1){
+    const n=mkEl('div','card'); n.style.borderColor='var(--blue)';
+    n.innerHTML='<div style="font-weight:800;color:var(--blue)">👁️ ROUND 1</div><div class="card-desc" style="margin-top:4px">Play cards, observe, then vote. No free information — commit wisely!</div>';
+    pc.appendChild(n);
+  }
+
+  const ht=mkEl('div'); ht.style.cssText='font-size:11px;color:var(--muted);font-weight:700;margin-top:4px';
+  ht.textContent='YOUR HAND — tap to select'; pc.appendChild(ht);
+
+  const hand=me.hand||[];
+  if(!hand.length){
+    const n=mkEl('div','card'); n.innerHTML='<div style="color:var(--muted);font-size:13px;text-align:center">No cards left this round.</div>';
+    pc.appendChild(n);
+  }
+
+  hand.forEach(cid=>{
+    const cd=cardObj(cid); if(!cd)return;
+    if(cd.dcOnly&&!isDC)return;
+    const sel=selectedCard===cid;
+    const div=mkEl('div','action-card'+(sel?' selected':'')+(cd.dcOnly?' dc-only':''));
+    div.style.borderColor=sel?cd.color:'';
+    div.innerHTML=`<div style="font-size:10px;font-weight:800;letter-spacing:1px;color:${cd.color};margin-bottom:3px">${cd.type}${cd.dcOnly?' 🐱':''}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:18px">${cd.emoji}</span><span style="font-weight:700">${cd.name}</span></div>
+      <div class="card-desc">${cd.desc}</div>`;
+    div.onclick=()=>{selectedCard=sel?null:cid; renderGame(state);};
+    pc.appendChild(div);
+  });
+
+  if(!alreadyPlayed){
+    const targeted=['frame','blackout','expose','interrogate','spotlight','redirect','deflect','dc_decoy','dc_purr'];
+    if(selectedCard&&targeted.includes(selectedCard)){
+      const tt=mkEl('div'); tt.style.cssText='font-size:11px;color:var(--muted);font-weight:700;margin-top:6px';
+      tt.textContent='SELECT TARGET'; pc.appendChild(tt);
+      Object.values(state.players).filter(p=>p.id!==myId).forEach(p=>{
+        const pc2=CHARS[p.char]||{emoji:'🎲'};
+        const btn=mkEl('button','btn btn-secondary');
+        btn.style.cssText='text-align:left;margin-top:4px';
+        btn.innerHTML=`${pc2.emoji} ${p.name}`;
+        btn.onclick=()=>playCard(selectedCard,p.id,state);
+        pc.appendChild(btn);
+      });
+    } else if(selectedCard){
+      const cd=cardObj(selectedCard);
+      const pb=mkEl('button','btn btn-primary');
+      pb.innerHTML=`Play ${cd.emoji} ${cd.name}`;
+      pb.onclick=()=>playCard(selectedCard,null,state);
+      bot.appendChild(pb);
+    }
+    const passBtn=mkEl('button','btn btn-secondary');
+    passBtn.textContent='Pass (no card this turn)';
+    passBtn.onclick=()=>passCard(state);
+    bot.appendChild(passBtn);
+  } else {
+    const done=mkEl('div','card'); done.style.borderColor='var(--green)';
+    done.innerHTML='<div style="color:var(--green);font-weight:700;text-align:center">✓ Played — waiting for others...</div>';
+    bot.appendChild(done);
+    if(gameState&&gameState.host===myId) checkAdvancePhase(state);
+  }
+}
+
+async function playCard(cardId,targetId,state){
+  const cd=cardObj(cardId);
+  const me=state.players[myId];
+  const hand=[...(me.hand||[])];
+  const idx=hand.indexOf(cardId); if(idx>-1)hand.splice(idx,1);
+  const updates={};
+  updates[`rooms/${roomCode}/players/${myId}/hand`]=hand;
+  updates[`rooms/${roomCode}/playedCards/${myId}`]={cardId,targetId:targetId||null,ts:Date.now()};
+  if(cardId==='oversized'&&targetId){
+    const cur=state.players[targetId].penalties||0;
+    updates[`rooms/${roomCode}/players/${targetId}/penalties`]=cur+2;
+  }
+  await update(ref(db),updates);
+  selectedCard=null;
+  toast(`Played ${cd.emoji} ${cd.name}!`);
+}
+
+async function passCard(){
+  await update(ref(db,`rooms/${roomCode}/playedCards/${myId}`),{cardId:'pass',targetId:null,ts:Date.now()});
+  selectedCard=null; toast('Passed your turn');
+}
+
+async function checkAdvancePhase(state){
+  const players=Object.values(state.players);
+  const played=state.playedCards||{};
+  if(players.every(p=>played[p.id])&&state.phase==='cards'){
+    await update(ref(db,`rooms/${roomCode}`),{phase:'voting',votes:{}});
+  }
+}
+
+// ── Voting ─────────────────────────────────────────────────────────────────
+function renderVotingPhase(state,me,isDC,pc,bot){
+  const myVote=state.votes&&state.votes[myId];
+  const isFinal=state.round>=state.totalRounds;
+
+  const info=mkEl('div','card'); info.style.borderColor='var(--accent2)';
+  info.innerHTML=`<div style="font-weight:800;color:var(--accent2)">🗳️ VOTING${isFinal?' — FINAL ELIMINATION!':''}</div>
+    <div class="card-desc" style="margin-top:4px">${isFinal?'Most votes = ELIMINATED. Catch the Drunk Cat to win!':'Most votes = drink penalty + lose all cards next round.'}</div>`;
+  pc.appendChild(info);
+
+  const vt=mkEl('div'); vt.style.cssText='font-size:11px;color:var(--muted);font-weight:700;margin-top:4px';
+  vt.textContent='WHO IS THE DRUNK CAT?'; pc.appendChild(vt);
+
+  Object.values(state.players).forEach(p=>{
+    const pc2=CHARS[p.char]||{emoji:'🎲'};
+    const votes=Object.values(state.votes||{}).filter(v=>v===p.id).length;
+    const isMyVote=myVote===p.id;
+    const btn=mkEl('div','vote-btn'+(isMyVote?' voted':''));
+    btn.innerHTML=`${pc2.emoji} ${p.name}${p.id===myId?' (You)':''} ${votes>0?`<span style="color:var(--accent2);margin-left:6px">🗳️${votes}</span>`:''}`;
+    if(!isMyVote) btn.onclick=()=>castVote(p.id,state);
+    pc.appendChild(btn);
+  });
+
+  const vcCards=(me.hand||[]).filter(c=>c==='votechange'||c==='doublevote');
+  if(myVote&&vcCards.length>0){
+    const vct=mkEl('div'); vct.style.cssText='font-size:11px;color:var(--accent);font-weight:700;margin-top:8px';
+    vct.textContent='USE VOTE CHANGE CARD (costs 1 card)'; pc.appendChild(vct);
+    const cd=cardObj(vcCards[0]);
+    const vcb=mkEl('button','btn btn-secondary');
+    vcb.innerHTML=`Use ${cd.emoji} ${cd.name} to change vote`;
+    vcb.onclick=()=>useVoteChangeCard(vcCards[0],state);
+    pc.appendChild(vcb);
+  }
+
+  if(gameState&&gameState.host===myId){
+    const advBtn=mkEl('button','btn btn-primary');
+    advBtn.textContent='⏭️ End Voting (Host Only)';
+    advBtn.onclick=()=>endVoting(state);
+    bot.appendChild(advBtn);
+  } else {
+    const w=mkEl('div'); w.style.cssText='text-align:center;color:var(--muted);font-size:13px;padding:8px';
+    w.textContent='Waiting for host to close the vote...';
+    bot.appendChild(w);
+  }
+}
+
+async function castVote(targetId,state){
+  await update(ref(db,`rooms/${roomCode}/votes`),{[myId]:targetId});
+  toast(`Voted for ${state.players[targetId].name}`);
+}
+
+async function useVoteChangeCard(cardId,state){
+  const hand=[...(state.players[myId].hand||[])];
+  const idx=hand.indexOf(cardId); if(idx>-1)hand.splice(idx,1);
+  await update(ref(db),{
+    [`rooms/${roomCode}/players/${myId}/hand`]:hand,
+    [`rooms/${roomCode}/votes/${myId}`]:null
+  });
+  toast('Vote cleared — pick again!');
+}
+
+async function endVoting(state){
+  const players=Object.values(state.players);
+  const tally={};
+  players.forEach(p=>{tally[p.id]=0;});
+  Object.values(state.votes||{}).forEach(v=>{if(v&&tally[v]!==undefined)tally[v]++;});
+  const maxV=Math.max(...Object.values(tally));
+  const top=Object.keys(tally).filter(id=>tally[id]===maxV);
+  const penId=top[Math.floor(Math.random()*top.length)];
+  const isFinal=state.round>=state.totalRounds;
+  const isDC=penId===state.drunkCat;
+
+  if(isFinal){
+    await update(ref(db,`rooms/${roomCode}`),{
+      status:'final',
+      finalResult:{winner:isDC?'hunters':'drunkcat',drunkCat:state.drunkCat,penalizedId:penId,tally}
+    });
+  } else {
+    const updates={};
+    if(penId){
+      updates[`rooms/${roomCode}/players/${penId}/penalties`]=(state.players[penId].penalties||0)+1;
+      updates[`rooms/${roomCode}/players/${penId}/hand`]=[];
+    }
+    players.forEach(p=>{
+      if(p.id!==penId) updates[`rooms/${roomCode}/players/${p.id}/hand`]=dealHand(p.id===state.drunkCat);
+    });
+    updates[`rooms/${roomCode}/status`]='round-results';
+    updates[`rooms/${roomCode}/phase`]='cards';
+    updates[`rooms/${roomCode}/roundResult`]={penalizedId:penId,tally,round:state.round};
+    updates[`rooms/${roomCode}/votes`]={};
+    updates[`rooms/${roomCode}/playedCards`]={};
+    await update(ref(db),updates);
+  }
+}
+
+// ── Round Results ──────────────────────────────────────────────────────────
+function renderRoundResults(state){
+  showScreen('s-results');
+  const result=state.roundResult||{};
+  const pen=result.penalizedId?state.players[result.penalizedId]:null;
+  const pc=pen?CHARS[pen.char]||{emoji:'?'}:{};
+  document.getElementById('result-content').innerHTML=`<div style="font-size:48px">🍺</div>
+    <div style="font-size:22px;font-weight:900;margin:8px 0">Round ${result.round} Over!</div>
+    ${pen?`<div style="font-size:16px;color:var(--accent2);font-weight:700">${pc.emoji} ${pen.name} got the most votes!</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:4px">🍺 Drink + lose all cards next round</div>`
+    :'<div style="color:var(--muted)">No clear verdict.</div>'}`;
+
+  const rt=document.getElementById('result-tally'); rt.innerHTML='';
+  Object.entries(result.tally||{}).forEach(([id,v])=>{
+    const p=state.players[id]; if(!p)return;
+    const ch=CHARS[p.char]||{emoji:'🎲',color:'#888'};
+    const div=mkEl('div','player-item');
+    div.innerHTML=`<div class="player-avatar" style="width:30px;height:30px;font-size:14px;background:${ch.color}22;border:2px solid ${ch.color}">${ch.emoji}</div>
+      <div style="flex:1;font-size:13px;font-weight:700">${p.name}</div>
+      <div style="font-weight:800;color:${v>0?'var(--accent2)':'var(--muted)'}">${v} vote${v!==1?'s':''}</div>`;
+    rt.appendChild(div);
+  });
+
+  const ra=document.getElementById('result-actions'); ra.innerHTML='';
+  if(gameState&&gameState.host===myId){
+    const btn=mkEl('button','btn btn-primary');
+    btn.textContent=`▶️ Start Round ${(result.round||0)+1}`;
+    btn.onclick=async()=>{
+      await update(ref(db,`rooms/${roomCode}`),{status:'role-reveal',round:(result.round||0)+1,roundResult:null});
+    };
+    ra.appendChild(btn);
+  } else {
+    const w=mkEl('div'); w.style.cssText='color:var(--muted);font-size:13px;text-align:center';
+    w.textContent='Waiting for host to start next round...';
+    ra.appendChild(w);
+  }
+}
+
+// ── Final ──────────────────────────────────────────────────────────────────
+function renderFinal(state){
+  showScreen('s-final');
+  const result=state.finalResult||{};
+  const dc=result.drunkCat?state.players[result.drunkCat]:null;
+  const dcc=dc?CHARS[dc.char]||{emoji:'🐱',color:'#e8435a',name:'?'}:null;
+
+  document.getElementById('final-content').innerHTML=result.winner==='drunkcat'
+    ?`<div style="font-size:64px">🐱🎉</div>
+      <div style="font-size:24px;font-weight:900;margin:12px 0;color:var(--accent2)">The Drunk Cat Wins!</div>
+      ${dc?`<div style="font-size:16px;font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was playing as ${dcc.name}!</div>`:''}
+      <div style="font-size:13px;color:var(--muted);margin-top:8px">All Hunters drink! 🍺🍺🍺</div>`
+    :`<div style="font-size:64px">🔍🎉</div>
+      <div style="font-size:24px;font-weight:900;margin:12px 0;color:var(--green)">Hunters Win!</div>
+      ${dc?`<div style="font-size:16px;font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat — playing as ${dcc.name}!</div>`:''}
+      <div style="font-size:13px;color:var(--muted);margin-top:8px">Drunk Cat drinks big! 🍺🍺🍺🍺</div>
+      <div style="margin-top:12px;font-size:13px;color:var(--accent);font-weight:700">⚡ SUDDEN DEATH — 60 seconds of chaos! Everyone drink!</div>`;
+
+  // Reveal all characters
+  const fr=document.getElementById('final-reveals'); fr.innerHTML='';
+  Object.values(state.players).forEach(p=>{
+    const ch=CHARS[p.char]||{emoji:'🎲',color:'#888',name:'?',title:'?'};
+    const isDC=p.id===state.drunkCat;
+    const div=mkEl('div','player-item');
+    div.style.borderColor=isDC?'var(--accent2)':'';
+    div.innerHTML=`<div class="player-avatar" style="width:34px;height:34px;font-size:16px;background:${ch.color}22;border:2px solid ${ch.color}">${ch.emoji}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700">${p.name} ${isDC?'🐱':''}</div>
+        <div style="font-size:11px;color:var(--muted)">${ch.name} — ${ch.title}</div>
+      </div>`;
+    fr.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
