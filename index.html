@@ -8,12 +8,14 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0d0d0d;--s1:#161616;--s2:#1e1e1e;--s3:#272727;--acc:#f5a623;--red:#e8435a;--grn:#4caf7d;--blu:#4a9eff;--pur:#9b59b6;--txt:#f0f0f0;--mut:#777;--bor:#2a2a2a;--r:12px;--rs:8px}
 body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;-webkit-tap-highlight-color:transparent}
-button{cursor:pointer;border:none;font-family:inherit;font-weight:600;transition:all .15s;-webkit-appearance:none}
+button{cursor:pointer;border:none;font-family:inherit;font-weight:600;transition:opacity .15s;-webkit-appearance:none}
+button:active{opacity:.8}
 input,select{font-family:inherit;background:var(--s2);border:1.5px solid var(--bor);color:var(--txt);border-radius:var(--rs);padding:10px 14px;font-size:15px;width:100%;outline:none}
 input:focus,select:focus{border-color:var(--acc)}
 .btn{padding:11px 16px;border-radius:var(--rs);font-size:14px;width:100%;display:block;text-align:center;font-weight:700}
-.bp{background:var(--acc);color:#000}.bp:active{opacity:.85}
-.bs{background:var(--s3);color:var(--txt);border:1.5px solid var(--bor)}.bs:active{opacity:.8}
+.bp{background:var(--acc);color:#000}
+.bs{background:var(--s3);color:var(--txt);border:1.5px solid var(--bor)}
+.br{background:var(--red);color:#fff}
 .bsm{width:auto;padding:7px 12px;font-size:12px}
 .card{background:var(--s1);border-radius:var(--r);padding:14px;border:1px solid var(--bor)}
 .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
@@ -23,60 +25,47 @@ input:focus,select:focus{border-color:var(--acc)}
 .row{display:flex;gap:8px;align-items:center}
 .mut{color:var(--mut)}.sm{font-size:12px}.ctr{text-align:center}
 label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-bottom:4px;letter-spacing:.5px}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);background:#1a1a1a;border:1.5px solid var(--acc);color:var(--txt);padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;transition:transform .3s;pointer-events:none;max-width:88vw;text-align:center;white-space:pre-wrap}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);background:#1a1a1a;border:1.5px solid var(--acc);color:var(--txt);padding:10px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;transition:transform .3s;pointer-events:none;max-width:88vw;text-align:center}
 #toast.show{transform:translateX(-50%) translateY(0)}
 .logo-t{font-size:28px;font-weight:900;text-align:center;background:linear-gradient(135deg,var(--acc),var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.card2{background:var(--s1);border-radius:var(--r);padding:11px;border:1px solid var(--bor)}
 .stitle{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);margin-bottom:5px}
 .mbox{background:var(--s2);border:2px dashed var(--bor);border-radius:var(--r);padding:14px;text-align:center}
 .pi{background:var(--s2);border-radius:var(--rs);padding:9px 11px;display:flex;align-items:center;gap:8px;border:1px solid var(--bor)}
 .av{border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-/* Action cards */
 .ac-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ac{background:var(--s2);border:1.5px solid var(--bor);border-radius:var(--r);padding:10px;cursor:pointer;transition:border-color .15s}
-.ac:active:not(.dis){opacity:.8}
+.ac{background:var(--s2);border:1.5px solid var(--bor);border-radius:var(--r);padding:10px;cursor:pointer}
 .ac.sel{border-color:var(--acc);background:rgba(245,166,35,.06)}
 .ac.dis{opacity:.3;cursor:not-allowed;pointer-events:none}
 .ac.rct{border-style:dashed}
 .ac-em{font-size:22px;margin-bottom:4px}
 .ac-tp{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
-.ac-nm{font-weight:800;font-size:13px;margin-bottom:2px;line-height:1.2}
+.ac-nm{font-weight:800;font-size:13px;margin-bottom:2px}
 .ac-ds{font-size:10px;color:var(--mut);line-height:1.4}
-/* Pips */
 .pip{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bor);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--mut)}
 .pip.act{border-color:var(--acc);background:var(--acc);color:#000}
 .pip.done{border-color:var(--grn);background:var(--grn);color:#fff}
-/* Role card */
 .rcard{border-radius:16px;padding:20px 16px;text-align:center;border:2px solid var(--acc);background:linear-gradient(135deg,#1a1a2e,#16213e)}
 .rcard.dc{background:linear-gradient(135deg,#2d1b0e,#3d2010);border-color:var(--red)}
-/* Event box */
 .evbox{background:var(--s1);border:1.5px solid var(--acc);border-radius:var(--r);padding:12px 14px}
-/* Turn box */
 .tbox{border-radius:var(--r);padding:12px 14px;border:1.5px solid var(--bor);background:var(--s2)}
 .tbox.mine{border-color:var(--acc)}
 .tbox.resp{border-color:var(--red)}
-/* Vote btn */
 .vbtn{background:var(--s2);border:1.5px solid var(--bor);border-radius:var(--rs);padding:10px 12px;cursor:pointer;font-weight:600;font-size:13px;width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .vbtn.voted{border-color:var(--red);background:rgba(232,67,90,.07)}
-/* Overlay */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:24px 16px;overflow-y:auto}
-/* Rules */
 .rtab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;background:var(--s2);color:var(--mut);border:none;cursor:pointer;flex-shrink:0;white-space:nowrap}
 .rtab.act{background:var(--acc);color:#000}
 .rtabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
 .rtabs::-webkit-scrollbar{display:none}
-/* Player strip */
 .pstrip{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .pstrip::-webkit-scrollbar{display:none}
-.pchip{flex-shrink:0;background:var(--s2);border:1.5px solid var(--bor);border-radius:10px;padding:6px 9px;text-align:center;min-width:64px}
+.pchip{flex-shrink:0;background:var(--s2);border:1.5px solid var(--bor);border-radius:10px;padding:6px 9px;text-align:center;min-width:62px}
 .pchip.aturn{border-color:var(--acc)}
 .pchip.resp{border-color:var(--red)}
-/* Active badge */
 .abadge{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700}
-/* Drama text */
 .drama{font-style:italic;color:var(--mut);font-size:11px;margin-top:3px}
-/* Card play announcement */
-.announce{background:var(--s2);border-radius:var(--r);padding:12px 14px;border-left:3px solid var(--acc)}
+.announce{background:var(--s2);border-radius:var(--r);padding:11px 13px;border-left:3px solid var(--acc);font-size:13px}
+.challenge-banner{background:rgba(74,158,255,.08);border:1.5px solid var(--blu);border-radius:var(--r);padding:12px 14px}
 </style>
 </head>
 <body>
@@ -132,8 +121,7 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
 <!-- LOBBY -->
 <div class="screen" id="s-lobby">
   <div style="max-width:440px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:12px">
-    <div class="ctr" style="padding-top:6px">
-      <div style="font-size:30px">🐱🍺</div><div class="logo-t" style="font-size:22px">DRUNK CAT</div>
+    <div class="ctr" style="padding-top:6px"><div style="font-size:30px">🐱🍺</div><div class="logo-t" style="font-size:22px">DRUNK CAT</div>
       <div style="margin-top:6px"><span class="mut sm">ROOM: </span><span id="lobby-code" style="font-size:24px;font-weight:900;color:var(--acc);letter-spacing:4px"></span></div>
     </div>
     <div class="card col">
@@ -165,16 +153,42 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
   </div>
 </div>
 
+<!-- WAITING ROOM -->
+<div class="screen" id="s-waiting">
+  <div style="max-width:400px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:12px;justify-content:center">
+    <div class="ctr"><div style="font-size:36px">⏳</div><h2 style="margin-top:6px">Waiting Room</h2><div class="mut sm" style="margin-top:4px">Round <span id="wr-rnd">1</span> — Everyone ready up!</div></div>
+    <div class="card col"><div class="stitle">PLAYER READINESS</div><div id="wr-players" class="col"></div></div>
+    <div id="wr-host" style="display:none"><button class="btn bp" id="b-start-round">▶️ Start Round</button></div>
+    <div id="wr-wait" class="ctr mut sm">Waiting for host to start the round...</div>
+  </div>
+</div>
+
+<!-- TURN COMPLETE -->
+<div class="screen" id="s-turncomplete">
+  <div style="max-width:440px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:12px">
+    <div class="ctr"><div style="font-size:32px">🎴</div><h2 style="margin-top:6px">Round <span id="tc-rnd"></span> Turns Complete</h2><div class="mut sm" style="margin-top:4px">Here's what happened</div></div>
+    <div class="card col"><div class="stitle">CARDS PLAYED THIS ROUND</div><div id="tc-plays" class="col"></div></div>
+    <div class="card col">
+      <div class="stitle">CURRENT VOTE STANDINGS</div>
+      <div id="tc-votes" class="col"></div>
+    </div>
+    <button class="btn bs" id="b-readyvote">✓ Ready to Vote</button>
+    <div id="tc-host" style="display:none"><button class="btn bp" id="b-startvote">🗳️ Start Voting</button></div>
+    <div id="tc-wait" class="ctr mut sm" style="display:none">Waiting for host to start voting...</div>
+  </div>
+</div>
+
 <!-- GAME -->
 <div class="screen" id="s-game" style="padding:10px;gap:8px">
   <div style="max-width:440px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:8px">
-    <div class="card2">
+    <div class="card" style="padding:10px">
       <div class="row" style="justify-content:space-between;margin-bottom:6px">
         <div><div class="mut sm" style="font-weight:700">🐱 DRUNK CAT · <span id="g-code" style="color:var(--acc)"></span></div><div style="font-weight:800;font-size:16px">Round <span id="g-rnd"></span>/<span id="g-tot"></span></div></div>
         <div style="display:flex;gap:4px" id="g-pips"></div>
       </div>
       <div class="row" style="justify-content:space-between"><div id="g-abadge"></div><div id="g-mybadge"></div></div>
     </div>
+    <div id="g-challenge" style="display:none" class="challenge-banner"></div>
     <div id="g-event" class="evbox" style="display:none"></div>
     <div id="g-tbox" class="tbox" style="display:none"></div>
     <div id="g-announce" style="display:none" class="announce"></div>
@@ -182,7 +196,7 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
     <div id="g-hlabel" class="mut sm" style="font-weight:700;letter-spacing:.5px;display:none"></div>
     <div id="g-hand" class="ac-grid"></div>
     <div id="g-bot" class="col" style="padding-bottom:12px"></div>
-    <div class="card2">
+    <div class="card" style="padding:10px">
       <div class="stitle" style="margin-bottom:6px">PLAYERS</div>
       <div id="g-ps" class="pstrip"></div>
       <div id="g-mypen" style="display:none;margin-top:7px;font-size:12px;color:var(--red)"></div>
@@ -214,57 +228,57 @@ import{getDatabase,ref,set,get,update,onValue}from"https://www.gstatic.com/fireb
 const app=initializeApp({apiKey:"AIzaSyD8PYAm3ooJmP6Ktft0ObdriWVSUjzRSAI",authDomain:"drunk-cat.firebaseapp.com",databaseURL:"https://drunk-cat-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"drunk-cat",storageBucket:"drunk-cat.firebasestorage.app",messagingSenderId:"156236362904",appId:"1:156236362904:web:a501717623eec000388ced"});
 const db=getDatabase(app);
 
-// ── CHARACTERS ────────────────────────────────────────────────────────────
+// ── CHARACTERS (titles only) ───────────────────────────────────────────────
 const CHARS={
-  stallon:{name:"Stallon",title:"The Joker",emoji:"🃏",color:"#f5a623",
-    passive:{name:"Misdirection",desc:"Once per round at start, secretly peek at one random card from each player's hand — only you see."},
-    active:{name:"Punchline",type:"Attack",desc:"All players skip drawing their new card at the start of next round. Activate on your turn, then play your action card."}},
-  anuja:{name:"Anuja",title:"The Sleeper",emoji:"😴",color:"#9b59b6",
+  joker:{name:"The Joker",emoji:"🃏",color:"#f5a623",inspiration:"Inspired by Stallon",
+    passive:{name:"Misdirection",desc:"At round start, privately see one random card from one randomly chosen player."},
+    active:{name:"Punchline",type:"Attack",desc:"All players skip drawing their new card at the start of next round."}},
+  sleeper:{name:"The Sleeper",emoji:"😴",color:"#9b59b6",inspiration:"Inspired by Anuja",
     passive:{name:"Hoarder",desc:"Your hand cap is 6 cards. All others capped at 5."},
-    active:{name:"Inner Beast",type:"Attack",desc:"Your next card this turn hits 2 targets — both get the full effect. Activate, then pick your card and 2 targets."}},
-  pream:{name:"Pream",title:"The Mother",emoji:"🕐",color:"#4caf7d",
-    passive:{name:"Watching",desc:"You see the last 3 game events. Others only see the most recent."},
-    active:{name:"Curfew",type:"Attack",desc:"Privately see one random card from every player's hand — only you see. Then play your action card."}},
-  grace:{name:"Grace",title:"The Troublemaker",emoji:"🥃",color:"#e8435a",
-    passive:{name:"Pour Heavy",desc:"When you play a targeted card, target takes 1 extra drink automatically."},
-    active:{name:"Free Pour",type:"Attack",desc:"Your next targeted card deals double drink penalty AND target skips their next turn. Activate, then play your card."}},
-  dave:{name:"Dave",title:"The Game Master",emoji:"🎮",color:"#4a9eff",
-    passive:{name:"Challenge",desc:"Once per round, challenge any card played — pauses for a table ruling before effect."},
+    active:{name:"Inner Beast",type:"Attack",desc:"Your next attack card this turn hits 2 targets — both get the full effect."}},
+  mother:{name:"The Mother",emoji:"🕐",color:"#4caf7d",inspiration:"Inspired by Pream",
+    passive:{name:"Watching",desc:"You see the last 3 game events. Others see only the most recent."},
+    active:{name:"Curfew",type:"Attack",desc:"Privately see one random card from every player's hand — only you see. Then play your attack card."}},
+  troublemaker:{name:"The Troublemaker",emoji:"🥃",color:"#e8435a",inspiration:"Inspired by Grace",
+    passive:{name:"Pour Heavy",desc:"When you play any targeted attack card, target takes 1 extra drink automatically."},
+    active:{name:"Free Pour",type:"Attack",desc:"Your next targeted attack card this turn deals double drink penalty AND target skips their next turn."}},
+  gamemaster:{name:"The Game Master",emoji:"🎮",color:"#4a9eff",inspiration:"Inspired by Dave",
+    passive:{name:"Challenge",desc:"When any card is played, Dave can pause the game. He may then save the target (like Cover) or double their penalty. Host dismisses."},
     active:{name:"Final Verdict",type:"Voting",desc:"Wipe all current votes and force everyone to vote again. Voting phase only."}},
-  lynn:{name:"Lynn",title:"The Strategist",emoji:"⚡",color:"#00bcd4",
-    passive:{name:"Read the Room",desc:"At round start, you privately see how many cards each player is holding."},
-    active:{name:"Chaos Theory",type:"Save",desc:"In the response window, redirect any card played against you to any other player of your choice."}},
-  wildcard:{name:"Wildcard",title:"The Wildcard",emoji:"🎲",color:"#ff9800",
+  strategist:{name:"The Strategist",emoji:"⚡",color:"#00bcd4",inspiration:"Inspired by Lynn",
+    passive:{name:"Read the Room",desc:"At round start, privately see how many cards each player is holding."},
+    active:{name:"Chaos Theory",type:"Save",desc:"In the response window, redirect any card played against you to any other player."}},
+  wildcard:{name:"The Wildcard",emoji:"🎲",color:"#ff9800",inspiration:"",
     passive:{name:"Adaptive",desc:"At round start, swap one card in your hand for a random new card."},
-    active:{name:"Wild Play",type:"Save",desc:"In the response window, copy the card played against you and apply it back to the attacker instead."}},
-  ghost:{name:"Ghost",title:"The Ghost",emoji:"👻",color:"#607d8b",
-    passive:{name:"Anonymous",desc:"Your vote is always hidden — others see totals but never who you voted for."},
+    active:{name:"Wild Play",type:"Save",desc:"In the response window, copy and apply the card played against you back to the attacker."}},
+  ghost:{name:"The Ghost",emoji:"👻",color:"#607d8b",inspiration:"",
+    passive:{name:"Phantom Vote",desc:"Rounds 1–4: Your vote is invisible and doesn't count. Round 5: Your vote appears and counts — potentially swinging the final tally."},
     active:{name:"Disappear",type:"Save",desc:"Skip the entire round — untargetable, no cards, but CAN still vote. Once per game."}}
 };
 const CKEYS=Object.keys(CHARS);
-const charOf=p=>p&&p.char&&CHARS[p.char]?CHARS[p.char]:{name:"?",title:"?",emoji:"🎲",color:"#888",passive:{name:"",desc:""},active:{name:"",desc:"",type:""}};
-const capOf=ch=>ch==="anuja"?6:5;
+const charOf=p=>p&&p.char&&CHARS[p.char]?CHARS[p.char]:{name:"?",emoji:"🎲",color:"#888",passive:{name:"",desc:""},active:{name:"",desc:"",type:""}};
+const capOf=ch=>ch==="sleeper"?6:5;
 
-// ── CARDS (54) ────────────────────────────────────────────────────────────
+// ── CARDS (52 total: Attack×4, Save×4, Special×4) ─────────────────────────
 const CARD_DEFS=[
-  {id:"accuse",cat:"Attack",emoji:"⚖️",name:"Accuse",color:"#e8435a",targeted:true,desc:"Target drinks 1 unless they respond with a Save card.",drama:["Court is in session! ⚖️","You've been accused! 😤","The finger points... at YOU! 👆"]},
-  {id:"expose",cat:"Attack",emoji:"🔍",name:"Expose",color:"#e8435a",targeted:true,desc:"Target must reveal one card from their hand publicly to all players.",drama:["Nothing to hide? Think again! 🔍","Exposed! 😱","Your secrets are showing! 👀"]},
-  {id:"snitch",cat:"Attack",emoji:"🤝",name:"Snitch",color:"#e8435a",targeted:true,desc:"Blind trade — you offer one card, get a random card from target's hand.",drama:["Deal or deal! 🤝","Forced trade incoming! 💱","You didn't ask for this! 😈"]},
-  {id:"blackout",cat:"Attack",emoji:"🌑",name:"Blackout",color:"#e8435a",targeted:true,desc:"Challenge target to Rock Paper Scissors — best of 3. Loser drinks 3 sips!",drama:["Rock. Paper. Scissors. DRINK! ✊","May the best hand win! 🌑","No mercy! 🎲"]},
+  {id:"accuse",cat:"Attack",emoji:"⚖️",name:"Accuse",color:"#e8435a",targeted:true,desc:"Target drinks 1 unless they respond with a Save card.",drama:["Court is in session! ⚖️","You've been accused! 😤","The finger points at YOU! 👆"]},
+  {id:"expose",cat:"Attack",emoji:"🔍",name:"Expose",color:"#e8435a",targeted:true,desc:"Target must choose one card from their hand to reveal publicly.",drama:["Nothing to hide? Think again! 🔍","Exposed! 😱","Your secrets are showing! 👀"]},
+  {id:"snitch",cat:"Attack",emoji:"🤝",name:"Snitch",color:"#e8435a",targeted:true,desc:"Blind trade — you offer one card, get a random card from target. Target gets a response window first.",drama:["Deal or deal! 🤝","Forced trade incoming! 💱","You didn't ask for this! 😈"]},
+  {id:"blackout",cat:"Attack",emoji:"🌑",name:"Blackout",color:"#e8435a",targeted:true,desc:"Rock Paper Scissors — best of 3. Loser drinks 3 sips!",drama:["Rock. Paper. Scissors. DRINK! ✊","No mercy! 🌑","May the best hand win! 🎲"]},
   {id:"waterfall",cat:"Attack",emoji:"🌊",name:"Waterfall",color:"#e8435a",targeted:true,desc:"You and target both drink. Target cannot stop until you stop.",drama:["The waterfall has no mercy! 🌊","Drink till I say stop! 🍺","Here comes the flood! 🌊"]},
   {id:"onthehouse",cat:"Attack",emoji:"🍻",name:"On the House",color:"#e8435a",targeted:true,desc:"Force a player to top up their glass. You pour it.",drama:["Top it up! 🍻","Feeling generous... 😈","Fill 'er up! 🍺"]},
   {id:"alibi",cat:"Save",emoji:"📋",name:"Alibi",color:"#4a9eff",targeted:false,reactive:true,desc:"Cancel any card played against you.",drama:["Not today! 📋","Case dismissed! ⚖️","I was somewhere else! 🙅"]},
-  {id:"deflect",cat:"Save",emoji:"↩️",name:"Deflect",color:"#4a9eff",targeted:false,reactive:true,desc:"Bounce any card played against you back to the attacker.",drama:["Boomerang! ↩️","Right back at ya! 😎","Mirror mirror! 🪞"]},
-  {id:"redirect",cat:"Save",emoji:"🔀",name:"Redirect",color:"#4a9eff",targeted:false,reactive:true,desc:"Send a card played against you to another player — they also get a response window.",drama:["Not my problem! 🔀","Try someone else! 😏","Re-routing... 🔀"]},
-  {id:"cover",cat:"Save",emoji:"🛡️",name:"Cover",color:"#4a9eff",targeted:true,reactive:true,bystanderOnly:true,desc:"Any player protects another — cancels the next card played against target. Cannot use on yourself.",drama:["I've got your back! 🛡️","Taking one for the team! 🤝","Protected! 🛡️"]},
-  {id:"votechange",cat:"Special",emoji:"🗳️",name:"Vote Change",color:"#f5a623",targeted:false,votingOnly:true,desc:"Change your locked vote. Voting phase only.",drama:["Changed my mind! 🗳️","Actually... it was YOU! 😤","Plot twist! 🔄"]},
-  {id:"reveal",cat:"Special",emoji:"🕵️",name:"Reveal",color:"#f5a623",targeted:true,desc:"Discover if target is the Drunk Cat. Result shown privately to you only — after target responds.",drama:["The truth will out! 🕵️","Who are you REALLY?! 🎭","Time to unmask! 🎭"]},
-  {id:"catshield",cat:"Special",emoji:"🛡️",name:"Cat Shield",color:"#f5a623",targeted:false,reactive:true,revealOnly:true,desc:"Only usable in response to Reveal. Protects the Drunk Cat's identity.",drama:["Sorry! Identity protected 🛡️","Nice try! 😸","The cat has claws! 🐱"]},
+  {id:"deflect",cat:"Save",emoji:"↩️",name:"Deflect",color:"#4a9eff",targeted:false,reactive:true,desc:"Bounce any card played against you back to the attacker. They get a response window.",drama:["Boomerang! ↩️","Right back at ya! 😎","Mirror mirror! 🪞"]},
+  {id:"redirect",cat:"Save",emoji:"🔀",name:"Redirect",color:"#4a9eff",targeted:false,reactive:true,desc:"Send a card played against you to another player — they get a full response window.",drama:["Not my problem! 🔀","Try someone else! 😏","Re-routing... 🔀"]},
+  {id:"cover",cat:"Save",emoji:"🛡️",name:"Cover",color:"#4a9eff",targeted:true,reactive:true,bystanderOnly:true,desc:"Any bystander can protect another player — cancels the current card played against them. Cannot use on yourself.",drama:["I've got your back! 🛡️","Taking one for the team! 🤝","Protected! 🛡️"]},
+  {id:"votechange",cat:"Special",emoji:"🗳️",name:"Vote Change",color:"#f5a623",targeted:false,votingOnly:true,desc:"Change your locked vote. Voting phase only.",drama:["Changed my mind! 🗳️","Plot twist! 🔄","Actually... it was YOU! 😤"]},
+  {id:"reveal",cat:"Special",emoji:"🕵️",name:"Reveal",color:"#f5a623",targeted:true,desc:"Discover if target is the Drunk Cat. Shown privately to you only — after target responds.",drama:["The truth will out! 🕵️","Who are you REALLY?! 🎭","Time to unmask! 🎭"]},
+  {id:"catshield",cat:"Special",emoji:"🛡️",name:"Cat Shield",color:"#f5a623",targeted:false,reactive:true,revealOnly:true,desc:"Drunk Cat only — counters a Reveal card. Protects your identity.",drama:["Sorry! Identity protected 🛡️","Nice try! 😸","The cat has claws! 🐱"]},
 ];
 function buildDeck(){
   const d=[];
   CARD_DEFS.forEach(c=>{
-    const n=c.cat==='Attack'?5:c.cat==='Save'?3:4;
+    const n=4; // All cards ×4 = 52 total
     for(let i=0;i<n;i++)d.push(c.id);
   });
   return d;
@@ -288,46 +302,52 @@ function drawOne(isDC,hand,ch){
   return[...(hand||[]),shuf(pool)[0]];
 }
 
-// ── STATE ─────────────────────────────────────────────────────────────────
+// ── LOCAL STATE ───────────────────────────────────────────────────────────
 let myId,roomCode,myName,gameState,roomRef,unsubFn;
-let selCard=null,selIdx=null,selSnitchId=null,selSnitchIdx=null,peekDone=false,powerActivated=false;
+let selCard=null,selIdx=null,selSnitchId=null,selSnitchIdx=null;
+let revealShownTs=0,readyVoteClicked=false;
 
 // ── UTILS ─────────────────────────────────────────────────────────────────
 const uid=()=>Math.random().toString(36).slice(2,10);
 const genCode=()=>Math.random().toString(36).slice(2,6).toUpperCase();
 function ss(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function toast(m,d=2800){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+function toast(m,d=2600){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e;}
 const isDC=(s,id)=>s&&s.drunkCat===id;
 const isGreyed=(p,rnd)=>p&&p.penaltyRound===rnd;
 
 // ── RULES ─────────────────────────────────────────────────────────────────
-const RTABS=[{id:"overview",label:"Overview"},{id:"turns",label:"Turns"},{id:"cards",label:"Cards"},{id:"powers",label:"Powers"},{id:"voting",label:"Voting"},{id:"winning",label:"Winning"}];
+const RTABS=[{id:"overview",label:"Overview"},{id:"turns",label:"Turns"},{id:"cards",label:"Cards"},{id:"powers",label:"Powers"},{id:"voting",label:"Voting"},{id:"winning",label:"Winning"},{id:"crew",label:"The Crew"}];
 const RC={
   overview:`<div class="col" style="padding-bottom:20px">
-    <div class="card col"><div class="stitle">What is Drunk Cat?</div><p class="sm" style="line-height:1.7">One player is secretly the <b style="color:var(--red)">Drunk Cat 🐱</b>. Everyone else is a <b style="color:var(--grn)">Hunter 🔍</b>. Hunters try to vote out the Drunk Cat in Round 5. The Drunk Cat survives by staying hidden.</p></div>
-    <div class="card col"><div class="stitle">Setup</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Host creates room, shares 4-letter code</li><li>Characters randomly assigned at game start</li><li>One player secretly becomes the Drunk Cat</li><li>Each player gets 5 cards (Anuja: 6). DC gets 1 Cat Shield.</li><li>Turn order randomised each round</li></ul></div>
-    <div class="card col"><div class="stitle">Key Rules</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Character names & emojis are <b>public</b> — powers are <b>hidden</b></li><li>Only the Drunk Cat's identity is secret</li><li>Cards persist across rounds — draw 1 new card each round</li><li>Votes carry forward — only Vote Change card changes them</li><li>Each player penalised once maximum</li></ul></div>
+    <div class="card col"><div class="stitle">What is Drunk Cat?</div><p class="sm" style="line-height:1.7">One player is secretly the <b style="color:var(--red)">Drunk Cat 🐱</b>. Everyone else is a <b style="color:var(--grn)">Hunter 🔍</b>. Hunters vote out the Drunk Cat in Round 5. The Drunk Cat survives by staying hidden all game.</p></div>
+    <div class="card col"><div class="stitle">Setup</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Host creates room, shares 4-letter code</li><li>Characters randomly assigned at game start</li><li>One player secretly becomes the Drunk Cat</li><li>Each player gets 5 cards (The Sleeper: 6). DC gets 1 Cat Shield.</li><li>Turn order randomised each round</li></ul></div>
+    <div class="card col"><div class="stitle">Key Rules</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Character emojis are <b>public</b> — powers are <b>hidden</b></li><li>Only the Drunk Cat's identity is secret</li><li>Cards persist across rounds — draw 1 new card each round</li><li>Votes carry forward — only Vote Change card changes them</li><li>Each player penalised once maximum total</li></ul></div>
   </div>`,
   turns:`<div class="col" style="padding-bottom:20px">
-    <div class="card col"><div class="stitle">Your Turn</div><ol class="sm" style="line-height:2;padding-left:14px"><li>Optionally <b>activate your power</b> first (Attack powers only)</li><li>Select an action card and target</li><li>Card announced publicly to all players</li><li>Target gets response window</li><li>Next player's turn begins</li></ol></div>
-    <div class="card col"><div class="stitle">Power Activation</div><p class="sm" style="line-height:1.7">Activating your power is announced to all. Effect resolves first, then you play your action card in the same turn. <b>Attack powers</b> used on your turn. <b>Save powers</b> used in response window. Powers cannot be used against Reveal.</p></div>
-    <div class="card col"><div class="stitle">Response Window</div><ul class="sm" style="line-height:2;padding-left:14px"><li><b>📋 Alibi</b> — Cancel the card</li><li><b>↩️ Deflect</b> — Bounce back to attacker</li><li><b>🔀 Redirect</b> — Send to another player (they also respond)</li><li><b>🛡️ Cover</b> — Any bystander protects you</li><li><b>🛡️ Cat Shield</b> — DC only, counters Reveal only</li><li><b>Save Power</b> — Lynn or Wildcard active ability</li><li><b>Pass</b> — Accept the effect</li></ul></div>
+    <div class="card col"><div class="stitle">Your Turn Flow</div><ol class="sm" style="line-height:2;padding-left:14px"><li>Optionally activate your <b>Attack power</b> first</li><li>Select an attack card and target</li><li>Card announced publicly to all</li><li>Target gets response window</li><li>After last turn, all players go to Turn Complete screen</li><li>Host starts voting from there</li></ol></div>
+    <div class="card col"><div class="stitle">Response Window</div><ul class="sm" style="line-height:2;padding-left:14px"><li><b>📋 Alibi</b> — Cancel the card</li><li><b>↩️ Deflect</b> — Bounce back (attacker gets response window)</li><li><b>🔀 Redirect</b> — Send to another player (they get response window)</li><li><b>🛡️ Cover</b> — Any bystander can cancel the attack on target</li><li><b>🛡️ Cat Shield</b> — DC only, counters Reveal only</li><li><b>Save Power</b> — Strategist or Wildcard active ability</li><li><b>Pass</b> — Accept the effect</li></ul></div>
+    <div class="card col"><div class="stitle">Dave's Challenge</div><p class="sm" style="line-height:1.7">When any card is played, The Game Master can pause the game. During the pause he may save the target (like Cover) or double their penalty. The Game Master announces the result. Host dismisses the pause.</p></div>
   </div>`,
   cards:`<div class="col" style="padding-bottom:20px">
-    <div class="card col"><div class="stitle">Attack Cards (×5 each)</div><div class="col" style="gap:5px">${CARD_DEFS.filter(c=>c.cat==='Attack').map(c=>`<div style="display:flex;gap:8px;padding:8px;background:var(--s2);border-radius:var(--rs)"><span style="font-size:18px">${c.emoji}</span><div><div style="font-weight:800;font-size:12px">${c.name}</div><div class="sm mut">${c.desc}</div></div></div>`).join('')}</div></div>
-    <div class="card col"><div class="stitle">Save Cards (×3 each)</div><div class="col" style="gap:5px">${CARD_DEFS.filter(c=>c.cat==='Save').map(c=>`<div style="display:flex;gap:8px;padding:8px;background:var(--s2);border-radius:var(--rs)"><span style="font-size:18px">${c.emoji}</span><div><div style="font-weight:800;font-size:12px">${c.name}</div><div class="sm mut">${c.desc}</div></div></div>`).join('')}</div></div>
+    <div class="card col"><div class="stitle">Attack Cards (×4 each)</div><div class="col" style="gap:5px">${CARD_DEFS.filter(c=>c.cat==='Attack').map(c=>`<div style="display:flex;gap:8px;padding:8px;background:var(--s2);border-radius:var(--rs)"><span style="font-size:18px">${c.emoji}</span><div><div style="font-weight:800;font-size:12px">${c.name}</div><div class="sm mut">${c.desc}</div></div></div>`).join('')}</div></div>
+    <div class="card col"><div class="stitle">Save Cards (×4 each)</div><div class="col" style="gap:5px">${CARD_DEFS.filter(c=>c.cat==='Save').map(c=>`<div style="display:flex;gap:8px;padding:8px;background:var(--s2);border-radius:var(--rs)"><span style="font-size:18px">${c.emoji}</span><div><div style="font-weight:800;font-size:12px">${c.name}</div><div class="sm mut">${c.desc}</div></div></div>`).join('')}</div></div>
     <div class="card col"><div class="stitle">Special Cards (×4 each)</div><div class="col" style="gap:5px">${CARD_DEFS.filter(c=>c.cat==='Special').map(c=>`<div style="display:flex;gap:8px;padding:8px;background:var(--s2);border-radius:var(--rs)"><span style="font-size:18px">${c.emoji}</span><div><div style="font-weight:800;font-size:12px">${c.name}</div><div class="sm mut">${c.desc}</div></div></div>`).join('')}</div></div>
   </div>`,
-  powers:`<div class="col" style="padding-bottom:20px"><div class="card"><p class="sm mut" style="line-height:1.7">Character names & emojis are visible. <b>Powers are hidden</b> — remember who has what! Passive: always active. Active: once per game. Powers cannot counter Reveal.</p></div>${CKEYS.map(k=>{const c=CHARS[k];return`<div class="card col" style="border-left:3px solid ${c.color}"><div class="row" style="margin-bottom:5px"><div class="av" style="width:30px;height:30px;font-size:15px;background:${c.color}15;border:1.5px solid ${c.color}">${c.emoji}</div><div><div style="font-weight:800;font-size:13px">${c.name} — ${c.title}</div></div></div><div class="sm" style="margin-bottom:3px"><b class="mut">PASSIVE:</b> ${c.passive.desc}</div><div class="sm"><b class="mut">ACTIVE [${c.active.type}]:</b> ${c.active.desc}</div></div>`;}).join('')}</div>`,
+  powers:`<div class="col" style="padding-bottom:20px"><div class="card"><p class="sm mut" style="line-height:1.7">Character emojis visible to all. <b>Powers hidden</b> — remember who has what! Passive: always active. Active: once per game. No powers work against Reveal except Cat Shield.</p></div>${CKEYS.map(k=>{const c=CHARS[k];return`<div class="card col" style="border-left:3px solid ${c.color}"><div class="row" style="margin-bottom:5px"><div class="av" style="width:30px;height:30px;font-size:15px;background:${c.color}15;border:1.5px solid ${c.color}">${c.emoji}</div><div style="font-weight:800;font-size:13px">${c.name}</div></div><div class="sm" style="margin-bottom:3px"><b class="mut">PASSIVE:</b> ${c.passive.desc}</div><div class="sm"><b class="mut">ACTIVE [${c.active.type}]:</b> ${c.active.desc}</div></div>`;}).join('')}</div>`,
   voting:`<div class="col" style="padding-bottom:20px">
-    <div class="card col"><div class="stitle">Voting Rules</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Tap a player to vote — <b>locks immediately</b></li><li>Votes carry forward every round automatically</li><li>Only a Vote Change card unlocks your vote</li><li>Skip Vote option available if you don't want to vote</li><li>Ghost's vote is always anonymous</li><li>Each player penalised once maximum in the whole game</li><li>Host locks votes when ready</li></ul></div>
-    <div class="card col"><div class="stitle">Round Penalty (Rounds 1–4)</div><p class="sm" style="line-height:1.7">Most-voted player: 🍺 1 drink + action cards greyed next round only. Powers always active. Penalty only applies once per player total.</p></div>
+    <div class="card col"><div class="stitle">Voting Rules</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Tap a player to lock your vote</li><li>Votes carry forward every round automatically</li><li>Only Vote Change card unlocks your vote</li><li>The Ghost's vote is invisible rounds 1–4, counts round 5</li><li>Host starts voting from Turn Complete screen</li><li>Each player penalised once maximum</li></ul></div>
+    <div class="card col"><div class="stitle">Round Penalty (Rounds 1–4)</div><p class="sm" style="line-height:1.7">Most-voted player: 🍺 1 drink + cards greyed next round. Powers always active. Penalty applies once total per player.</p></div>
     <div class="card col"><div class="stitle">Final Round (Round 5)</div><p class="sm" style="line-height:1.7">Most-voted player eliminated. Drunk Cat caught = Hunters win. Wrong person = Drunk Cat wins!</p></div>
   </div>`,
   winning:`<div class="col" style="padding-bottom:20px">
     <div class="card col" style="border-left:3px solid var(--red)"><div style="font-size:24px;margin-bottom:6px">🐱</div><div class="stitle">DRUNK CAT WINS</div><p class="sm" style="line-height:1.7">Survives all 5 rounds. All Hunters drink! 🍺🍺🍺</p></div>
     <div class="card col" style="border-left:3px solid var(--grn)"><div style="font-size:24px;margin-bottom:6px">🔍</div><div class="stitle">HUNTERS WIN</div><p class="sm" style="line-height:1.7">Vote out the Drunk Cat in Round 5. Drunk Cat drinks big + Sudden Death! ⚡🍺🍺🍺🍺</p></div>
+  </div>`,
+  crew:`<div class="col" style="padding-bottom:20px">
+    <div class="card"><p class="sm mut" style="line-height:1.7;margin-bottom:10px">This game was built for the Drunk Cat crew. Each character is inspired by one of us. 🥂</p>
+    ${CKEYS.filter(k=>CHARS[k].inspiration).map(k=>{const c=CHARS[k];return`<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bor)"><div class="av" style="width:28px;height:28px;font-size:14px;background:${c.color}15;border:1.5px solid ${c.color}">${c.emoji}</div><div><div style="font-weight:700;font-size:13px">${c.name}</div><div class="sm mut">${c.inspiration}</div></div></div>`;}).join('')}
+    </div>
   </div>`
 };
 function initRules(){
@@ -352,7 +372,10 @@ function wire(){
   document.getElementById('b-create-room').addEventListener('click',createRoom);
   document.getElementById('b-join-room').addEventListener('click',joinRoom);
   document.getElementById('b-start').addEventListener('click',startGame);
-  document.getElementById('b-ready').addEventListener('click',goToGame);
+  document.getElementById('b-ready').addEventListener('click',goReady);
+  document.getElementById('b-start-round').addEventListener('click',startRound);
+  document.getElementById('b-readyvote').addEventListener('click',readyToVote);
+  document.getElementById('b-startvote').addEventListener('click',startVoting);
   document.getElementById('join-code').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase());
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',wire):wire();
@@ -365,7 +388,10 @@ function subRoom(){
 function route(s){
   if(s.status==='lobby')renderLobby(s);
   else if(s.status==='role-reveal')renderRoleReveal(s);
+  else if(s.status==='waiting-room')renderWaitingRoom(s);
   else if(s.status==='playing')renderGame(s);
+  else if(s.status==='turn-complete')renderTurnComplete(s);
+  else if(s.status==='voting')renderVotingScreen(s);
   else if(s.status==='round-results')renderResults(s);
   else if(s.status==='final')renderFinal(s);
 }
@@ -377,8 +403,8 @@ async function createRoom(){
   myId=uid();myName=name;roomCode=genCode();
   roomRef=ref(db,`rooms/${roomCode}`);
   const p={};
-  p[myId]={id:myId,name,char:null,isHost:true,penalties:0,hand:[],activePowerUsed:false,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,powerActive:false};
-  await set(roomRef,{code:roomCode,status:'lobby',host:myId,round:0,totalRounds:5,phase:'turns',turnOrder:[],curTurnIdx:0,subPhase:'play',activePlay:null,completedTurns:{},drunkCat:null,votes:{},skippedVotes:{},recentEvent:null,eventLog:[],players:p,punchlineActive:false,innerBeastActive:false,freePourActive:false});
+  p[myId]={id:myId,name,char:null,isHost:true,penalties:0,hand:[],activePowerUsed:false,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,ready:false,readyVote:false,innerBeastTargets:null};
+  await set(roomRef,{code:roomCode,status:'lobby',host:myId,round:0,totalRounds:5,phase:'turns',turnOrder:[],curTurnIdx:0,subPhase:'play',activePlay:null,completedTurns:{},drunkCat:null,votes:{},skippedVotes:{},recentEvent:null,eventLog:[],roundPlays:[],players:p,punchlineActive:false,innerBeastActive:false,freePourActive:false,challengeActive:null,revealPending:null});
   subRoom();ss('s-lobby');
 }
 
@@ -391,7 +417,7 @@ async function joinRoom(){
   const snap=await get(roomRef);
   if(!snap.exists()){toast('Room not found!');return;}
   if(snap.val().status!=='lobby'){toast('Game already started!');return;}
-  await update(ref(db,`rooms/${code}/players/${myId}`),{id:myId,name,char:null,isHost:false,penalties:0,hand:[],activePowerUsed:false,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,powerActive:false});
+  await update(ref(db,`rooms/${code}/players/${myId}`),{id:myId,name,char:null,isHost:false,penalties:0,hand:[],activePowerUsed:false,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,ready:false,readyVote:false,innerBeastTargets:null});
   subRoom();ss('s-lobby');
 }
 
@@ -424,6 +450,7 @@ async function startGame(){
     const ch=charPool[i%charPool.length];
     u[`rooms/${roomCode}/players/${p.id}/char`]=ch;
     u[`rooms/${roomCode}/players/${p.id}/hand`]=dealHand(p.id===dcId,ch);
+    u[`rooms/${roomCode}/players/${p.id}/ready`]=false;
   });
   u[`rooms/${roomCode}/drunkCat`]=dcId;
   u[`rooms/${roomCode}/status`]='role-reveal';
@@ -437,76 +464,74 @@ async function startGame(){
   u[`rooms/${roomCode}/phase`]='turns';
   u[`rooms/${roomCode}/votes`]={};
   u[`rooms/${roomCode}/skippedVotes`]={};
-  u[`rooms/${roomCode}/recentEvent`]='🎮 Game starts! Characters assigned.';
-  u[`rooms/${roomCode}/eventLog`]=['🎮 Game starts! Characters assigned.'];
+  u[`rooms/${roomCode}/recentEvent`]='🎮 Game starts — characters assigned!';
+  u[`rooms/${roomCode}/eventLog`]=['🎮 Game starts — characters assigned!'];
+  u[`rooms/${roomCode}/roundPlays`]=[];
   u[`rooms/${roomCode}/punchlineActive`]=false;
   u[`rooms/${roomCode}/innerBeastActive`]=false;
   u[`rooms/${roomCode}/freePourActive`]=false;
+  u[`rooms/${roomCode}/challengeActive`]=null;
+  u[`rooms/${roomCode}/revealPending`]=null;
   await update(ref(db),u);
 }
 
 // ── ROLE REVEAL ───────────────────────────────────────────────────────────
 function renderRoleReveal(s){
-  ss('s-role');peekDone=false;powerActivated=false;selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;
+  ss('s-role');selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;readyVoteClicked=false;
   document.getElementById('reveal-rnd').textContent=s.round;
   const me=s.players[myId];if(!me)return;
   const myDC=isDC(s,myId);
   const c=charOf(me);
   const card=document.getElementById('role-card');
 
-  // Stallon passive: peek at everyone's hand privately
-  let stallonInfo='';
-  if(me.char==='stallon'){
-    const rows=Object.values(s.players).filter(p=>p.id!==myId).map(p=>{
-      const h=p.hand||[];if(!h.length)return'';
-      const peeked=h[Math.floor(Math.random()*h.length)];
-      const cd=cObj(peeked);
-      return`<div class="row" style="justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--bor)"><span class="sm">${charOf(p).emoji} ${p.name}</span><span class="sm" style="color:${cd?cd.color:'#888'}">${cd?cd.emoji+' '+cd.name:'?'}</span></div>`;
-    }).join('');
-    stallonInfo=`<div style="background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.3);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:5px">🃏 MISDIRECTION — ONLY YOU SEE THIS</div>${rows}</div>`;
+  // Joker passive: one random card from one random player
+  let jokerInfo='';
+  if(me.char==='joker'){
+    const others=Object.values(s.players).filter(p=>p.id!==myId&&(p.hand||[]).length>0);
+    if(others.length){
+      const rp=others[Math.floor(Math.random()*others.length)];
+      const rh=rp.hand||[];
+      const rc=cObj(rh[Math.floor(Math.random()*rh.length)]);
+      jokerInfo=`<div style="background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.25);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:4px">🃏 MISDIRECTION — ONLY YOU SEE THIS</div><div class="sm">Spotted <b>${charOf(rp).emoji} ${rp.name}</b> with <span style="color:${rc?rc.color:'#888'}">${rc?rc.emoji+' '+rc.name:'a card'}</span></div></div>`;
+    }
   }
-
-  // Lynn passive: card counts
-  let lynnInfo='';
-  if(me.char==='lynn'){
-    const rows=Object.values(s.players).filter(p=>p.id!==myId).map(p=>`<div class="row" style="justify-content:space-between"><span class="sm">${charOf(p).emoji} ${p.name}</span><b class="sm">${(p.hand||[]).length} cards</b></div>`).join('');
-    lynnInfo=`<div style="background:rgba(0,188,212,.06);border:1px solid rgba(0,188,212,.3);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:#00bcd4;font-weight:800;margin-bottom:5px">⚡ READ THE ROOM — ONLY YOU SEE THIS</div>${rows}</div>`;
+  // Strategist passive: card counts
+  let stratInfo='';
+  if(me.char==='strategist'){
+    const rows=Object.values(s.players).filter(p=>p.id!==myId).map(p=>`<div class="row" style="justify-content:space-between"><span class="sm">${charOf(p).emoji} ${p.name}</span><b class="sm">${(p.hand||[]).length}</b></div>`).join('');
+    stratInfo=`<div style="background:rgba(0,188,212,.06);border:1px solid rgba(0,188,212,.25);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:#00bcd4;font-weight:800;margin-bottom:4px">⚡ READ THE ROOM — ONLY YOU SEE THIS</div>${rows}</div>`;
   }
 
   if(myDC){
     card.className='rcard dc';
-    card.innerHTML=`<div style="font-size:36px">🐱</div>
-      <div style="font-size:18px;font-weight:900;color:var(--red);margin:7px 0">YOU ARE THE DRUNK CAT</div>
-      <div class="sm mut" style="margin-bottom:10px">Survive all ${s.totalRounds} rounds undetected!</div>
+    card.innerHTML=`<div style="font-size:36px">🐱</div><div style="font-size:18px;font-weight:900;color:var(--red);margin:7px 0">YOU ARE THE DRUNK CAT</div><div class="sm mut" style="margin-bottom:10px">Survive all ${s.totalRounds} rounds undetected!</div>
       <div style="background:rgba(0,0,0,.3);border-radius:9px;padding:11px;text-align:left;margin-bottom:8px">
         <div style="font-size:10px;color:var(--red);font-weight:800;margin-bottom:3px">YOUR CHARACTER</div>
-        <div style="font-weight:900;color:${c.color}">${c.emoji} ${c.name} — ${c.title}</div>
+        <div style="font-weight:900;color:${c.color}">${c.emoji} ${c.name}</div>
         <div style="margin-top:7px;font-size:11px"><b class="mut">PASSIVE:</b> ${c.passive.desc}</div>
         <div style="margin-top:3px;font-size:11px"><b class="mut">ACTIVE [${c.active.type}]:</b> ${c.active.desc}</div>
       </div>
-      <div style="font-size:10px;color:var(--red);font-weight:700">🤫 Keep BOTH secrets!</div>${stallonInfo}${lynnInfo}`;
+      <div style="font-size:10px;color:var(--red);font-weight:700">🤫 Keep BOTH secrets!</div>${jokerInfo}${stratInfo}`;
   } else {
     card.className='rcard';card.style.borderColor=c.color;
-    card.innerHTML=`<div style="font-size:36px">${c.emoji}</div>
-      <div style="font-size:18px;font-weight:900;color:${c.color};margin:7px 0">${c.name}</div>
-      <div class="mut sm" style="margin-bottom:8px">${c.title}</div>
+    card.innerHTML=`<div style="font-size:36px">${c.emoji}</div><div style="font-size:18px;font-weight:900;color:${c.color};margin:7px 0">${c.name}</div>
       <div style="background:rgba(0,0,0,.2);border-radius:9px;padding:11px;text-align:left;margin-bottom:8px">
         <div style="font-size:11px;margin-bottom:5px"><b class="mut">PASSIVE:</b> ${c.passive.desc}</div>
         <div style="font-size:11px"><b class="mut">ACTIVE [${c.active.type}]:</b> ${c.active.desc}</div>
       </div>
-      <div style="font-size:11px;color:var(--grn);font-weight:700">🔍 HUNTER — Find the Drunk Cat!</div>${stallonInfo}${lynnInfo}`;
+      <div style="font-size:11px;color:var(--grn);font-weight:700">🔍 HUNTER — Find the Drunk Cat!</div>${jokerInfo}${stratInfo}`;
   }
 
   // Wildcard swap
   if(me.char==='wildcard'&&s.round>1){
-    const wb=el('div');wb.style.cssText='background:rgba(255,152,0,.06);border:1px solid rgba(255,152,0,.3);border-radius:var(--rs);padding:10px;margin-top:8px';
-    wb.innerHTML=`<div style="font-size:9px;color:#ff9800;font-weight:800;margin-bottom:6px">🎲 ADAPTIVE — Swap one card?</div><div class="ac-grid" id="wc-swap"></div>`;
+    const wb=el('div');wb.style.cssText='background:rgba(255,152,0,.06);border:1px solid rgba(255,152,0,.25);border-radius:var(--rs);padding:10px;margin-top:8px';
+    wb.innerHTML=`<div style="font-size:9px;color:#ff9800;font-weight:800;margin-bottom:5px">🎲 ADAPTIVE — Swap one card?</div><div class="ac-grid" id="wc-swap"></div>`;
     card.appendChild(wb);
     const sc=wb.querySelector('#wc-swap');
     (me.hand||[]).forEach((cid,idx)=>{
       const cd=cObj(cid);if(!cd)return;
-      const btn=el('button','btn bs');btn.style.cssText='font-size:11px;padding:7px 8px';
-      btn.innerHTML=`${cd.emoji} Swap ${cd.name}`;
+      const btn=el('button','btn bs');btn.style.cssText='font-size:11px;padding:6px 8px';
+      btn.innerHTML=`${cd.emoji} ${cd.name}`;
       btn.addEventListener('click',async()=>{
         const pool=DECK.filter(id=>!cObj(id)?.votingOnly&&id!=='catshield');
         const nc=shuf(pool)[0];
@@ -523,18 +548,48 @@ function renderRoleReveal(s){
   (me.hand||[]).forEach(cid=>{
     const cd=cObj(cid);if(!cd)return;
     const d=el('div','ac'+(cd.reactive?' rct':''));
-    d.style.borderColor=cd.cat==='Attack'?'rgba(232,67,90,.25)':cd.cat==='Save'?'rgba(74,158,255,.25)':'rgba(245,166,35,.25)';
+    d.style.borderColor=cd.cat==='Attack'?'rgba(232,67,90,.2)':cd.cat==='Save'?'rgba(74,158,255,.2)':'rgba(245,166,35,.2)';
     d.innerHTML=`<div class="ac-em">${cd.emoji}</div><div class="ac-tp" style="color:${cd.color}">${cd.cat}${cd.reactive?' · Reactive':''}</div><div class="ac-nm">${cd.name}</div><div class="ac-ds">${cd.desc}</div>`;
     handEl.appendChild(d);
   });
 }
 
-function goToGame(){
-  update(ref(db,`rooms/${roomCode}/players/${myId}`),{ready:true});
-  if(gameState&&gameState.host===myId)update(ref(db,`rooms/${roomCode}`),{status:'playing'});
+async function goReady(){
+  await update(ref(db,`rooms/${roomCode}/players/${myId}`),{ready:true});
+  // Transition to waiting room
+  await update(ref(db,`rooms/${roomCode}`),{status:'waiting-room'});
 }
 
-// ── GAME RENDER ───────────────────────────────────────────────────────────
+// ── WAITING ROOM ──────────────────────────────────────────────────────────
+function renderWaitingRoom(s){
+  ss('s-waiting');
+  document.getElementById('wr-rnd').textContent=s.round;
+  const ps=Object.values(s.players||{});
+  const allReady=ps.every(p=>p.ready);
+  const c=document.getElementById('wr-players');c.innerHTML='';
+  ps.forEach(p=>{
+    const d=el('div','pi');
+    d.innerHTML=`<div class="av" style="width:28px;height:28px;font-size:14px;background:${p.ready?'rgba(76,175,125,.15)':'#222'};border:1.5px solid ${p.ready?'var(--grn)':'#444'}">${p.ready?'✓':'⏳'}</div>
+      <div style="flex:1;font-size:13px;font-weight:700">${p.name}</div>
+      <span class="tag" style="background:${p.ready?'rgba(76,175,125,.12)':'rgba(100,100,100,.15)'};color:${p.ready?'var(--grn)':'var(--mut)'}">${p.ready?'Ready':'Waiting...'}</span>`;
+    c.appendChild(d);
+  });
+  // Mark self as ready if not already
+  const me=s.players[myId];
+  if(me&&!me.ready)update(ref(db,`rooms/${roomCode}/players/${myId}/ready`),true);
+
+  document.getElementById('wr-host').style.display=s.host===myId?'block':'none';
+  document.getElementById('wr-wait').style.display=s.host===myId?'none':'block';
+  if(s.host===myId){
+    document.getElementById('b-start-round').textContent=allReady?'▶️ All Ready — Start Round!':'▶️ Start Round (not everyone ready)';
+  }
+}
+
+async function startRound(){
+  await update(ref(db,`rooms/${roomCode}`),{status:'playing',subPhase:'play',activePlay:null,announcement:null,challengeActive:null});
+}
+
+// ── GAME ──────────────────────────────────────────────────────────────────
 function renderGame(s){
   ss('s-game');
   const me=s.players[myId];if(!me)return;
@@ -545,6 +600,13 @@ function renderGame(s){
   const activeId=order[idx];
   const ap=s.activePlay;
 
+  // Check for reveal result directed at me
+  const rp=s.revealPending;
+  if(rp&&rp.actorId===myId&&rp.ts&&rp.ts>revealShownTs&&!rp.dismissed){
+    revealShownTs=rp.ts;
+    showRevealOverlay(s.players[rp.targetId]?.name||'?',rp.isDC);
+  }
+
   document.getElementById('g-code').textContent=s.code;
   document.getElementById('g-rnd').textContent=s.round;
   document.getElementById('g-tot').textContent=s.totalRounds;
@@ -554,28 +616,63 @@ function renderGame(s){
     const p=el('div','pip'+(i<s.round?' done':i===s.round?' act':''));p.textContent=i;pips.appendChild(p);
   }
 
-  // Active badge
   const ab=document.getElementById('g-abadge');
-  if(s.phase==='turns'&&activeId){
-    const ap2=s.players[activeId];const apc=charOf(ap2);
+  if(activeId){
+    const apl=s.players[activeId];const apc=charOf(apl);
     ab.innerHTML=activeId===myId
       ?`<span class="abadge" style="background:rgba(245,166,35,.1);border:1px solid var(--acc);color:var(--acc)">🎯 Your Turn</span>`
-      :`<span class="abadge" style="background:var(--s2);border:1px solid var(--bor);color:var(--mut)">${apc.emoji} ${ap2?ap2.name:'?'}'s turn</span>`;
-  } else if(s.phase==='voting'){
-    ab.innerHTML=`<span class="abadge" style="background:rgba(232,67,90,.1);border:1px solid var(--red);color:var(--red)">🗳️ Voting</span>`;
+      :`<span class="abadge" style="background:var(--s2);border:1px solid var(--bor);color:var(--mut)">${apc.emoji} ${apl?apl.name:''}'s turn</span>`;
   } else ab.innerHTML='';
 
   document.getElementById('g-mybadge').innerHTML=myDC
     ?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red)">🐱 Drunk Cat</span>`
     :`<span class="tag" style="background:rgba(76,175,125,.12);color:var(--grn)">🔍 Hunter</span>`;
 
+  // Challenge banner
+  const chEl=document.getElementById('g-challenge');
+  const ch=s.challengeActive;
+  if(ch){
+    chEl.style.display='block';
+    chEl.innerHTML=`<div style="font-weight:800;color:var(--blu);margin-bottom:4px">⚠️ Dave's Challenge — PAUSED</div>
+      <div class="sm" style="margin-bottom:8px">${ch.message||'The Game Master has challenged this play!'}</div>
+      ${ch.result?`<div style="font-weight:700;color:var(--acc);margin-bottom:6px">Result: ${ch.result}</div>`:''}
+      ${s.host===myId?`<button class="btn bs bsm" id="b-dismiss-challenge" style="font-size:11px">Dismiss Challenge</button>`:'<div class="sm mut">Waiting for host to dismiss...</div>'}`;
+    if(s.host===myId){
+      document.getElementById('b-dismiss-challenge').addEventListener('click',async()=>{
+        await update(ref(db,`rooms/${roomCode}`),{challengeActive:null});
+      });
+    }
+    // Dave can act during challenge
+    if(me.char==='gamemaster'&&ch&&!ch.resolved){
+      const saveBtn=el('button','btn bs bsm');saveBtn.style.cssText='font-size:11px;border-color:rgba(76,175,125,.4);margin-top:6px';
+      saveBtn.textContent='🛡️ Save Target';
+      saveBtn.addEventListener('click',async()=>{
+        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🛡️ Dave saved the target! Attack cancelled.',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
+        if(ap&&ap.targetId){u[`rooms/${roomCode}/subPhase`]='play';u[`rooms/${roomCode}/activePlay`]=null;}
+        await update(ref(db),u);
+        await advanceTurn(s,{});
+      });
+      const penBtn=el('button','btn bs bsm');penBtn.style.cssText='font-size:11px;border-color:rgba(232,67,90,.4);margin-top:4px';
+      penBtn.textContent='🍺 Double Penalty';
+      penBtn.addEventListener('click',async()=>{
+        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🍺 Dave doubled the penalty! Extra drink for target.',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
+        if(ap&&ap.targetId){
+          const tp=s.players[ap.targetId];
+          if(tp&&!tp.penalised){u[`rooms/${roomCode}/players/${ap.targetId}/penalties`]=(tp.penalties||0)+2;u[`rooms/${roomCode}/players/${ap.targetId}/penalised`]=true;}
+        }
+        await update(ref(db),u);
+      });
+      chEl.appendChild(saveBtn);chEl.appendChild(penBtn);
+    }
+  } else chEl.style.display='none';
+
   // Event box
   const evEl=document.getElementById('g-event');
-  const isPream=me.char==='pream';
+  const isPream=me.char==='mother';
   const log=s.eventLog||[];
   if(isPream&&log.length){
     evEl.style.display='block';
-    evEl.innerHTML=`<div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:5px">👁️ PREAM — LAST 3 EVENTS</div>`+
+    evEl.innerHTML=`<div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:5px">👁️ THE MOTHER — LAST 3 EVENTS</div>`+
       log.slice(-3).reverse().map(e=>`<div class="sm" style="padding:2px 0;border-bottom:1px solid var(--bor)">${e}</div>`).join('');
   } else if(s.recentEvent){
     evEl.style.display='block';
@@ -584,41 +681,36 @@ function renderGame(s){
 
   // Announce box
   const ann=document.getElementById('g-announce');
-  if(s.announcement){ann.style.display='block';ann.innerHTML=s.announcement;}
-  else ann.style.display='none';
+  if(s.announcement){ann.style.display='block';ann.innerHTML=s.announcement;}else ann.style.display='none';
 
   // Turn box
   const tbox=document.getElementById('g-tbox');
-  if(s.phase==='turns'){
-    tbox.style.display='block';
-    if(s.subPhase==='respond'&&ap){
-      const actor=s.players[ap.actorId];
-      const cd=cObj(ap.cardId);
-      if(myId===ap.targetId){
-        tbox.className='tbox resp';
-        tbox.innerHTML=`<div style="font-weight:800;color:var(--red);font-size:14px;margin-bottom:6px">⚡ Respond!</div>
-          <div style="background:var(--s1);border-radius:var(--rs);padding:9px;margin-bottom:5px">
-            <div style="font-size:11px;color:var(--mut);margin-bottom:2px">${actor?actor.name:'?'} played against you:</div>
-            <div style="display:flex;gap:7px;align-items:center"><span style="font-size:20px">${cd?cd.emoji:''}</span><div><div style="font-weight:800">${cd?cd.name:''}</div><div class="sm mut">${cd?cd.desc:''}</div></div></div>
-            ${cd?`<div class="drama" style="margin-top:4px">${drama(cd)}</div>`:''}
-          </div>`;
-      } else {
-        const tgt=s.players[ap.targetId];const cd2=cObj(ap.cardId);
-        tbox.className='tbox';
-        tbox.innerHTML=`<div style="font-size:11px;font-weight:700;margin-bottom:5px">${actor?actor.name:'?'} played on ${tgt?tgt.name:'?'}:</div>
-          <div style="background:var(--s1);border-radius:var(--rs);padding:9px">
-            <div style="display:flex;gap:7px;align-items:center"><span style="font-size:18px">${cd2?cd2.emoji:''}</span><div><div style="font-weight:800">${cd2?cd2.name:''}</div><div class="sm mut">${cd2?cd2.desc:''}</div></div></div>
-            ${cd2?`<div class="drama" style="margin-top:3px">${drama(cd2)}</div>`:''}
-          </div>
-          <div class="sm mut" style="margin-top:5px">⏳ Waiting for ${tgt?tgt.name:'?'} to respond...</div>`;
-      }
-    } else if(activeId){
-      const apl=s.players[activeId];
-      tbox.className=activeId===myId?'tbox mine':'tbox';
-      tbox.innerHTML=activeId===myId
-        ?`<div style="font-weight:800;color:var(--acc);font-size:14px">🎯 Your Turn!</div><div class="sm mut" style="margin-top:2px">Activate power first, then play a card — or just play a card</div>`
-        :`<div class="sm mut">⏳ <b>${apl?charOf(apl).emoji+' '+apl.name:'?'}</b> is thinking...</div>`;
-    } else tbox.style.display='none';
+  if(s.subPhase==='respond'&&ap){
+    const actor=s.players[ap.actorId];const cd=cObj(ap.cardId);
+    if(myId===ap.targetId){
+      tbox.style.display='block';tbox.className='tbox resp';
+      tbox.innerHTML=`<div style="font-weight:800;color:var(--red);margin-bottom:6px">⚡ Respond!</div>
+        <div style="background:var(--s1);border-radius:var(--rs);padding:9px">
+          <div class="sm mut" style="margin-bottom:2px">${actor?actor.name:'?'} played against you:</div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-size:20px">${cd?cd.emoji:''}</span><div><div style="font-weight:800">${cd?cd.name:''}</div><div class="sm mut">${cd?cd.desc:''}</div></div></div>
+          ${cd?`<div class="drama" style="margin-top:4px">${drama(cd)}</div>`:''}
+        </div>`;
+    } else {
+      const tgt=s.players[ap.targetId];
+      tbox.style.display='block';tbox.className='tbox';
+      tbox.innerHTML=`<div style="font-weight:700;font-size:12px;margin-bottom:5px">${actor?actor.name:'?'} played on ${tgt?tgt.name:'?'}:</div>
+        <div style="background:var(--s1);border-radius:var(--rs);padding:9px">
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-size:18px">${cObj(ap.cardId)?.emoji||''}</span><div><div style="font-weight:800">${cObj(ap.cardId)?.name||''}</div><div class="sm mut">${cObj(ap.cardId)?.desc||''}</div></div></div>
+          <div class="drama" style="margin-top:3px">${drama(cObj(ap.cardId))}</div>
+        </div>
+        <div class="sm mut" style="margin-top:5px">⏳ Waiting for ${tgt?tgt.name:'?'} to respond...</div>`;
+    }
+  } else if(activeId){
+    const apl=s.players[activeId];
+    tbox.style.display='block';tbox.className=activeId===myId?'tbox mine':'tbox';
+    tbox.innerHTML=activeId===myId
+      ?`<div style="font-weight:800;color:var(--acc);font-size:14px">🎯 Your Turn!</div><div class="sm mut" style="margin-top:2px">Activate power first (optional), then play a card</div>`
+      :`<div class="sm mut">⏳ <b>${apl?charOf(apl).emoji+' '+apl.name:'?'}</b> is thinking...</div>`;
   } else tbox.style.display='none';
 
   const gc=document.getElementById('g-action');
@@ -626,29 +718,24 @@ function renderGame(s){
   const ghl=document.getElementById('g-hlabel');
   const gb=document.getElementById('g-bot');
   gc.innerHTML='';gh.innerHTML='';gb.innerHTML='';ghl.style.display='none';
-
-  if(s.phase==='turns')renderTurns(s,me,myDC,gc,gh,ghl,gb);
-  else renderVoting(s,me,myDC,gc,gb);
+  renderTurns(s,me,myDC,gc,gh,ghl,gb);
 
   // Player strip
   const gps=document.getElementById('g-ps');gps.innerHTML='';
   (s.turnOrder||[]).forEach(pid=>{
     const p=s.players[pid];if(!p)return;
     const pc=charOf(p);
-    const isAct=s.phase==='turns'&&order[idx]===pid&&s.subPhase==='play';
+    const isAct=order[idx]===pid&&s.subPhase==='play';
     const isResp=s.subPhase==='respond'&&ap&&ap.targetId===pid;
     const grey=isGreyed(p,s.round);
-    const vCnt=Object.values(s.votes||{}).filter(v=>v===pid).length;
     const d=el('div','pchip'+(isAct?' aturn':isResp?' resp':''));
-    d.innerHTML=`<div style="font-size:16px">${pc.emoji}</div>
-      <div style="font-size:10px;font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60px">${p.name.split(' ')[0]}</div>
-      <div style="font-size:9px;color:var(--mut)">${grey?'🔴':p.disappeared?'👻':''} ${vCnt>0&&s.phase==='voting'?'🗳️'+vCnt:''}</div>`;
+    d.innerHTML=`<div style="font-size:16px">${pc.emoji}</div><div style="font-size:10px;font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:58px">${p.name.split(' ')[0]}</div><div style="font-size:9px;color:var(--mut)">${grey?'🔴':p.disappeared?'👻':''}</div>`;
     gps.appendChild(d);
   });
 
   const penEl=document.getElementById('g-mypen');
   penEl.style.display=me.penalties>0?'block':'none';
-  if(me.penalties>0)penEl.innerHTML=`🍺 ${me.penalties} drink${me.penalties!==1?'s':''} owed`;
+  if(me.penalties>0)penEl.textContent=`🍺 ${me.penalties} drink${me.penalties!==1?'s':''} owed`;
 }
 
 // ── RENDER TURNS ──────────────────────────────────────────────────────────
@@ -662,33 +749,35 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   const greyed=isGreyed(me,s.round);
   const hand=me.hand||[];
 
-  // Attack power buttons (on your turn)
+  // Attack power button
   if(isMyTurn&&!me.activePowerUsed){
     const c=charOf(me);
-    if(['Attack'].includes(c.active.type)){
-      const pwrDiv=el('div');pwrDiv.style.cssText='background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.2);border-radius:var(--rs);padding:9px 11px';
-      pwrDiv.innerHTML=`<div style="font-size:10px;color:var(--acc);font-weight:800;margin-bottom:4px">⚡ ACTIVATE POWER FIRST (OPTIONAL)</div>
-        <div class="sm mut" style="margin-bottom:6px">${c.active.desc}</div>`;
-      const btn=el('button','btn bs');btn.style.cssText='font-size:12px;border-color:rgba(245,166,35,.3)';
+    if(c.active.type==='Attack'){
+      const pd=el('div');pd.style.cssText='background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.15);border-radius:var(--rs);padding:9px 11px';
+      pd.innerHTML=`<div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:4px">⚡ ACTIVATE POWER (OPTIONAL)</div><div class="sm mut" style="margin-bottom:6px">${c.active.desc}</div>`;
+      const btn=el('button','btn bs');btn.style.cssText='font-size:12px;border-color:rgba(245,166,35,.25)';
       btn.innerHTML=`⚡ Activate: ${c.active.name}`;
       btn.addEventListener('click',()=>activatePower(s,me));
-      pwrDiv.appendChild(btn);
-      gc.appendChild(pwrDiv);
+      pd.appendChild(btn);gc.appendChild(pd);
     }
   }
 
-  // Paranoia round
-  if(s.round===4){
-    const n=el('div');n.style.cssText='font-size:12px;color:var(--red);background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 11px;border-left:3px solid var(--red)';
-    n.innerHTML='🔥 <b>Paranoia Round</b> — Tension is at an all time high.';
-    gc.appendChild(n);
+  // Dave challenge button (shows during any response window)
+  if(me.char==='gamemaster'&&!me.activePowerUsed&&s.subPhase==='respond'&&ap&&!s.challengeActive){
+    const db2=el('button','btn bs');db2.style.cssText='border-color:rgba(74,158,255,.35);font-size:12px';
+    db2.innerHTML='⚠️ Challenge this play!';
+    db2.addEventListener('click',async()=>{
+      const cd=cObj(ap.cardId);const actor=s.players[ap.actorId];
+      await update(ref(db,`rooms/${roomCode}/challengeActive`),{active:true,message:`${actor?actor.name:'?'} played ${cd?cd.emoji+' '+cd.name:''} — ${me.name} challenged it!`,resolved:false,result:null});
+      await logAndUpdate(s,`⚠️ ${me.name} challenged the play!`,{});
+    });
+    gc.appendChild(db2);
   }
 
-  // Snitch step 2: choosing what to offer
-  if(isMyTurn&&selCard==='snitch'&&selIdx!==null&&selSnitchId===null){
-    const sn=el('div');sn.style.cssText='font-size:12px;background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 11px;border-left:3px solid var(--red)';
-    sn.innerHTML='🤝 <b>Snitch:</b> Select YOUR card to offer (blind trade — you commit first!)';
-    gc.appendChild(sn);
+  // Paranoia
+  if(s.round===4){
+    const n=el('div');n.style.cssText='font-size:12px;color:var(--red);background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 10px;border-left:3px solid var(--red)';
+    n.innerHTML='🔥 <b>Paranoia Round</b> — Final stretch.';gc.appendChild(n);
   }
 
   // Hand
@@ -703,31 +792,21 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   hand.forEach((cid,cardIndex)=>{
     const cd=cObj(cid);if(!cd)return;
     const isVO=cd.votingOnly,isRct=cd.reactive,isRevOnly=cd.revealOnly;
-    const isSnitch=cid==='snitch';
-
     let playable=false;
     if(greyed||me.spotlighted){playable=false;}
     else if(isVO){playable=false;}
-    else if(isRevOnly){
-      // Cat Shield: only in response to Reveal
-      playable=isResponding&&ap&&cObj(ap.cardId)?.id==='reveal'&&myDC;
-    } else if(isMyTurn&&!isRct){
-      // If snitch selected, picking which card to offer
+    else if(isRevOnly){playable=isResponding&&ap&&cObj(ap.cardId)?.id==='reveal'&&myDC;}
+    else if(isMyTurn&&!isRct){
       if(selCard==='snitch'&&selIdx!==null&&selSnitchId===null&&cid!=='snitch')playable=true;
-      else if(selCard!=='snitch'||selIdx===null)playable=true;
+      else if(!(selCard==='snitch'&&selIdx!==null&&selSnitchId===null))playable=true;
     } else if(isResponding&&isRct&&!isRevOnly){
-      // Save cards in response — but NOT against Reveal (only cat shield works there)
-      if(ap&&cObj(ap.cardId)?.id==='reveal')playable=false;
-      else playable=true;
+      playable=!(ap&&cObj(ap.cardId)?.id==='reveal');
     }
 
     const isSel=(selCard===cid&&selIdx===cardIndex)||(selSnitchId===cid&&selSnitchIdx===cardIndex);
     const d=el('div','ac'+(isSel?' sel':'')+(playable?'':' dis')+(isRct?' rct':''));
     d.style.borderColor=isSel?cd.color:'';
-    d.innerHTML=`<div class="ac-em">${cd.emoji}</div>
-      <div class="ac-tp" style="color:${cd.color}">${cd.cat}${isRct?' · Reactive':''}${isVO?' · Voting':''}${isRevOnly?' · DC Only':''}</div>
-      <div class="ac-nm">${cd.name}</div><div class="ac-ds">${cd.desc}</div>`;
-
+    d.innerHTML=`<div class="ac-em">${cd.emoji}</div><div class="ac-tp" style="color:${cd.color}">${cd.cat}${isRct?' · Reactive':''}${isVO?' · Voting':''}${isRevOnly?' · DC Only':''}</div><div class="ac-nm">${cd.name}</div><div class="ac-ds">${cd.desc}</div>`;
     if(playable){
       d.addEventListener('click',()=>{
         if(isMyTurn&&selCard==='snitch'&&selIdx!==null&&selSnitchId===null&&cid!=='snitch'){
@@ -742,124 +821,121 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
     gh.appendChild(d);
   });
 
-  // Targeting area
+  // Targeting
   if(isMyTurn&&selCard&&selIdx!==null){
     const cd=cObj(selCard);
-    if(cd&&cd.targeted&&selCard!=='snitch'){
-      renderTargetPicker(s,gc,(pid)=>doPlay(selCard,selIdx,pid,s));
+    if(cd&&selCard==='snitch'&&selSnitchId===null){
+      // Show snitch offer prompt
+      const sn=el('div');sn.style.cssText='font-size:11px;background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 10px;border-left:3px solid var(--red)';
+      sn.innerHTML='🤝 <b>Snitch:</b> Tap your card to offer (blind trade — commit first!)';gc.appendChild(sn);
     } else if(cd&&selCard==='snitch'&&selSnitchId!==null){
-      const tt=el('div');tt.style.cssText='font-size:10px;color:var(--mut);font-weight:700;margin-top:2px';
-      tt.textContent='NOW SELECT TARGET TO SWAP WITH';gc.appendChild(tt);
-      renderTargetPicker(s,gc,(pid)=>doPlay('snitch',selIdx,pid,s));
+      pickTargets(s,gc,(pid)=>doPlay('snitch',selIdx,pid,s));
+    } else if(cd&&cd.targeted){
+      // Inner Beast: if active, need 2 targets
+      if(s.innerBeastActive&&me.char==='sleeper'){
+        const ibTargets=me.innerBeastTargets||[];
+        const tt=el('div');tt.style.cssText='font-size:10px;color:var(--pur);font-weight:700;margin-top:2px';
+        tt.textContent=`INNER BEAST — SELECT ${ibTargets.length===0?'FIRST':'SECOND'} TARGET (${ibTargets.length}/2)`;gc.appendChild(tt);
+        Object.values(s.players).filter(p=>p.id!==myId&&!p.disappeared&&!ibTargets.includes(p.id)).forEach(p=>{
+          const pc=charOf(p);
+          const btn=el('button','btn bs');btn.style.marginTop='4px';
+          btn.innerHTML=`${pc.emoji} ${p.name}`;
+          btn.addEventListener('click',async()=>{
+            const newTargets=[...ibTargets,p.id];
+            await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),newTargets);
+            if(newTargets.length>=2){
+              // Both targets chosen, now execute play on both
+              await doPlay(selCard,selIdx,newTargets[0],s,{innerBeastSecond:newTargets[1]});
+            } else renderGame(s);
+          });
+          gc.appendChild(btn);
+        });
+      } else {
+        pickTargets(s,gc,(pid)=>doPlay(selCard,selIdx,pid,s));
+      }
     } else if(cd&&!cd.targeted){
-      const pb=el('button','btn bp');
-      pb.innerHTML=`Play ${cd.emoji} ${cd.name}`;
-      pb.addEventListener('click',()=>doPlay(selCard,selIdx,null,s));
-      gb.appendChild(pb);
+      const pb=el('button','btn bp');pb.innerHTML=`Play ${cd.emoji} ${cd.name}`;
+      pb.addEventListener('click',()=>doPlay(selCard,selIdx,null,s));gb.appendChild(pb);
     }
   }
-
   if(isMyTurn){
     const pass=el('button','btn bs');pass.textContent='Pass — skip this turn';
-    pass.addEventListener('click',()=>doPass(s));
-    gb.appendChild(pass);
+    pass.addEventListener('click',()=>doPass(s));gb.appendChild(pass);
   }
 
-  // Response area
+  // Response
   if(isResponding&&ap){
-    const cd=cObj(ap.cardId);
-    const isReveal=cd&&cd.id==='reveal';
-
+    const cd=cObj(ap.cardId);const isReveal=cd&&cd.id==='reveal';
     if(!isReveal){
-      // Standard save cards
-      const saveIds=['alibi','deflect','redirect'];
-      saveIds.forEach(rcid=>{
+      ['alibi','deflect','redirect'].forEach(rcid=>{
         if(!(me.hand||[]).includes(rcid))return;
         const rcd=cObj(rcid);
-        if(rcid==='redirect'&&selCard==='redirect'&&selIdx!==null){
-          const tt=el('div');tt.style.cssText='font-size:10px;color:var(--mut);font-weight:700;margin-top:2px';
-          tt.textContent='REDIRECT TO:';gc.appendChild(tt);
-          renderTargetPicker(s,gc,(pid)=>doRespond('redirect',(me.hand||[]).indexOf('redirect'),pid,s),true);
+        if(rcid==='redirect'&&selCard==='redirect'){
+          pickTargets(s,gc,(pid)=>doRespond('redirect',(me.hand||[]).indexOf('redirect'),pid,s),true);
         } else {
-          const rb=el('button','btn bs');rb.style.cssText='border-color:rgba(74,158,255,.3)';
-          rb.innerHTML=`${rcd.emoji} ${rcd.name} — ${rcd.drama?rcd.drama[0]:''}`;
+          const rb=el('button','btn bs');rb.style.cssText='border-color:rgba(74,158,255,.25)';
+          rb.innerHTML=`${rcd.emoji} ${rcd.name}`;
           rb.addEventListener('click',()=>{
             if(rcid==='redirect'){selCard='redirect';selIdx=(me.hand||[]).indexOf('redirect');renderGame(s);}
             else doRespond(rcid,(me.hand||[]).indexOf(rcid),null,s);
-          });
-          gb.appendChild(rb);
+          });gb.appendChild(rb);
         }
       });
-      // Cover by bystander
-      if(ap.targetId===myId){
-        // Already handled above
-      }
-      // Save powers
       if(!me.activePowerUsed){
-        const ch=charOf(me);
-        if(ch.active.type==='Save'){
-          const pwrBtn=el('button','btn bs');pwrBtn.style.cssText=`border-color:${ch.color}44`;
-          pwrBtn.innerHTML=`⚡ ${ch.active.name} (Active Power)`;
+        const ch2=charOf(me);
+        if(ch2.active.type==='Save'){
+          const pwrBtn=el('button','btn bs');pwrBtn.style.cssText=`border-color:${ch2.color}33`;
+          pwrBtn.innerHTML=`⚡ ${ch2.active.name}`;
           pwrBtn.addEventListener('click',()=>{
-            if(me.char==='lynn')showLynnOverlay(s);
-            else if(me.char==='wildcard')doWildPlayPower(s);
+            if(me.char==='strategist')showStrategistOverlay(s);
+            else if(me.char==='wildcard')doWildPlay(s);
             else if(me.char==='ghost')doGhostDisappear(s);
-            else doRespondPower(s);
-          });
-          gb.appendChild(pwrBtn);
+          });gb.appendChild(pwrBtn);
         }
       }
     } else {
-      // Reveal response — only Cat Shield or Pass
+      // Reveal — only Cat Shield or Pass
       if(myDC&&(me.hand||[]).includes('catshield')){
-        const csb=el('button','btn bs');csb.style.cssText='border-color:rgba(245,166,35,.4)';
-        csb.innerHTML='🛡️ Cat Shield — Protect your identity!';
+        const csb=el('button','btn bs');csb.style.cssText='border-color:rgba(245,166,35,.35)';
+        csb.innerHTML='🛡️ Cat Shield — protect identity!';
         csb.addEventListener('click',()=>doRespond('catshield',(me.hand||[]).indexOf('catshield'),null,s));
         gb.appendChild(csb);
       }
     }
-
-    // Cover bystander button
+    // Cover by bystander
     if(ap.targetId!==myId&&myId!==ap.actorId&&!isReveal&&(me.hand||[]).includes('cover')){
-      const covBtn=el('button','btn bs');covBtn.style.cssText='border-color:rgba(74,158,255,.3)';
+      const covBtn=el('button','btn bs');covBtn.style.cssText='border-color:rgba(74,158,255,.25)';
       const tgt=s.players[ap.targetId];
-      covBtn.innerHTML=`🛡️ Cover — Protect ${tgt?tgt.name:'target'}!`;
+      covBtn.innerHTML=`🛡️ Cover — protect ${tgt?tgt.name:'target'}`;
       covBtn.addEventListener('click',()=>doBystander((me.hand||[]).indexOf('cover'),ap.targetId,s));
       gb.appendChild(covBtn);
     }
-
-    // Ghost disappear as save power
+    // Ghost on own turn
     if(me.char==='ghost'&&!me.activePowerUsed&&!isReveal){
-      const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b44';
-      ghb.innerHTML='👻 Disappear — Skip this round';
-      ghb.addEventListener('click',()=>doGhostDisappear(s));
-      gb.appendChild(ghb);
+      const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b33';
+      ghb.innerHTML='👻 Disappear';
+      ghb.addEventListener('click',()=>doGhostDisappear(s));gb.appendChild(ghb);
     }
-
-    const passR=el('button','btn bs');passR.textContent='Pass — accept the effect';
-    passR.addEventListener('click',()=>doRespond('pass',null,null,s));
-    gb.appendChild(passR);
+    const passR=el('button','btn bs');passR.textContent='Pass — accept effect';
+    passR.addEventListener('click',()=>doRespond('pass',null,null,s));gb.appendChild(passR);
   }
 
-  // Ghost disappear on own turn (not responding)
+  // Ghost disappear on own turn
   if(me.char==='ghost'&&!me.activePowerUsed&&isMyTurn&&!isResponding){
-    const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b44;margin-top:4px';
-    ghb.innerHTML='👻 Disappear — Skip this round (Active Power)';
-    ghb.addEventListener('click',()=>doGhostDisappear(s));
-    gb.appendChild(ghb);
+    const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b33;margin-top:4px';
+    ghb.innerHTML='👻 Disappear (Active Power)';
+    ghb.addEventListener('click',()=>doGhostDisappear(s));gb.appendChild(ghb);
   }
 
   // Host controls
   if(gameState&&gameState.host===myId){
     const row=el('div','row');row.style.marginTop='4px';
     const fa=el('button','btn bs bsm');fa.style.cssText='color:var(--mut);font-size:11px;flex:1';fa.textContent='⏭ Force Advance';fa.addEventListener('click',()=>advanceTurn(s,{}));
-    const mv=el('button','btn bs bsm');mv.style.cssText='color:var(--mut);font-size:11px;flex:1';mv.textContent='⏭ Skip to Voting';
-    mv.addEventListener('click',async()=>logAndUpdate(s,'🗳️ Host skipped to voting.',{[`rooms/${roomCode}/phase`]:'voting',[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null}));
-    row.appendChild(fa);row.appendChild(mv);gb.appendChild(row);
+    row.appendChild(fa);gb.appendChild(row);
   }
 }
 
-function renderTargetPicker(s,gc,onPick,excludeActor=false){
+function pickTargets(s,gc,onPick,excludeActor=false){
   const ap=s.activePlay;
   const tt=el('div');tt.style.cssText='font-size:10px;color:var(--mut);font-weight:700;margin-top:2px';
   tt.textContent='SELECT TARGET';gc.appendChild(tt);
@@ -875,83 +951,45 @@ function renderTargetPicker(s,gc,onPick,excludeActor=false){
 // ── POWER ACTIVATION ──────────────────────────────────────────────────────
 async function activatePower(s,me){
   const c=charOf(me);
-  const ann=`⚡ ${me.name} activated <b>${c.active.name}</b>! ${c.active.type==='Attack'?'🔥':'🛡️'}`;
-  await logAndUpdate(s,`⚡ ${me.name} activated ${c.active.name}!`,{[`rooms/${roomCode}/announcement`]:ann,[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true});
+  const ann=`⚡ <b>${me.name}</b> activated <b>${c.active.name}</b>! 🔥`;
+  await update(ref(db),{[`rooms/${roomCode}/announcement`]:ann,[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true});
+  await logAndUpdate(s,`⚡ ${me.name} activated ${c.active.name}!`,{});
 
-  if(me.char==='stallon'){
-    // Punchline: set flag for next round
+  if(me.char==='joker'){
     await update(ref(db,`rooms/${roomCode}`),{punchlineActive:true});
     toast('Punchline! Everyone skips drawing next round! 😤');
-    powerActivated=true;
-  } else if(me.char==='anuja'){
+  } else if(me.char==='sleeper'){
     await update(ref(db,`rooms/${roomCode}`),{innerBeastActive:true});
-    showInnerBeastOverlay(s);
-  } else if(me.char==='pream'){
+    await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),[]);
+    toast('Inner Beast! Pick 2 targets for your next attack card! 😈');
+  } else if(me.char==='mother'){
     showCurfewOverlay(s);
-  } else if(me.char==='grace'){
+  } else if(me.char==='troublemaker'){
     await update(ref(db,`rooms/${roomCode}`),{freePourActive:true});
-    toast('Free Pour activated! Your next card = double penalty + skip! 🥃');
-    powerActivated=true;
+    toast('Free Pour! Next card = double penalty + skip turn! 🥃');
   }
 }
 
-function showInnerBeastOverlay(s){
-  // Inner Beast: pick 2 targets then play card
-  const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--pur);font-weight:800;font-size:16px;text-align:center">😴 Inner Beast Activated!</div>
-    <div class="sm mut ctr">Your next card hits 2 targets. Pick both targets now, then play your card.</div>`;
-  const selected=[];
-  const targetDiv=el('div');targetDiv.style.cssText='width:100%;max-width:340px;display:flex;flex-direction:column;gap:8px';
-  Object.values(s.players).filter(p=>p.id!==myId&&!p.disappeared).forEach(p=>{
-    const pc=charOf(p);
-    const btn=el('button','btn bs');btn.style.maxWidth='340px';btn.style.width='100%';
-    btn.innerHTML=`${pc.emoji} ${p.name}`;
-    btn.addEventListener('click',()=>{
-      if(selected.includes(p.id)){
-        selected.splice(selected.indexOf(p.id),1);btn.className='btn bs';
-      } else if(selected.length<2){
-        selected.push(p.id);btn.className='btn bp';
-      }
-    });
-    targetDiv.appendChild(btn);
-  });
-  ov.appendChild(targetDiv);
-  const confirm=el('button','btn bp');confirm.style.cssText='max-width:340px;width:100%';confirm.textContent='Confirm Targets (then play your card)';
-  confirm.addEventListener('click',async()=>{
-    if(selected.length<1){toast('Pick at least 1 target');return;}
-    await update(ref(db,`rooms/${roomCode}`),{innerBeastTargets:selected});
-    document.body.removeChild(ov);
-    toast('Inner Beast targets locked! Now play your card. 😈');
-    powerActivated=true;
-  });
-  ov.appendChild(confirm);
-  const cn=el('button','btn bs');cn.style.cssText='max-width:340px;width:100%';cn.textContent='Cancel';
-  cn.addEventListener('click',async()=>{await update(ref(db),{[`rooms/${roomCode}/innerBeastActive`]:false,[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:false});document.body.removeChild(ov);});
-  ov.appendChild(cn);document.body.appendChild(ov);
-}
-
 function showCurfewOverlay(s){
-  // Pream sees one random card from each player
   const cards={};
   Object.values(s.players).filter(p=>p.id!==myId).forEach(p=>{
     const h=p.hand||[];if(!h.length)return;
     cards[p.id]={player:p.name,emoji:charOf(p).emoji,card:cObj(h[Math.floor(Math.random()*h.length)])};
   });
   const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--grn);font-weight:800;font-size:16px;text-align:center">🕐 Curfew Activated!</div>
-    <div class="sm mut ctr" style="margin-bottom:4px">One random card from each player — only YOU see this.</div>`;
+  ov.innerHTML=`<div style="color:var(--grn);font-weight:800;font-size:16px;text-align:center">🕐 Curfew!<br><span class="sm mut">Privately see one card from each player</span></div>`;
   Object.values(cards).forEach(({player,emoji,card})=>{
     if(!card)return;
     const d=el('div');d.style.cssText='background:var(--s2);border-radius:var(--rs);padding:10px;width:100%;max-width:340px;display:flex;gap:10px;align-items:center';
-    d.innerHTML=`<span style="font-size:16px">${emoji}</span><div style="flex:1"><div style="font-size:12px;font-weight:700">${player}</div></div><div style="text-align:right"><div style="font-size:16px">${card.emoji}</div><div style="font-size:11px;font-weight:700;color:${card.color}">${card.name}</div></div>`;
+    d.innerHTML=`<span style="font-size:16px">${emoji}</span><div style="flex:1;font-size:12px;font-weight:700">${player}</div><div style="text-align:right"><div style="font-size:18px">${card.emoji}</div><div style="font-size:11px;color:${card.color}">${card.name}</div></div>`;
     ov.appendChild(d);
   });
   const done=el('button','btn bp');done.style.cssText='max-width:340px;width:100%';done.textContent='Got it — Now play your card 🕐';
-  done.addEventListener('click',()=>{document.body.removeChild(ov);powerActivated=true;});
+  done.addEventListener('click',()=>document.body.removeChild(ov));
   ov.appendChild(done);document.body.appendChild(ov);
 }
 
-function showLynnOverlay(s){
+function showStrategistOverlay(s){
   const ap=s.activePlay;if(!ap)return;
   const targets=Object.values(s.players).filter(p=>p.id!==myId&&p.id!==ap.actorId&&!p.disappeared);
   const ov=el('div','ov');
@@ -960,7 +998,7 @@ function showLynnOverlay(s){
     const pc=charOf(p);
     const btn=el('button','btn bp');btn.style.cssText='max-width:300px;width:100%';
     btn.innerHTML=`${pc.emoji} ${p.name}`;
-    btn.addEventListener('click',()=>{document.body.removeChild(ov);doRespondPower(s,p.id);});
+    btn.addEventListener('click',()=>{document.body.removeChild(ov);doRespondPower(s,'strategist',p.id);});
     ov.appendChild(btn);
   });
   const cn=el('button','btn bs');cn.style.cssText='max-width:300px;width:100%';cn.textContent='Cancel';
@@ -968,42 +1006,57 @@ function showLynnOverlay(s){
   ov.appendChild(cn);document.body.appendChild(ov);
 }
 
-function showExposeOverlay(targetId,s){
+// ── REVEAL OVERLAY ────────────────────────────────────────────────────────
+function showRevealOverlay(targetName,isTargetDC){
+  // Check if already open
+  if(document.getElementById('reveal-ov'))return;
+  const ov=el('div','ov');ov.id='reveal-ov';
+  ov.innerHTML=`<div style="font-size:10px;color:var(--acc);font-weight:800;letter-spacing:2px;text-align:center">🕵️ REVEAL RESULT — ONLY YOU SEE THIS</div>
+    <div style="font-size:52px;text-align:center">${isTargetDC?'🐱':'🔍'}</div>
+    <div style="font-size:20px;font-weight:900;text-align:center;color:${isTargetDC?'var(--red)':'var(--grn)'}">${targetName} is ${isTargetDC?'THE DRUNK CAT! 😱':'NOT the Drunk Cat.'}</div>
+    <div class="sm mut ctr">${isTargetDC?'You found them! Use this wisely...':'Keep looking — the cat is still out there.'}</div>
+    <button class="btn bp" id="dismiss-reveal" style="max-width:300px;width:100%">Got it 🕵️</button>`;
+  ov.querySelector('#dismiss-reveal').addEventListener('click',async()=>{
+    document.body.removeChild(ov);
+    await update(ref(db,`rooms/${roomCode}/revealPending/dismissed`),true);
+  });
+  document.body.appendChild(ov);
+}
+
+// ── EXPOSE OVERLAY ────────────────────────────────────────────────────────
+function showExposeOverlay(targetId,s,afterDone){
   const tp=s.players[targetId];if(!tp)return;
-  const hand=tp.hand||[];if(!hand.length){toast('Target has no cards!');return;}
+  const hand=tp.hand||[];if(!hand.length){toast('Target has no cards!');if(afterDone)afterDone();return;}
   const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🔍 Expose!<br><span class="sm mut">${tp.name} — select a card to reveal publicly</span></div>`;
-  hand.forEach((cid,idx)=>{
+  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🔍 Exposed!<br><span class="sm mut">${tp.name} — choose a card to reveal</span></div>`;
+  hand.forEach(cid=>{
     const cd=cObj(cid);if(!cd)return;
     const btn=el('button','btn bs');btn.style.cssText='max-width:340px;width:100%;text-align:left;display:flex;gap:8px;align-items:center';
     btn.innerHTML=`<span style="font-size:18px">${cd.emoji}</span><div><div style="font-weight:700">${cd.name}</div><div class="sm mut">${cd.desc}</div></div>`;
     btn.addEventListener('click',async()=>{
       document.body.removeChild(ov);
-      // Broadcast exposed card to everyone
-      const ev=`🔍 Expose revealed: ${tp.name} has ${cd.emoji} <b>${cd.name}</b>! ${drama(cObj('expose'))}`;
+      const ev=`🔍 Expose: ${tp.name} revealed ${cd.emoji} <b>${cd.name}</b>!`;
       const lg=[...(s.eventLog||[]),ev].slice(-20);
-      await update(ref(db),{[`rooms/${roomCode}/recentEvent`]:ev,[`rooms/${roomCode}/eventLog`]:lg,[`rooms/${roomCode}/announcement`]:`🔍 ${tp.name} revealed: ${cd.emoji} ${cd.name} — ${cd.desc}`});
-      await advanceTurn(s,{});
+      const ann=`🔍 ${tp.name} revealed: ${cd.emoji} ${cd.name} — ${cd.desc}`;
+      await update(ref(db),{[`rooms/${roomCode}/recentEvent`]:ev,[`rooms/${roomCode}/eventLog`]:lg,[`rooms/${roomCode}/announcement`]:ann});
+      if(afterDone)afterDone();
     });
     ov.appendChild(btn);
   });
   document.body.appendChild(ov);
 }
 
-function showSnitchOverlay(s){
+// ── SNITCH OFFER OVERLAY ──────────────────────────────────────────────────
+function showSnitchOfferOverlay(s){
   const me=s.players[myId];
   const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🤝 Snitch!<br><span class="sm mut">Select YOUR card to offer first (blind trade)</span></div>`;
+  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🤝 Snitch!<br><span class="sm mut">Select YOUR card to offer (blind trade)</span></div>`;
   (me.hand||[]).forEach((cid,idx)=>{
     if(cid==='snitch')return;
     const cd=cObj(cid);if(!cd)return;
     const btn=el('button','btn bs');btn.style.cssText='max-width:340px;width:100%;text-align:left;display:flex;gap:8px;align-items:center';
     btn.innerHTML=`<span style="font-size:18px">${cd.emoji}</span><div><div style="font-weight:700">${cd.name}</div><div class="sm mut">${cd.desc}</div></div>`;
-    btn.addEventListener('click',()=>{
-      selSnitchId=cid;selSnitchIdx=idx;
-      document.body.removeChild(ov);
-      renderGame(s);
-    });
+    btn.addEventListener('click',()=>{selSnitchId=cid;selSnitchIdx=idx;document.body.removeChild(ov);renderGame(s);});
     ov.appendChild(btn);
   });
   const cn=el('button','btn bs');cn.style.cssText='max-width:340px;width:100%';cn.textContent='Cancel';
@@ -1012,30 +1065,10 @@ function showSnitchOverlay(s){
 }
 
 // ── PLAY LOGIC ────────────────────────────────────────────────────────────
-async function doPlay(cardId,cardIdx,targetId,s){
+async function doPlay(cardId,cardIdx,targetId,s,extra={}){
   const cd=cObj(cardId);if(!cd)return;
   const me=s.players[myId];
   const hand=[...(me.hand||[])];
-  if(cardId==='snitch'){
-    // Remove snitch card
-    const si=hand.indexOf('snitch');if(si>-1)hand.splice(si,1);
-    // Execute blind swap
-    const tPlayer=s.players[targetId];if(!tPlayer){toast('Invalid target');return;}
-    const tHand=[...(tPlayer.hand||[])];
-    if(!tHand.length){toast('Target has no cards!');selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;return;}
-    const rndIdx=Math.floor(Math.random()*tHand.length);
-    const gotCard=tHand[rndIdx];
-    tHand[rndIdx]=selSnitchId;
-    hand.push(gotCard);
-    const ev=`${me.name} used 🤝 Snitch on ${tPlayer.name}! ${drama(cd)}`;
-    const u={[`rooms/${roomCode}/players/${myId}/hand`]:hand,[`rooms/${roomCode}/players/${targetId}/hand`]:tHand};
-    selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;
-    await logAndUpdate(s,ev,u);
-    toast(`You got: ${cObj(gotCard)?.emoji||''} ${cObj(gotCard)?.name||'a card'}!`);
-    await advanceTurn(s,u);
-    return;
-  }
-
   if(cardIdx!==null&&cardIdx>=0)hand.splice(cardIdx,1);
   else{const i=hand.indexOf(cardId);if(i>-1)hand.splice(i,1);}
 
@@ -1043,57 +1076,63 @@ async function doPlay(cardId,cardIdx,targetId,s){
   const ev=`${me.name} played ${cd.emoji} ${cd.name}${tPlayer?' on '+tPlayer.name:''}`;
   const u={[`rooms/${roomCode}/players/${myId}/hand`]:hand};
 
-  // Grace passive: extra drink
-  if(me.char==='grace'&&targetId&&tPlayer&&!s.freePourActive){
+  // Snitch with response window
+  if(cardId==='snitch'&&targetId){
+    if(!selSnitchId){showSnitchOfferOverlay(s);return;}
+    // Open response window for target first
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'snitch',targetId,snitchOfferId:selSnitchId,snitchOfferIdx:selSnitchIdx};
+    u[`rooms/${roomCode}/subPhase`]='respond';
+    u[`rooms/${roomCode}/announcement`]=`🤝 ${me.name} played Snitch on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
+    selCard=null;selIdx=null;
+    await logAndUpdate(s,ev,u);return;
+  }
+
+  // Grace passive
+  if(me.char==='troublemaker'&&targetId&&tPlayer&&!s.freePourActive&&!tPlayer.penalised){
     u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tPlayer.penalties||0)+1;
   }
 
-  // Free Pour: double + skip
+  // Free Pour
   if(s.freePourActive&&targetId&&tPlayer){
-    if(!tPlayer.penalised){
-      u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tPlayer.penalties||0)+2;
-      u[`rooms/${roomCode}/players/${targetId}/penalised`]=true;
-    }
+    if(!tPlayer.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tPlayer.penalties||0)+2;u[`rooms/${roomCode}/players/${targetId}/penalised`]=true;}
     u[`rooms/${roomCode}/players/${targetId}/spotlighted`]=true;
     u[`rooms/${roomCode}/freePourActive`]=false;
   }
 
-  // Inner Beast: apply to multiple targets
-  if(s.innerBeastActive&&s.innerBeastTargets&&targetId){
-    const targets=[targetId,...(s.innerBeastTargets.filter(id=>id!==targetId))].slice(0,2);
+  // Inner Beast: apply to both targets
+  if(s.innerBeastActive&&extra.innerBeastSecond){
+    const targets=[targetId,extra.innerBeastSecond];
     for(const tid of targets){
       const tp=s.players[tid];if(!tp)continue;
-      await applyEffect(cardId,tid,s,u);
-      if(me.char==='grace'){
-        u[`rooms/${roomCode}/players/${tid}/penalties`]=(tp.penalties||0)+1;
-      }
+      await applyEffectU(cardId,tid,s,u);
+      if(me.char==='troublemaker'&&!tp.penalised){u[`rooms/${roomCode}/players/${tid}/penalties`]=(tp.penalties||0)+1;}
     }
     u[`rooms/${roomCode}/innerBeastActive`]=false;
-    u[`rooms/${roomCode}/innerBeastTargets`]=null;
-    await logAndUpdate(s,ev+' [Inner Beast — double targets!]',u);
+    u[`rooms/${roomCode}/players/${myId}/innerBeastTargets`]=null;
+    await logAndUpdate(s,ev+' [Inner Beast — both targets hit!]',u);
     await advanceTurn(s,u);
     selCard=null;selIdx=null;return;
   }
 
-  // Reveal: open response window first
+  // Reveal
   if(cardId==='reveal'&&targetId){
-    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId,targetId};
+    const isTargetDC=isDC(s,targetId);
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'reveal',targetId};
     u[`rooms/${roomCode}/subPhase`]='respond';
+    u[`rooms/${roomCode}/revealPending`]={actorId:myId,targetId,isDC:isTargetDC,ts:Date.now(),dismissed:false};
     u[`rooms/${roomCode}/announcement`]=`🕵️ ${me.name} played Reveal on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
-    await logAndUpdate(s,ev,u);
-    selCard=null;selIdx=null;return;
+    await logAndUpdate(s,ev,u);selCard=null;selIdx=null;return;
   }
 
-  // Expose: open response window for target to choose card
+  // Expose
   if(cardId==='expose'&&targetId){
-    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId,targetId};
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'expose',targetId};
     u[`rooms/${roomCode}/subPhase`]='respond';
     u[`rooms/${roomCode}/announcement`]=`🔍 ${me.name} played Expose on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
-    await logAndUpdate(s,ev,u);
-    selCard=null;selIdx=null;return;
+    await logAndUpdate(s,ev,u);selCard=null;selIdx=null;return;
   }
 
-  // Check cover
+  // Cover check
   if(targetId&&tPlayer?.covered){
     u[`rooms/${roomCode}/players/${targetId}/covered`]=false;
     selCard=null;selIdx=null;
@@ -1105,9 +1144,14 @@ async function doPlay(cardId,cardIdx,targetId,s){
     u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId,targetId};
     u[`rooms/${roomCode}/subPhase`]='respond';
     u[`rooms/${roomCode}/announcement`]=`${cd.emoji} ${me.name} played ${cd.name} on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
+    // Log the play for turn complete screen
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null}];
+    u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev,u);
   } else {
-    await applyEffect(cardId,myId,s,u);
+    await applyEffectU(cardId,myId,s,u);
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:null}];
+    u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev,u);
     await advanceTurn(s,u);
   }
@@ -1120,42 +1164,63 @@ async function doRespond(type,cardIdx,redirectId,s){
   const actor=s.players[ap.actorId];
   const hand=[...(me.hand||[])];
   const u={[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
-  const rm=idx=>{if(idx!==null&&idx>=0)hand.splice(idx,1);};
+  const rm=idx=>{if(idx!==null&&idx>=0&&idx<hand.length)hand.splice(idx,1);};
 
   if(type==='pass'){
-    const cd=cObj(ap.cardId);
     if(ap.cardId==='reveal'){
-      // Show reveal result to attacker privately — store in DB temporarily
-      const isTargetDC=isDC(s,ap.targetId);
-      u[`rooms/${roomCode}/revealResult`]={actorId:ap.actorId,targetId:ap.targetId,isDC:isTargetDC,ts:Date.now()};
-      await logAndUpdate(s,`${me.name} accepted Reveal — result shown to ${actor?actor.name:'?'} only`,u);
-      // If I am the attacker, show the reveal
-      if(myId===ap.actorId)showRevealResultOverlay(s.players[ap.targetId]?.name||'?',isTargetDC);
+      // Reveal passes — show result to attacker. Result already stored in revealPending
+      await logAndUpdate(s,`${me.name} accepted Reveal — result shown to ${actor?actor.name:'?'} privately`,u);
+      // Attacker's client will pick this up via revealPending in renderGame
     } else if(ap.cardId==='expose'){
-      // Show expose card picker to target
-      await logAndUpdate(s,`${me.name} accepted Expose — choosing card to reveal...`,u);
-      showExposeOverlay(ap.targetId,s);return;
+      await logAndUpdate(s,`${me.name} accepted Expose — choosing card...`,u);
+      showExposeOverlay(ap.targetId,s,()=>advanceTurn(s,{}));return;
+    } else if(ap.cardId==='snitch'){
+      // Execute blind swap
+      const tHand=[...(me.hand||[])];
+      if(!tHand.length){await advanceTurn(s,u);return;}
+      const rndIdx=Math.floor(Math.random()*tHand.length);
+      const gotCard=tHand[rndIdx];
+      const actorPlayer=s.players[ap.actorId];
+      const actorHand=[...(actorPlayer?.hand||[])];
+      tHand[rndIdx]=ap.snitchOfferId;
+      actorHand.push(gotCard);
+      // Remove snitch card from attacker hand
+      const si=actorHand.indexOf('snitch');if(si>-1)actorHand.splice(si,1);
+      u[`rooms/${roomCode}/players/${ap.actorId}/hand`]=actorHand;
+      u[`rooms/${roomCode}/players/${myId}/hand`]=tHand;
+      const gotCd=cObj(gotCard);const offeredCd=cObj(ap.snitchOfferId);
+      const ev2=`🤝 Snitch complete! ${actor?actor.name:'?'} got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}, ${me.name} got ${offeredCd?offeredCd.emoji+' '+offeredCd.name:'?'}`;
+      u[`rooms/${roomCode}/announcement`]=ev2;
+      await logAndUpdate(s,ev2,u);
+      // Show result to both parties
+      toast(`You gave ${offeredCd?offeredCd.emoji+' '+offeredCd.name:'?'} — got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}`);
+      await advanceTurn(s,u);return;
     } else {
-      await applyEffect(ap.cardId,myId,s,u);
-      await logAndUpdate(s,`${me.name} accepted ${cd?cd.emoji+' '+cd.name:''}`,u);
+      await applyEffectU(ap.cardId,myId,s,u);
+      await logAndUpdate(s,`${me.name} accepted ${cObj(ap.cardId)?.emoji||''} ${cObj(ap.cardId)?.name||''}`,u);
     }
   } else if(type==='alibi'){
     rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
     await logAndUpdate(s,`${me.name} used 📋 Alibi! ${drama(cObj('alibi'))}`,u);
   } else if(type==='deflect'){
     rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
-    await applyEffect(ap.cardId,ap.actorId,s,u);
-    await logAndUpdate(s,`${me.name} used ↩️ Deflect! ${drama(cObj('deflect'))} Back to ${actor?actor.name:'?'}!`,u);
+    // Open response window for attacker
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:ap.cardId,targetId:ap.actorId,deflectedBy:myId};
+    u[`rooms/${roomCode}/subPhase`]='respond';
+    u[`rooms/${roomCode}/announcement`]=`↩️ ${me.name} deflected ${cObj(ap.cardId)?.name||''} back to ${actor?actor.name:'?'}! ${drama(cObj('deflect'))}`;
+    await logAndUpdate(s,`${me.name} used ↩️ Deflect! Back to ${actor?actor.name:'?'}!`,{...u,[`rooms/${roomCode}/players/${myId}/hand`]:hand});
+    selCard=null;return;
   } else if(type==='redirect'&&redirectId){
     rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
     const rp=s.players[redirectId];
     u[`rooms/${roomCode}/activePlay`]={actorId:ap.actorId,cardId:ap.cardId,targetId:redirectId,redirectedBy:myId};
     u[`rooms/${roomCode}/subPhase`]='respond';
     u[`rooms/${roomCode}/announcement`]=`🔀 ${me.name} redirected ${cObj(ap.cardId)?.name||''} to ${rp?rp.name:'?'}! ${drama(cObj('redirect'))}`;
-    await logAndUpdate(s,`${me.name} used 🔀 Redirect to ${rp?rp.name:'?'}!`,{...u,[`rooms/${roomCode}/players/${myId}/hand`]:hand});
+    await logAndUpdate(s,`${me.name} redirected to ${rp?rp.name:'?'}!`,{...u,[`rooms/${roomCode}/players/${myId}/hand`]:hand});
     selCard=null;return;
   } else if(type==='catshield'){
     rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
+    u[`rooms/${roomCode}/revealPending`]=null;
     u[`rooms/${roomCode}/announcement`]='🛡️ Sorry! Identity protected! Nice try! 😸';
     await logAndUpdate(s,`${me.name} used 🛡️ Cat Shield! Identity protected!`,u);
   }
@@ -1173,63 +1238,58 @@ async function doBystander(cardIdx,targetId,s){
   await advanceTurn(s,u);
 }
 
-async function doRespondPower(s,redirectId=null){
+async function doRespondPower(s,charKey,redirectId=null){
   const me=s.players[myId];
   const ap=s.activePlay;if(!ap)return;
   const c=charOf(me);
-  const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
-  let ev=`${me.name} used ⚡ ${c.active.name}!`;
-  if(me.char==='lynn'&&redirectId){
+  const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/announcement`]:null};
+  if(charKey==='strategist'&&redirectId){
     const rp=s.players[redirectId];
     u[`rooms/${roomCode}/activePlay`]={actorId:ap.actorId,cardId:ap.cardId,targetId:redirectId,redirectedBy:myId};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`⚡ ${me.name} used Chaos Theory — ${cObj(ap.cardId)?.name||''} redirected to ${rp?rp.name:'?'}!`;
-    ev=`${me.name} used ⚡ Chaos Theory — redirected to ${rp?rp.name:'?'}!`;
-    await logAndUpdate(s,ev,u);
+    u[`rooms/${roomCode}/announcement`]=`⚡ ${me.name} used Chaos Theory — redirected to ${rp?rp.name:'?'}!`;
+    await logAndUpdate(s,`${me.name} used ⚡ Chaos Theory to ${rp?rp.name:'?'}!`,u);
     selCard=null;return;
   }
-  await logAndUpdate(s,ev,u);
+  u[`rooms/${roomCode}/subPhase`]='play';u[`rooms/${roomCode}/activePlay`]=null;
+  await logAndUpdate(s,`${me.name} used ⚡ ${c.active.name}!`,u);
   await advanceTurn(s,u);selCard=null;
 }
 
-async function doWildPlayPower(s){
-  const me=s.players[myId];
-  const ap=s.activePlay;if(!ap)return;
-  const actor=s.players[ap.actorId];
-  const c=charOf(me);
+async function doWildPlay(s){
+  const me=s.players[myId];const ap=s.activePlay;if(!ap)return;
+  const actor=s.players[ap.actorId];const cd=cObj(ap.cardId);
   const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
-  // Apply the card back to the attacker
-  await applyEffect(ap.cardId,ap.actorId,s,u);
-  const ev=`${me.name} used ⚡ Wild Play — ${cObj(ap.cardId)?.name||''} copied and applied back to ${actor?actor.name:'?'}! 🎲`;
-  u[`rooms/${roomCode}/announcement`]=`🎲 Wild Play! ${me.name} copied ${cObj(ap.cardId)?.emoji||''} ${cObj(ap.cardId)?.name||''} and used it on ${actor?actor.name:'?'}!`;
-  await logAndUpdate(s,ev,u);
+  await applyEffectU(ap.cardId,ap.actorId,s,u);
+  u[`rooms/${roomCode}/announcement`]=`🎲 Wild Play! ${me.name} copied ${cd?cd.emoji+' '+cd.name:''} and used it on ${actor?actor.name:'?'}!`;
+  await logAndUpdate(s,`${me.name} used Wild Play on ${actor?actor.name:'?'}!`,u);
   await advanceTurn(s,u);selCard=null;
 }
 
 async function doGhostDisappear(s){
   const me=s.players[myId];
   const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/players/${myId}/disappeared`]:true,[`rooms/${roomCode}/announcement`]:null};
-  await logAndUpdate(s,`👻 ${me.name} used Disappear — gone for this round!`,u);
+  await logAndUpdate(s,`👻 ${me.name} disappeared for this round!`,u);
   await advanceTurn(s,u);
 }
 
 async function doPass(s){
   selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;
-  await logAndUpdate(s,`${s.players[myId]?.name||'?'} passed their turn`,{[`rooms/${roomCode}/announcement`]:null});
+  await logAndUpdate(s,`${s.players[myId]?.name||'?'} passed`,{[`rooms/${roomCode}/announcement`]:null});
   await advanceTurn(s,{});
 }
 
-// ── APPLY EFFECT ──────────────────────────────────────────────────────────
-async function applyEffect(cardId,targetId,s,u){
+// ── EFFECT ────────────────────────────────────────────────────────────────
+async function applyEffectU(cardId,targetId,s,u){
   const tp=s.players[targetId];if(!tp)return;
-  if(cardId==='accuse'||cardId==='waterfall'||cardId==='onthehouse'){
+  if(['accuse','waterfall','onthehouse'].includes(cardId)){
     if(!tp.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tp.penalties||0)+1;}
+  } else if(cardId==='blackout'){
+    if(!tp.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tp.penalties||0)+3;}
   } else if(cardId==='spotlight'){
     u[`rooms/${roomCode}/players/${targetId}/spotlighted`]=true;
   } else if(cardId==='cover'){
     u[`rooms/${roomCode}/players/${targetId}/covered`]=true;
-  } else if(cardId==='blackout'){
-    if(!tp.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tp.penalties||0)+3;}
   }
 }
 
@@ -1251,8 +1311,10 @@ async function advanceTurn(s,extra={}){
     next++;
   }
   if(next>=order.length){
-    extra[`rooms/${roomCode}/phase`]='voting';extra[`rooms/${roomCode}/curTurnIdx`]=0;
-    await logAndUpdate(s,'🗳️ All turns done — Voting opens!',extra);
+    // All turns done — go to turn complete screen
+    extra[`rooms/${roomCode}/status`]='turn-complete';
+    extra[`rooms/${roomCode}/readyVotes`]={};
+    await logAndUpdate(s,'🎴 All turns complete! Preparing to vote...',extra);
   } else {
     extra[`rooms/${roomCode}/curTurnIdx`]=next;
     await update(ref(db),extra);
@@ -1266,48 +1328,133 @@ async function logAndUpdate(s,evStr,extra={}){
   await update(ref(db),extra);
 }
 
-// ── REVEAL RESULT OVERLAY ─────────────────────────────────────────────────
-function showRevealResultOverlay(targetName,isTargetDC){
-  const ov=el('div','ov');
-  ov.innerHTML=`<div style="font-size:11px;color:var(--acc);font-weight:800;letter-spacing:2px;text-align:center">🕵️ REVEAL — ONLY YOU SEE THIS</div>
-    <div style="font-size:52px;text-align:center">${isTargetDC?'🐱':'🔍'}</div>
-    <div style="font-size:20px;font-weight:900;text-align:center;color:${isTargetDC?'var(--red)':'var(--grn)'}">${targetName} is ${isTargetDC?'THE DRUNK CAT! 😱':'NOT the Drunk Cat.'}</div>
-    <div class="sm mut ctr">${isTargetDC?'You found them! Use this wisely...':'Keep looking — the cat is still out there.'}</div>
-    <button class="btn bp" style="max-width:300px;width:100%">Got it 🕵️</button>`;
-  ov.querySelector('button').addEventListener('click',()=>document.body.removeChild(ov));
-  document.body.appendChild(ov);
-}
+// ── TURN COMPLETE ─────────────────────────────────────────────────────────
+function renderTurnComplete(s){
+  ss('s-turncomplete');
+  document.getElementById('tc-rnd').textContent=s.round;
+  readyVoteClicked=false;
 
-// Watch for reveal results directed at me
-let lastRevealTs=0;
-function checkRevealResult(s){
-  const rr=s.revealResult;
-  if(rr&&rr.actorId===myId&&rr.ts>lastRevealTs){
-    lastRevealTs=rr.ts;
-    showRevealResultOverlay(s.players[rr.targetId]?.name||'?',rr.isDC);
+  // Cards played this round
+  const playsEl=document.getElementById('tc-plays');playsEl.innerHTML='';
+  const plays=s.roundPlays||[];
+  if(!plays.length){playsEl.innerHTML='<div class="sm mut">No cards logged this round.</div>';}
+  else plays.forEach(p=>{
+    const d=el('div','pi');
+    d.innerHTML=`<span style="font-size:18px">${p.emoji}</span><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.actor} played ${p.card}${p.target?' on '+p.target:''}</div></div>`;
+    playsEl.appendChild(d);
+  });
+
+  // Vote standings (counts only, no attribution, Ghost excluded rounds 1-4)
+  const votesEl=document.getElementById('tc-votes');votesEl.innerHTML='';
+  const isFinal=s.round>=s.totalRounds;
+  const tally={};
+  Object.values(s.players).forEach(p=>{tally[p.id]=0;});
+  Object.entries(s.votes||{}).forEach(([vid,v])=>{
+    if(!v)return;
+    const voter=s.players[vid];
+    if(!isFinal&&voter?.char==='ghost')return; // Ghost vote invisible rounds 1-4
+    if(tally[v]!==undefined)tally[v]++;
+  });
+  Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
+    const pc=charOf(p);const cnt=tally[p.id]||0;
+    const d=el('div','row');d.style.cssText='justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bor)';
+    d.innerHTML=`<span class="sm">${pc.emoji} ${p.name}</span>${cnt>0?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red)">🗳️${cnt}</span>`:'<span class="sm mut">–</span>'}`;
+    votesEl.appendChild(d);
+  });
+
+  // Ready to vote button
+  const me=s.players[myId];
+  const rvBtn=document.getElementById('b-readyvote');
+  const readyVotes=s.readyVotes||{};
+  const alreadyReady=readyVotes[myId];
+  rvBtn.textContent=alreadyReady?'✓ Ready to Vote':'✓ Ready to Vote';
+  rvBtn.style.opacity=alreadyReady?'.5':'1';
+  rvBtn.disabled=!!alreadyReady;
+
+  // Host controls
+  const allReady=Object.values(s.players).every(p=>p.disappeared||(s.readyVotes||{})[p.id]);
+  document.getElementById('tc-host').style.display=s.host===myId?'block':'none';
+  document.getElementById('tc-wait').style.display=s.host===myId?'none':'block';
+  if(s.host===myId){
+    document.getElementById('b-startvote').textContent=allReady?'🗳️ Everyone Ready — Start Voting!':'🗳️ Start Voting';
   }
 }
 
-// ── VOTING ────────────────────────────────────────────────────────────────
+async function readyToVote(){
+  if(readyVoteClicked)return;
+  readyVoteClicked=true;
+  await update(ref(db,`rooms/${roomCode}/readyVotes/${myId}`),true);
+  toast('Marked as ready to vote!');
+}
+
+async function startVoting(){
+  await update(ref(db,`rooms/${roomCode}`),{status:'voting'});
+}
+
+// ── VOTING SCREEN ─────────────────────────────────────────────────────────
+function renderVotingScreen(s){
+  ss('s-game'); // reuse game screen for voting
+  const me=s.players[myId];if(!me)return;
+  const myDC=isDC(s,myId);
+
+  document.getElementById('g-code').textContent=s.code;
+  document.getElementById('g-rnd').textContent=s.round;
+  document.getElementById('g-tot').textContent=s.totalRounds;
+
+  const pips=document.getElementById('g-pips');pips.innerHTML='';
+  for(let i=1;i<=s.totalRounds;i++){
+    const p=el('div','pip'+(i<s.round?' done':i===s.round?' act':''));p.textContent=i;pips.appendChild(p);
+  }
+  document.getElementById('g-abadge').innerHTML=`<span class="abadge" style="background:rgba(232,67,90,.1);border:1px solid var(--red);color:var(--red)">🗳️ Voting</span>`;
+  document.getElementById('g-mybadge').innerHTML=myDC?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red)">🐱 Drunk Cat</span>`:`<span class="tag" style="background:rgba(76,175,125,.12);color:var(--grn)">🔍 Hunter</span>`;
+  document.getElementById('g-event').style.display='none';
+  document.getElementById('g-tbox').style.display='none';
+  document.getElementById('g-announce').style.display='none';
+  document.getElementById('g-challenge').style.display='none';
+
+  const gc=document.getElementById('g-action');
+  const gh=document.getElementById('g-hand');
+  const gb=document.getElementById('g-bot');
+  const ghl=document.getElementById('g-hlabel');
+  gc.innerHTML='';gh.innerHTML='';gb.innerHTML='';ghl.style.display='none';
+  renderVoting(s,me,myDC,gc,gb);
+
+  // Player strip
+  const gps=document.getElementById('g-ps');gps.innerHTML='';
+  Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
+    const pc=charOf(p);const cnt=Object.values(s.votes||{}).filter(v=>v===p.id).length;
+    const d=el('div','pchip');
+    d.innerHTML=`<div style="font-size:16px">${pc.emoji}</div><div style="font-size:10px;font-weight:700;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:58px">${p.name.split(' ')[0]}</div>${cnt>0?`<div style="font-size:9px;color:var(--red)">🗳️${cnt}</div>`:''}`;
+    gps.appendChild(d);
+  });
+  document.getElementById('g-mypen').style.display='none';
+}
+
 function renderVoting(s,me,myDC,gc,gb){
   const myVote=s.votes&&s.votes[myId];
   const mySkipped=s.skippedVotes&&s.skippedVotes[myId];
   const isFinal=s.round>=s.totalRounds;
-  const showGhostVotes=me.char==='pream'||me.char==='ghost';
+  const isGhost=me.char==='ghost';
+  const showGhostVotes=(me.char==='mother'||isGhost);
 
-  const info=el('div');
-  info.style.cssText='background:rgba(232,67,90,.05);border:1px solid rgba(232,67,90,.2);border-radius:var(--r);padding:12px 14px';
+  const info=el('div');info.style.cssText='background:rgba(232,67,90,.05);border:1px solid rgba(232,67,90,.2);border-radius:var(--r);padding:11px 13px';
   info.innerHTML=`<div style="font-weight:800;color:var(--red);margin-bottom:3px">🗳️ VOTING${isFinal?' — FINAL ELIMINATION!':''}</div>
-    <div class="sm mut">${isFinal?'Most votes = eliminated. Catch the Drunk Cat!':'Most votes = 🍺 drink + cards greyed next round (once only).'}</div>`;
+    <div class="sm mut">${isFinal?'Most votes eliminated. Catch the Drunk Cat!':'Most votes = 🍺 drink + cards greyed next round (once only).'}</div>`;
   gc.appendChild(info);
 
-  // Show current locked vote or vote picker
+  if(isGhost&&!isFinal){
+    const gn=el('div');gn.style.cssText='background:rgba(96,125,139,.08);border:1px solid rgba(96,125,139,.25);border-radius:var(--rs);padding:8px 11px;font-size:12px';
+    gn.innerHTML='👻 <b>Phantom Vote:</b> Your vote is invisible this round. In Round 5 it counts!';
+    gc.appendChild(gn);
+  }
+
   if(!myVote&&!mySkipped){
     const vt=el('div');vt.style.cssText='font-size:10px;color:var(--mut);font-weight:700;letter-spacing:.5px;margin-top:2px';
-    vt.textContent='VOTE — TAP TO LOCK';gc.appendChild(vt);
+    vt.textContent='TAP TO LOCK YOUR VOTE';gc.appendChild(vt);
     Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
       const pc=charOf(p);
-      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length:Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
+      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length
+        :Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
       const btn=el('div','vbtn');
       btn.innerHTML=`<span>${pc.emoji} ${p.name}${p.id===myId?' (You)':''}</span>${vCnt>0?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red)">🗳️${vCnt}</span>`:''}`;
       btn.addEventListener('click',()=>castVote(p.id,s));
@@ -1316,50 +1463,44 @@ function renderVoting(s,me,myDC,gc,gb){
     const sk=el('button','btn bs');sk.style.cssText='font-size:12px;margin-top:4px';sk.textContent='Skip Vote this round';
     sk.addEventListener('click',()=>skipVote(s));gb.appendChild(sk);
   } else {
-    // Locked
     const vp=myVote?s.players[myVote]:null;
-    const locked=el('div');locked.style.cssText='background:rgba(232,67,90,.06);border:1px solid rgba(232,67,90,.25);border-radius:var(--rs);padding:10px 12px';
-    locked.innerHTML=mySkipped?`<div style="font-weight:700">✓ Skipped voting this round</div>`
-      :`<div style="font-weight:700">🔒 Locked on: <span style="color:var(--red)">${vp?charOf(vp).emoji+' '+vp.name:'?'}</span></div><div class="sm mut" style="margin-top:2px">Carries forward unless you use Vote Change</div>`;
+    const locked=el('div');locked.style.cssText='background:rgba(232,67,90,.05);border:1px solid rgba(232,67,90,.2);border-radius:var(--rs);padding:10px 12px';
+    locked.innerHTML=mySkipped?`<div style="font-weight:700">✓ Skipped this round</div>`
+      :`<div style="font-weight:700">🔒 Locked: <span style="color:var(--red)">${vp?charOf(vp).emoji+' '+vp.name:'?'}</span></div><div class="sm mut" style="margin-top:2px">Carries forward — use Vote Change to unlock</div>`;
     gc.appendChild(locked);
 
-    // Vote tally
+    // Tally
     const tallyDiv=el('div','col');tallyDiv.style.marginTop='6px';
     Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
       const pc=charOf(p);
-      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length:Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
+      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length
+        :Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
       const d=el('div','row');d.style.cssText='justify-content:space-between;padding:4px 0';
       d.innerHTML=`<span class="sm">${pc.emoji} ${p.name}${p.id===myId?' (You)':''}</span>${vCnt>0?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red);font-size:10px">🗳️${vCnt}</span>`:'<span class="sm mut">–</span>'}`;
       tallyDiv.appendChild(d);
     });
     gc.appendChild(tallyDiv);
 
-    // Vote Change card
     if(myVote&&(me.hand||[]).includes('votechange')&&!isGreyed(me,s.round)){
-      const vcb=el('button','btn bs');vcb.style.cssText='font-size:12px;border-color:rgba(245,166,35,.3)';
-      vcb.innerHTML='🗳️ Vote Change — unlock your vote (costs 1 card)';
-      vcb.addEventListener('click',()=>useVoteChange(s));
-      gb.appendChild(vcb);
+      const vcb=el('button','btn bs');vcb.style.cssText='font-size:12px;border-color:rgba(245,166,35,.25)';
+      vcb.innerHTML='🗳️ Vote Change — unlock your vote';
+      vcb.addEventListener('click',()=>useVoteChange(s));gb.appendChild(vcb);
     }
   }
 
-  // Dave Final Verdict
-  if(me.char==='dave'&&!me.activePowerUsed){
-    const dvb=el('button','btn bs');dvb.style.cssText='border-color:rgba(74,158,255,.3);font-size:12px;margin-top:4px';
-    dvb.innerHTML='🎮 Final Verdict — Wipe all votes & revote!';
+  if(me.char==='gamemaster'&&!me.activePowerUsed){
+    const dvb=el('button','btn bs');dvb.style.cssText='border-color:rgba(74,158,255,.25);font-size:12px;margin-top:4px';
+    dvb.innerHTML='🎮 Final Verdict — Wipe all votes!';
     dvb.addEventListener('click',async()=>{
       const u={[`rooms/${roomCode}/votes`]:{},[`rooms/${roomCode}/skippedVotes`]:{},[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
-      await logAndUpdate(s,`${me.name} used 🎮 Final Verdict — all votes wiped! Vote again!`,u);
-    });
-    gb.appendChild(dvb);
+      await logAndUpdate(s,`${me.name} used 🎮 Final Verdict — votes wiped!`,u);
+    });gb.appendChild(dvb);
   }
 
-  // Host end voting
   if(gameState&&gameState.host===myId){
     const advBtn=el('button','btn bp');advBtn.style.marginTop='4px';
     advBtn.textContent='🔒 Lock Votes & End Voting';
-    advBtn.addEventListener('click',()=>endVoting(s));
-    gb.appendChild(advBtn);
+    advBtn.addEventListener('click',()=>endVoting(s));gb.appendChild(advBtn);
   } else {
     const w=el('div');w.style.cssText='text-align:center;color:var(--mut);font-size:12px;padding:6px';
     w.textContent='Waiting for host to lock votes...';gb.appendChild(w);
@@ -1368,27 +1509,32 @@ function renderVoting(s,me,myDC,gc,gb){
 
 async function castVote(targetId,s){
   await update(ref(db,`rooms/${roomCode}/votes`),{[myId]:targetId});
-  toast(`🔒 Vote locked on ${s.players[targetId]?.name||'?'}`);
+  toast(`🔒 Locked on ${s.players[targetId]?.name||'?'}`);
 }
 async function skipVote(s){
   await update(ref(db,`rooms/${roomCode}/skippedVotes`),{[myId]:true});
-  toast('Vote skipped this round');
+  toast('Vote skipped');
 }
 async function useVoteChange(s){
   const me=s.players[myId];
   const h=[...(me.hand||[])];const i=h.indexOf('votechange');if(i>-1)h.splice(i,1);
   await update(ref(db),{[`rooms/${roomCode}/players/${myId}/hand`]:h,[`rooms/${roomCode}/votes/${myId}`]:null,[`rooms/${roomCode}/skippedVotes/${myId}`]:null});
-  toast('Vote unlocked — pick again! 🗳️');
+  toast('Vote unlocked! 🗳️');
 }
 
 async function endVoting(s){
   const players=Object.values(s.players).filter(p=>!p.disappeared);
   const tally={};players.forEach(p=>{tally[p.id]=0;});
-  Object.values(s.votes||{}).forEach(v=>{if(v&&tally[v]!==undefined)tally[v]++;});
+  const isFinal=s.round>=s.totalRounds;
+  Object.entries(s.votes||{}).forEach(([vid,v])=>{
+    if(!v)return;
+    const voter=s.players[vid];
+    if(!isFinal&&voter?.char==='ghost')return;
+    if(tally[v]!==undefined)tally[v]++;
+  });
   const maxV=Math.max(...Object.values(tally),0);
   const top=Object.keys(tally).filter(id=>tally[id]===maxV&&maxV>0);
   const penId=top.length?top[Math.floor(Math.random()*top.length)]:null;
-  const isFinal=s.round>=s.totalRounds;
   const caught=penId&&penId===s.drunkCat;
 
   if(isFinal){
@@ -1398,15 +1544,12 @@ async function endVoting(s){
 
   const penPlayer=penId?s.players[penId]:null;
   const u={};
-
-  // Penalise only if not already penalised
   if(penPlayer&&!penPlayer.penalised){
     u[`rooms/${roomCode}/players/${penId}/penalties`]=(penPlayer.penalties||0)+1;
     u[`rooms/${roomCode}/players/${penId}/penalised`]=true;
     u[`rooms/${roomCode}/players/${penId}/penaltyRound`]=s.round+1;
   }
 
-  // New round setup — votes carry forward
   const newOrder=shuf(players.map(p=>p.id));
   players.forEach(p=>{
     if(!s.punchlineActive){
@@ -1415,9 +1558,12 @@ async function endVoting(s){
     u[`rooms/${roomCode}/players/${p.id}/spotlighted`]=false;
     u[`rooms/${roomCode}/players/${p.id}/disappeared`]=false;
     u[`rooms/${roomCode}/players/${p.id}/covered`]=false;
+    u[`rooms/${roomCode}/players/${p.id}/ready`]=false;
+    u[`rooms/${roomCode}/players/${p.id}/readyVote`]=false;
+    u[`rooms/${roomCode}/players/${p.id}/innerBeastTargets`]=null;
   });
 
-  const evStr=penPlayer&&!penPlayer.penalised?`${charOf(penPlayer).emoji} ${penPlayer.name} got most votes — 🍺 drink + cards greyed!`:'No new majority — votes carry forward.';
+  const evStr=penPlayer&&!penPlayer.penalised?`${charOf(penPlayer).emoji} ${penPlayer.name} gets most votes — 🍺 drink!`:'No new penalty — votes carry forward.';
   const lg=[...(s.eventLog||[]),evStr].slice(-20);
 
   u[`rooms/${roomCode}/status`]='round-results';
@@ -1432,34 +1578,31 @@ async function endVoting(s){
   u[`rooms/${roomCode}/innerBeastActive`]=false;
   u[`rooms/${roomCode}/freePourActive`]=false;
   u[`rooms/${roomCode}/announcement`]=null;
+  u[`rooms/${roomCode}/challengeActive`]=null;
+  u[`rooms/${roomCode}/revealPending`]=null;
   u[`rooms/${roomCode}/recentEvent`]=evStr;
   u[`rooms/${roomCode}/eventLog`]=lg;
-  // Skipped votes reset each round
   u[`rooms/${roomCode}/skippedVotes`]={};
+  u[`rooms/${roomCode}/roundPlays`]=[];
+  u[`rooms/${roomCode}/readyVotes`]={};
   await update(ref(db),u);
 }
 
 // ── RESULTS ───────────────────────────────────────────────────────────────
 function renderResults(s){
   ss('s-results');
-  // Check if attacker needs to see reveal result
-  checkRevealResult(s);
   const r=s.roundResult||{};
   const pen=r.penalizedId?s.players[r.penalizedId]:null;
   const pc=pen?charOf(pen):{emoji:'?'};
   document.getElementById('res-top').innerHTML=`<div style="font-size:46px">🍺</div>
     <div style="font-size:21px;font-weight:900;margin:8px 0">Round ${r.round} Over!</div>
-    ${pen?`<div style="font-size:14px;color:var(--red);font-weight:700">${pc.emoji} ${pen.name} got the most votes!</div>
-    <div class="sm mut" style="margin-top:4px">🍺 Drink + cards greyed next round</div>`:'<div class="mut sm">No new penalty this round.</div>'}`;
+    ${pen?`<div style="font-size:14px;color:var(--red);font-weight:700">${pc.emoji} ${pen.name} — most votes!</div><div class="sm mut" style="margin-top:4px">🍺 Drink + cards greyed next round</div>`:'<div class="mut sm">No new penalty.</div>'}`;
 
   const rt=document.getElementById('res-tally');rt.innerHTML='';
   Object.entries(r.tally||{}).sort((a,b)=>b[1]-a[1]).forEach(([id,v])=>{
-    const p=s.players[id];if(!p)return;
-    const ch=charOf(p);
+    const p=s.players[id];if(!p)return;const ch=charOf(p);
     const d=el('div','pi');
-    d.innerHTML=`<div class="av" style="width:24px;height:24px;font-size:13px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div>
-      <div style="flex:1;font-size:13px;font-weight:700">${p.name}</div>
-      <div style="font-weight:800;color:${v>0?'var(--red)':'var(--mut)'}">${v} vote${v!==1?'s':''}</div>`;
+    d.innerHTML=`<div class="av" style="width:24px;height:24px;font-size:12px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1;font-size:13px;font-weight:700">${p.name}</div><div style="font-weight:800;color:${v>0?'var(--red)':'var(--mut)'}">${v} vote${v!==1?'s':''}</div>`;
     rt.appendChild(d);
   });
 
@@ -1468,7 +1611,7 @@ function renderResults(s){
     const btn=el('button','btn bp');btn.textContent=`▶️ Start Round ${(r.round||0)+1}`;
     btn.addEventListener('click',async()=>{
       await update(ref(db),{[`rooms/${roomCode}/status`]:'role-reveal',[`rooms/${roomCode}/round`]:(r.round||0)+1,[`rooms/${roomCode}/roundResult`]:null});
-      peekDone=false;powerActivated=false;selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;
+      selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;revealShownTs=0;readyVoteClicked=false;
     });
     ra.appendChild(btn);
   } else {
@@ -1480,20 +1623,16 @@ function renderResults(s){
 // ── FINAL ─────────────────────────────────────────────────────────────────
 function renderFinal(s){
   ss('s-final');
-  const r=s.finalResult||{};
-  const dc=r.drunkCat?s.players[r.drunkCat]:null;
-  const dcc=dc?charOf(dc):{emoji:'🐱',color:'var(--red)',name:'?'};
+  const r=s.finalResult||{};const dc=r.drunkCat?s.players[r.drunkCat]:null;const dcc=dc?charOf(dc):{emoji:'🐱',color:'var(--red)',name:'?'};
   document.getElementById('fin-top').innerHTML=r.winner==='drunkcat'
-    ?`<div style="font-size:56px">🐱🎉</div><div style="font-size:22px;font-weight:900;margin:10px 0;color:var(--red)">The Drunk Cat Wins!</div>${dc?`<div style="font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat all along!</div>`:''}<div class="sm mut" style="margin-top:8px">All Hunters drink! 🍺🍺🍺</div>`
+    ?`<div style="font-size:56px">🐱🎉</div><div style="font-size:22px;font-weight:900;margin:10px 0;color:var(--red)">The Drunk Cat Wins!</div>${dc?`<div style="font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat!</div>`:''}<div class="sm mut" style="margin-top:8px">All Hunters drink! 🍺🍺🍺</div>`
     :`<div style="font-size:56px">🔍🎉</div><div style="font-size:22px;font-weight:900;margin:10px 0;color:var(--grn)">Hunters Win!</div>${dc?`<div style="font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat!</div>`:''}<div class="sm mut" style="margin-top:8px">Drunk Cat drinks big! 🍺🍺🍺🍺</div><div style="margin-top:10px;font-size:13px;color:var(--acc);font-weight:700">⚡ SUDDEN DEATH — everyone drinks!</div>`;
 
   const fr=document.getElementById('fin-rev');fr.innerHTML='';
   Object.values(s.players).forEach(p=>{
     const ch=charOf(p);const myIsdc=p.id===s.drunkCat;
     const d=el('div','pi');d.style.borderColor=myIsdc?'var(--red)':'transparent';
-    d.innerHTML=`<div class="av" style="width:26px;height:26px;font-size:13px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div>
-      <div style="flex:1"><div style="font-size:13px;font-weight:700">${p.name}${myIsdc?' 🐱':''}</div><div class="sm mut">${ch.name} — ${ch.title}</div></div>
-      <div class="sm" style="font-weight:700;color:${myIsdc?'var(--red)':'var(--grn)'}">${myIsdc?'Drunk Cat':'Hunter'}</div>`;
+    d.innerHTML=`<div class="av" style="width:26px;height:26px;font-size:13px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.name}${myIsdc?' 🐱':''}</div><div class="sm mut">${ch.name}</div></div><div class="sm" style="font-weight:700;color:${myIsdc?'var(--red)':'var(--grn)'}">${myIsdc?'Drunk Cat':'Hunter'}</div>`;
     fr.appendChild(d);
   });
 }
