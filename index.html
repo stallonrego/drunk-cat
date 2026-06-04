@@ -273,7 +273,7 @@ const CARD_DEFS=[
   {id:"cover",cat:"Save",emoji:"🛡️",name:"Cover",color:"#4a9eff",targeted:true,reactive:true,bystanderOnly:true,desc:"Any bystander can protect another player — cancels the current card played against them. Cannot use on yourself.",drama:["I've got your back! 🛡️","Taking one for the team! 🤝","Protected! 🛡️"]},
   {id:"votechange",cat:"Special",emoji:"🗳️",name:"Vote Change",color:"#f5a623",targeted:false,votingOnly:true,desc:"Change your locked vote. Voting phase only.",drama:["Changed my mind! 🗳️","Plot twist! 🔄","Actually... it was YOU! 😤"]},
   {id:"reveal",cat:"Special",emoji:"🕵️",name:"Reveal",color:"#f5a623",targeted:true,desc:"Discover if target is the Drunk Cat. Shown privately to you only — after target responds.",drama:["The truth will out! 🕵️","Who are you REALLY?! 🎭","Time to unmask! 🎭"]},
-  {id:"catshield",cat:"Special",emoji:"🛡️",name:"Cat Shield",color:"#f5a623",targeted:false,reactive:true,revealOnly:true,desc:"Drunk Cat only — counters a Reveal card. Protects your identity.",drama:["Sorry! Identity protected 🛡️","Nice try! 😸","The cat has claws! 🐱"]},
+  {id:"catshield",cat:"Special",emoji:"🛡️",name:"Cat Shield",color:"#f5a623",targeted:false,reactive:true,revealOnly:true,desc:"Counter a Reveal card played against you. Protects your identity — anyone can use this!",drama:["Sorry! Identity protected 🛡️","Nice try! 😸","The cat has claws! 🐱"]},
 ];
 function buildDeck(){
   const d=[];
@@ -290,15 +290,18 @@ const drama=cd=>cd&&cd.drama?cd.drama[Math.floor(Math.random()*cd.drama.length)]
 
 function dealHand(isDC,ch){
   const sz=capOf(ch);
+  // All players draw from pool excluding cat shield
   const pool=DECK.filter(id=>id!=='catshield'&&!cObj(id)?.votingOnly);
   const hand=shuf(pool).slice(0,isDC?sz-1:sz);
+  // Drunk Cat always gets 1 Cat Shield guaranteed in starting hand
   if(isDC)hand.push('catshield');
   return hand;
 }
 function drawOne(isDC,hand,ch){
   const cap=capOf(ch);
   if((hand||[]).length>=cap)return hand||[];
-  const pool=DECK.filter(id=>!cObj(id)?.votingOnly&&id!=='catshield');
+  // Cat Shield is now in general pool — any player can draw one
+  const pool=DECK.filter(id=>!cObj(id)?.votingOnly);
   return[...(hand||[]),shuf(pool)[0]];
 }
 
@@ -895,7 +898,7 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
       }
     } else {
       // Reveal — only Cat Shield or Pass
-      if(myDC&&(me.hand||[]).includes('catshield')){
+      if((me.hand||[]).includes('catshield')){
         const csb=el('button','btn bs');csb.style.cssText='border-color:rgba(245,166,35,.35)';
         csb.innerHTML='🛡️ Cat Shield — protect identity!';
         csb.addEventListener('click',()=>doRespond('catshield',(me.hand||[]).indexOf('catshield'),null,s));
