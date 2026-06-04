@@ -243,7 +243,7 @@ const CHARS={
     passive:{name:"Pour Heavy",desc:"When you play any targeted attack card, target takes 1 extra drink automatically."},
     active:{name:"Free Pour",type:"Attack",desc:"Your next targeted attack card this turn deals double drink penalty AND target skips their next turn."}},
   gamemaster:{name:"The Game Master",emoji:"🎮",color:"#4a9eff",inspiration:"Inspired by Dave",
-    passive:{name:"Challenge",desc:"When any card is played, He can pause the game. He may then save the target (like Cover) or double their penalty. Host dismisses."},
+    passive:{name:"Challenge",desc:"When any card is played, he can pause the game. He may then save the target (like Cover) or double their penalty. Host dismisses."},
     active:{name:"Final Verdict",type:"Voting",desc:"Wipe all current votes and force everyone to vote again. Voting phase only."}},
   strategist:{name:"The Strategist",emoji:"⚡",color:"#00bcd4",inspiration:"Inspired by Lynn",
     passive:{name:"Read the Room",desc:"At round start, privately see how many cards each player is holding."},
@@ -558,9 +558,14 @@ function renderRoleReveal(s){
 }
 
 async function goReady(){
+  // Mark this player as ready
   await update(ref(db,`rooms/${roomCode}/players/${myId}`),{ready:true});
-  // Transition to waiting room
-  await update(ref(db,`rooms/${roomCode}`),{status:'waiting-room'});
+  // Only show waiting room on THIS player's screen
+  ss('s-waiting');
+  // If host, also update room status so waiting room renders for host
+  if(gameState&&gameState.host===myId){
+    await update(ref(db,`rooms/${roomCode}`),{status:'waiting-room'});
+  }
 }
 
 // ── WAITING ROOM ──────────────────────────────────────────────────────────
