@@ -222,8 +222,15 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 import{getDatabase,ref,set,get,update,onValue}from"https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
-const app=initializeApp({apiKey:"AIzaSyD8PYAm3ooJmP6Ktft0ObdriWVSUjzRSAI",authDomain:"drunk-cat.firebaseapp.com",databaseURL:"https://drunk-cat-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"drunk-cat",storageBucket:"drunk-cat.firebasestorage.app",messagingSenderId:"156236362904",appId:"1:156236362904:web:a501717623eec000388ced"});
-const db=getDatabase(app);
+
+let app,db;
+try{
+  app=initializeApp({apiKey:"AIzaSyD8PYAm3ooJmP6Ktft0ObdriWVSUjzRSAI",authDomain:"drunk-cat.firebaseapp.com",databaseURL:"https://drunk-cat-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"drunk-cat",storageBucket:"drunk-cat.firebasestorage.app",messagingSenderId:"156236362904",appId:"1:156236362904:web:a501717623eec000388ced"});
+  db=getDatabase(app);
+}catch(e){
+  console.error('Firebase init error:',e);
+  document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;text-align:center;color:#f0f0f0;font-family:system-ui"><div><div style="font-size:48px">🐱</div><h2 style="margin:12px 0;color:#f5a623">Connection Error</h2><p style="color:#777;font-size:14px">Could not connect to Firebase. Please check your internet connection and refresh the page.</p><button onclick="location.reload()" style="margin-top:16px;background:#f5a623;color:#000;border:none;padding:12px 24px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer">🔄 Refresh</button></div></div>';
+}
 
 // ── CHARACTERS ────────────────────────────────────────────────────────────
 const CHARS={
@@ -348,23 +355,32 @@ function initRules(){
 
 // ── WIRE ──────────────────────────────────────────────────────────────────
 function wire(){
-  document.getElementById('b-create').addEventListener('click',()=>ss('s-create'));
-  document.getElementById('b-join').addEventListener('click',()=>ss('s-join'));
-  document.getElementById('b-rules').addEventListener('click',()=>{ss('s-rules');initRules();});
-  document.getElementById('b-rules-back').addEventListener('click',()=>ss('s-landing'));
-  document.getElementById('b-create-back').addEventListener('click',()=>ss('s-landing'));
-  document.getElementById('b-join-back').addEventListener('click',()=>ss('s-landing'));
-  document.getElementById('b-again').addEventListener('click',()=>location.reload());
-  document.getElementById('b-create-room').addEventListener('click',createRoom);
-  document.getElementById('b-join-room').addEventListener('click',joinRoom);
-  document.getElementById('b-start').addEventListener('click',startGame);
-  document.getElementById('b-ready').addEventListener('click',goReady);
-  document.getElementById('b-start-round').addEventListener('click',startRound);
-  document.getElementById('b-readyvote').addEventListener('click',markReadyVote);
-  document.getElementById('b-startvote').addEventListener('click',startVoting);
-  document.getElementById('join-code').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase());
+  // Bind each button safely — skip if element not found
+  const on=(id,ev,fn)=>{const el=document.getElementById(id);if(el)el.addEventListener(ev,fn);};
+  on('b-create','click',()=>ss('s-create'));
+  on('b-join','click',()=>ss('s-join'));
+  on('b-rules','click',()=>{ss('s-rules');initRules();});
+  on('b-rules-back','click',()=>ss('s-landing'));
+  on('b-create-back','click',()=>ss('s-landing'));
+  on('b-join-back','click',()=>ss('s-landing'));
+  on('b-again','click',()=>location.reload());
+  on('b-create-room','click',createRoom);
+  on('b-join-room','click',joinRoom);
+  on('b-start','click',startGame);
+  on('b-ready','click',goReady);
+  on('b-start-round','click',startRound);
+  on('b-readyvote','click',markReadyVote);
+  on('b-startvote','click',startVoting);
+  on('join-code','input',e=>e.target.value=e.target.value.toUpperCase());
 }
-document.readyState==='loading'?document.addEventListener('DOMContentLoaded',wire):wire();
+
+// Run wire() safely — catches any init errors so buttons always work
+function safeWire(){
+  try{wire();}catch(e){console.error('Wire error:',e);}
+}
+document.readyState==='loading'
+  ?document.addEventListener('DOMContentLoaded',safeWire)
+  :safeWire();
 
 // ── FIREBASE ──────────────────────────────────────────────────────────────
 function subRoom(){
@@ -1573,7 +1589,4 @@ function renderResults(s){
     ${pen?`<div style="font-size:14px;color:var(--red);font-weight:700">${pc.emoji} ${pen.name} — most votes!</div><div class="sm mut" style="margin-top:4px">🍺 Drink + cards greyed next round</div>`:'<div class="mut sm">No new penalty.</div>'}`;
 
   const rt=document.getElementById('res-tally');rt.innerHTML='';
-  Object.entries(r.tally||{}).sort((a,b)=>b[1]-a[1]).forEach(([id,v])=>{
-    const p=s.players[id];if(!p)return;const ch=charOf(p);
-    const d=el('div','pi');
-    d.innerHTML=`<div class="av" style="width:24px;height:24px;font-size:12px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1;font-size:13px;font-weight:700">${p.name}</div><div style="font-weight:800;color:${v>0?'var(--red)':'var(--mut
+  Object.ent
