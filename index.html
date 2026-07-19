@@ -1589,4 +1589,46 @@ function renderResults(s){
     ${pen?`<div style="font-size:14px;color:var(--red);font-weight:700">${pc.emoji} ${pen.name} — most votes!</div><div class="sm mut" style="margin-top:4px">🍺 Drink + cards greyed next round</div>`:'<div class="mut sm">No new penalty.</div>'}`;
 
   const rt=document.getElementById('res-tally');rt.innerHTML='';
-  Object.ent
+  Object.entries(r.tally||{}).sort((a,b)=>b[1]-a[1]).forEach(([id,v])=>{
+    const p=s.players[id];if(!p)return;const ch=charOf(p);
+    const d=el('div','pi');
+    d.innerHTML=`<div class="av" style="width:24px;height:24px;font-size:12px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1;font-size:13px;font-weight:700">${p.name}</div><div style="font-weight:800;color:${v>0?'var(--red)':'var(--mut)'}">${v} vote${v!==1?'s':''}</div>`;
+    rt.appendChild(d);
+  });
+
+  const ra=document.getElementById('res-acts');ra.innerHTML='';
+  if(gameState&&gameState.host===myId){
+    const btn=el('button','btn bp');btn.textContent=`▶️ Start Round ${(r.round||0)+1}`;
+    btn.addEventListener('click',async()=>{
+      const u={[`rooms/${roomCode}/status`]:'role-reveal',[`rooms/${roomCode}/round`]:(r.round||0)+1,[`rooms/${roomCode}/roundResult`]:null};
+      // Reset ready flags for new round
+      Object.values(s.players).forEach(p=>{u[`rooms/${roomCode}/players/${p.id}/ready`]=false;});
+      await update(ref(db),u);
+      selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;revealShownTs=0;readyVoteClicked=false;readyClicked=false;
+    });
+    ra.appendChild(btn);
+  } else {
+    const w=el('div');w.style.cssText='color:var(--mut);font-size:13px;text-align:center';
+    w.textContent='Waiting for host to start next round...';ra.appendChild(w);
+  }
+}
+
+// ── FINAL ─────────────────────────────────────────────────────────────────
+function renderFinal(s){
+  ss('s-final');
+  const r=s.finalResult||{};const dc=r.drunkCat?s.players[r.drunkCat]:null;const dcc=dc?charOf(dc):{emoji:'🐱',color:'var(--red)',name:'?'};
+  document.getElementById('fin-top').innerHTML=r.winner==='drunkcat'
+    ?`<div style="font-size:56px">🐱🎉</div><div style="font-size:22px;font-weight:900;margin:10px 0;color:var(--red)">The Drunk Cat Wins!</div>${dc?`<div style="font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat!</div>`:''}<div class="sm mut" style="margin-top:8px">All Hunters drink! 🍺🍺🍺</div>`
+    :`<div style="font-size:56px">🔍🎉</div><div style="font-size:22px;font-weight:900;margin:10px 0;color:var(--grn)">Hunters Win!</div>${dc?`<div style="font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat!</div>`:''}<div class="sm mut" style="margin-top:8px">Drunk Cat drinks big! 🍺🍺🍺🍺</div><div style="margin-top:10px;font-size:13px;color:var(--acc);font-weight:700">⚡ SUDDEN DEATH — everyone drinks!</div>`;
+
+  const fr=document.getElementById('fin-rev');fr.innerHTML='';
+  Object.values(s.players).forEach(p=>{
+    const ch=charOf(p);const myIsdc=p.id===s.drunkCat;
+    const d=el('div','pi');d.style.borderColor=myIsdc?'var(--red)':'transparent';
+    d.innerHTML=`<div class="av" style="width:26px;height:26px;font-size:13px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.name}${myIsdc?' 🐱':''}</div><div class="sm mut">${ch.name}</div></div><div class="sm" style="font-weight:700;color:${myIsdc?'var(--red)':'var(--grn)'}">${myIsdc?'Drunk Cat':'Hunter'}</div>`;
+    fr.appendChild(d);
+  });
+}
+</script>
+</body>
+</html>
