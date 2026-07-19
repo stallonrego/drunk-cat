@@ -15,7 +15,6 @@ input:focus,select:focus{border-color:var(--acc)}
 .btn{padding:11px 16px;border-radius:var(--rs);font-size:14px;width:100%;display:block;text-align:center;font-weight:700}
 .bp{background:var(--acc);color:#000}
 .bs{background:var(--s3);color:var(--txt);border:1.5px solid var(--bor)}
-.br{background:var(--red);color:#fff}
 .bsm{width:auto;padding:7px 12px;font-size:12px}
 .card{background:var(--s1);border-radius:var(--r);padding:14px;border:1px solid var(--bor)}
 .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
@@ -159,19 +158,17 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
     <div class="ctr"><div style="font-size:36px">⏳</div><h2 style="margin-top:6px">Waiting Room</h2><div class="mut sm" style="margin-top:4px">Round <span id="wr-rnd">1</span> — Everyone ready up!</div></div>
     <div class="card col"><div class="stitle">PLAYER READINESS</div><div id="wr-players" class="col"></div></div>
     <div id="wr-host" style="display:none"><button class="btn bp" id="b-start-round">▶️ Start Round</button></div>
-    <div id="wr-wait" class="ctr mut sm">Waiting for host to start the round...</div>
+    <div id="wr-wait" class="ctr mut sm" style="display:none">Waiting for host to start the round...</div>
   </div>
 </div>
 
 <!-- TURN COMPLETE -->
 <div class="screen" id="s-turncomplete">
   <div style="max-width:440px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:12px">
-    <div class="ctr"><div style="font-size:32px">🎴</div><h2 style="margin-top:6px">Round <span id="tc-rnd"></span> Turns Complete</h2><div class="mut sm" style="margin-top:4px">Here's what happened</div></div>
+    <div class="ctr"><div style="font-size:32px">🎴</div><h2 style="margin-top:6px">Round <span id="tc-rnd"></span> — Turns Done!</h2><div class="mut sm" style="margin-top:4px">Review and ready up for voting</div></div>
     <div class="card col"><div class="stitle">CARDS PLAYED THIS ROUND</div><div id="tc-plays" class="col"></div></div>
-    <div class="card col">
-      <div class="stitle">CURRENT VOTE STANDINGS</div>
-      <div id="tc-votes" class="col"></div>
-    </div>
+    <div class="card col"><div class="stitle">CURRENT VOTE STANDINGS</div><div id="tc-votes" class="col"></div></div>
+    <div id="tc-ready-status" class="card col"><div class="stitle">READINESS</div><div id="tc-ready-list" class="col"></div></div>
     <button class="btn bs" id="b-readyvote">✓ Ready to Vote</button>
     <div id="tc-host" style="display:none"><button class="btn bp" id="b-startvote">🗳️ Start Voting</button></div>
     <div id="tc-wait" class="ctr mut sm" style="display:none">Waiting for host to start voting...</div>
@@ -228,10 +225,10 @@ import{getDatabase,ref,set,get,update,onValue}from"https://www.gstatic.com/fireb
 const app=initializeApp({apiKey:"AIzaSyD8PYAm3ooJmP6Ktft0ObdriWVSUjzRSAI",authDomain:"drunk-cat.firebaseapp.com",databaseURL:"https://drunk-cat-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"drunk-cat",storageBucket:"drunk-cat.firebasestorage.app",messagingSenderId:"156236362904",appId:"1:156236362904:web:a501717623eec000388ced"});
 const db=getDatabase(app);
 
-// ── CHARACTERS (titles only) ───────────────────────────────────────────────
+// ── CHARACTERS ────────────────────────────────────────────────────────────
 const CHARS={
   joker:{name:"The Joker",emoji:"🃏",color:"#f5a623",inspiration:"Inspired by Stallon",
-    passive:{name:"Misdirection",desc:"At round start, privately see one random card from one randomly chosen player."},
+    passive:{name:"Misdirection",desc:"At round start, secretly see one random card from one randomly chosen player."},
     active:{name:"Punchline",type:"Attack",desc:"All players skip drawing their new card at the start of next round."}},
   sleeper:{name:"The Sleeper",emoji:"😴",color:"#9b59b6",inspiration:"Inspired by Anuja",
     passive:{name:"Hoarder",desc:"Your hand cap is 6 cards. All others capped at 5."},
@@ -241,9 +238,9 @@ const CHARS={
     active:{name:"Curfew",type:"Attack",desc:"Privately see one random card from every player's hand — only you see. Then play your attack card."}},
   troublemaker:{name:"The Troublemaker",emoji:"🥃",color:"#e8435a",inspiration:"Inspired by Grace",
     passive:{name:"Pour Heavy",desc:"When you play any targeted attack card, target takes 1 extra drink automatically."},
-    active:{name:"Free Pour",type:"Attack",desc:"Your next targeted attack card this turn deals double drink penalty AND target skips their next turn."}},
+    active:{name:"Free Pour",type:"Attack",desc:"Your next targeted attack card deals double drink penalty AND target skips their next turn."}},
   gamemaster:{name:"The Game Master",emoji:"🎮",color:"#4a9eff",inspiration:"Inspired by Dave",
-    passive:{name:"Challenge",desc:"When any card is played, he can pause the game. He may then save the target (like Cover) or double their penalty. Host dismisses."},
+    passive:{name:"The Game Master's Challenge",desc:"When any card is played, The Game Master can pause the game. May save the target (like Cover) or double their penalty. Host dismisses."},
     active:{name:"Final Verdict",type:"Voting",desc:"Wipe all current votes and force everyone to vote again. Voting phase only."}},
   strategist:{name:"The Strategist",emoji:"⚡",color:"#00bcd4",inspiration:"Inspired by Lynn",
     passive:{name:"Read the Room",desc:"At round start, privately see how many cards each player is holding."},
@@ -253,13 +250,13 @@ const CHARS={
     active:{name:"Wild Play",type:"Save",desc:"In the response window, copy and apply the card played against you back to the attacker."}},
   ghost:{name:"The Ghost",emoji:"👻",color:"#607d8b",inspiration:"",
     passive:{name:"Phantom Vote",desc:"Rounds 1–4: Your vote is invisible and doesn't count. Round 5: Your vote appears and counts — potentially swinging the final tally."},
-    active:{name:"Disappear",type:"Save",desc:"Skip the entire round — untargetable, no cards, but CAN still vote. Once per game."}}
+    active:{name:"Disappear",type:"Save",desc:"Skip this round only — untargetable, no cards, but CAN still vote. Returns to normal next round. Once per game."}}
 };
 const CKEYS=Object.keys(CHARS);
 const charOf=p=>p&&p.char&&CHARS[p.char]?CHARS[p.char]:{name:"?",emoji:"🎲",color:"#888",passive:{name:"",desc:""},active:{name:"",desc:"",type:""}};
 const capOf=ch=>ch==="sleeper"?6:5;
 
-// ── CARDS (52 total: Attack×4, Save×4, Special×4) ─────────────────────────
+// ── CARDS ─────────────────────────────────────────────────────────────────
 const CARD_DEFS=[
   {id:"accuse",cat:"Attack",emoji:"⚖️",name:"Accuse",color:"#e8435a",targeted:true,desc:"Target drinks 1 unless they respond with a Save card.",drama:["Court is in session! ⚖️","You've been accused! 😤","The finger points at YOU! 👆"]},
   {id:"expose",cat:"Attack",emoji:"🔍",name:"Expose",color:"#e8435a",targeted:true,desc:"Target must choose one card from their hand to reveal publicly.",drama:["Nothing to hide? Think again! 🔍","Exposed! 😱","Your secrets are showing! 👀"]},
@@ -268,47 +265,37 @@ const CARD_DEFS=[
   {id:"waterfall",cat:"Attack",emoji:"🌊",name:"Waterfall",color:"#e8435a",targeted:true,desc:"You and target both drink. Target cannot stop until you stop.",drama:["The waterfall has no mercy! 🌊","Drink till I say stop! 🍺","Here comes the flood! 🌊"]},
   {id:"onthehouse",cat:"Attack",emoji:"🍻",name:"On the House",color:"#e8435a",targeted:true,desc:"Force a player to top up their glass. You pour it.",drama:["Top it up! 🍻","Feeling generous... 😈","Fill 'er up! 🍺"]},
   {id:"alibi",cat:"Save",emoji:"📋",name:"Alibi",color:"#4a9eff",targeted:false,reactive:true,desc:"Cancel any card played against you.",drama:["Not today! 📋","Case dismissed! ⚖️","I was somewhere else! 🙅"]},
-  {id:"deflect",cat:"Save",emoji:"↩️",name:"Deflect",color:"#4a9eff",targeted:false,reactive:true,desc:"Bounce any card played against you back to the attacker. They get a response window.",drama:["Boomerang! ↩️","Right back at ya! 😎","Mirror mirror! 🪞"]},
+  {id:"deflect",cat:"Save",emoji:"↩️",name:"Deflect",color:"#4a9eff",targeted:false,reactive:true,desc:"Bounce any card played against you back to the attacker.",drama:["Boomerang! ↩️","Right back at ya! 😎","Mirror mirror! 🪞"]},
   {id:"redirect",cat:"Save",emoji:"🔀",name:"Redirect",color:"#4a9eff",targeted:false,reactive:true,desc:"Send a card played against you to another player — they get a full response window.",drama:["Not my problem! 🔀","Try someone else! 😏","Re-routing... 🔀"]},
-  {id:"cover",cat:"Save",emoji:"🛡️",name:"Cover",color:"#4a9eff",targeted:true,reactive:true,bystanderOnly:true,desc:"Any bystander can protect another player — cancels the current card played against them. Cannot use on yourself.",drama:["I've got your back! 🛡️","Taking one for the team! 🤝","Protected! 🛡️"]},
+  {id:"cover",cat:"Save",emoji:"🛡️",name:"Cover",color:"#4a9eff",targeted:true,reactive:true,bystanderOnly:true,desc:"Any bystander can cancel the current attack on another player. Cannot use on yourself.",drama:["I've got your back! 🛡️","Taking one for the team! 🤝","Protected! 🛡️"]},
   {id:"votechange",cat:"Special",emoji:"🗳️",name:"Vote Change",color:"#f5a623",targeted:false,votingOnly:true,desc:"Change your locked vote. Voting phase only.",drama:["Changed my mind! 🗳️","Plot twist! 🔄","Actually... it was YOU! 😤"]},
   {id:"reveal",cat:"Special",emoji:"🕵️",name:"Reveal",color:"#f5a623",targeted:true,desc:"Discover if target is the Drunk Cat. Shown privately to you only — after target responds.",drama:["The truth will out! 🕵️","Who are you REALLY?! 🎭","Time to unmask! 🎭"]},
   {id:"catshield",cat:"Special",emoji:"🛡️",name:"Cat Shield",color:"#f5a623",targeted:false,reactive:true,revealOnly:true,desc:"Counter a Reveal card played against you. Protects your identity — anyone can use this!",drama:["Sorry! Identity protected 🛡️","Nice try! 😸","The cat has claws! 🐱"]},
 ];
-function buildDeck(){
-  const d=[];
-  CARD_DEFS.forEach(c=>{
-    const n=4; // All cards ×4 = 52 total
-    for(let i=0;i<n;i++)d.push(c.id);
-  });
-  return d;
-}
+function buildDeck(){const d=[];CARD_DEFS.forEach(c=>{for(let i=0;i<4;i++)d.push(c.id);});return d;}
 const DECK=buildDeck();
 const cObj=id=>CARD_DEFS.find(c=>c.id===id);
 const shuf=a=>[...a].sort(()=>Math.random()-.5);
-const drama=cd=>cd&&cd.drama?cd.drama[Math.floor(Math.random()*cd.drama.length)]:'';
+const drm=cd=>cd&&cd.drama?cd.drama[Math.floor(Math.random()*cd.drama.length)]:'';
 
 function dealHand(isDC,ch){
   const sz=capOf(ch);
-  // All players draw from pool excluding cat shield
   const pool=DECK.filter(id=>id!=='catshield'&&!cObj(id)?.votingOnly);
   const hand=shuf(pool).slice(0,isDC?sz-1:sz);
-  // Drunk Cat always gets 1 Cat Shield guaranteed in starting hand
   if(isDC)hand.push('catshield');
   return hand;
 }
 function drawOne(isDC,hand,ch){
   const cap=capOf(ch);
   if((hand||[]).length>=cap)return hand||[];
-  // Cat Shield is now in general pool — any player can draw one
   const pool=DECK.filter(id=>!cObj(id)?.votingOnly);
   return[...(hand||[]),shuf(pool)[0]];
 }
 
-// ── LOCAL STATE ───────────────────────────────────────────────────────────
+// ── STATE ─────────────────────────────────────────────────────────────────
 let myId,roomCode,myName,gameState,roomRef,unsubFn;
 let selCard=null,selIdx=null,selSnitchId=null,selSnitchIdx=null;
-let revealShownTs=0,readyVoteClicked=false;
+let revealShownTs=0,readyVoteClicked=false,readyClicked=false;
 
 // ── UTILS ─────────────────────────────────────────────────────────────────
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -323,14 +310,14 @@ const isGreyed=(p,rnd)=>p&&p.penaltyRound===rnd;
 const RTABS=[{id:"overview",label:"Overview"},{id:"turns",label:"Turns"},{id:"cards",label:"Cards"},{id:"powers",label:"Powers"},{id:"voting",label:"Voting"},{id:"winning",label:"Winning"},{id:"crew",label:"The Crew"}];
 const RC={
   overview:`<div class="col" style="padding-bottom:20px">
-    <div class="card col"><div class="stitle">What is Drunk Cat?</div><p class="sm" style="line-height:1.7">One player is secretly the <b style="color:var(--red)">Drunk Cat 🐱</b>. Everyone else is a <b style="color:var(--grn)">Hunter 🔍</b>. Hunters vote out the Drunk Cat in Round 5. The Drunk Cat survives by staying hidden all game.</p></div>
-    <div class="card col"><div class="stitle">Setup</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Host creates room, shares 4-letter code</li><li>Characters randomly assigned at game start</li><li>One player secretly becomes the Drunk Cat</li><li>Each player gets 5 cards (The Sleeper: 6). DC gets 1 Cat Shield.</li><li>Turn order randomised each round</li></ul></div>
+    <div class="card col"><div class="stitle">What is Drunk Cat?</div><p class="sm" style="line-height:1.7">One player is secretly the <b style="color:var(--red)">Drunk Cat 🐱</b>. Everyone else is a <b style="color:var(--grn)">Hunter 🔍</b>. Hunters vote out the Drunk Cat in Round 5. The Drunk Cat survives by staying hidden.</p></div>
+    <div class="card col"><div class="stitle">Setup</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Host creates room, shares 4-letter code</li><li>Characters randomly assigned at game start</li><li>One player secretly becomes the Drunk Cat</li><li>Each player gets 5 cards (The Sleeper: 6). Drunk Cat gets 1 Cat Shield guaranteed.</li><li>Turn order randomised each round</li></ul></div>
     <div class="card col"><div class="stitle">Key Rules</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Character emojis are <b>public</b> — powers are <b>hidden</b></li><li>Only the Drunk Cat's identity is secret</li><li>Cards persist across rounds — draw 1 new card each round</li><li>Votes carry forward — only Vote Change card changes them</li><li>Each player penalised once maximum total</li></ul></div>
   </div>`,
   turns:`<div class="col" style="padding-bottom:20px">
-    <div class="card col"><div class="stitle">Your Turn Flow</div><ol class="sm" style="line-height:2;padding-left:14px"><li>Optionally activate your <b>Attack power</b> first</li><li>Select an attack card and target</li><li>Card announced publicly to all</li><li>Target gets response window</li><li>After last turn, all players go to Turn Complete screen</li><li>Host starts voting from there</li></ol></div>
-    <div class="card col"><div class="stitle">Response Window</div><ul class="sm" style="line-height:2;padding-left:14px"><li><b>📋 Alibi</b> — Cancel the card</li><li><b>↩️ Deflect</b> — Bounce back (attacker gets response window)</li><li><b>🔀 Redirect</b> — Send to another player (they get response window)</li><li><b>🛡️ Cover</b> — Any bystander can cancel the attack on target</li><li><b>🛡️ Cat Shield</b> — DC only, counters Reveal only</li><li><b>Save Power</b> — Strategist or Wildcard active ability</li><li><b>Pass</b> — Accept the effect</li></ul></div>
-    <div class="card col"><div class="stitle">The Game Master's Challenge</div><p class="sm" style="line-height:1.7">When any card is played, The Game Master can pause the game. During the pause he may save the target (like Cover) or double their penalty. The Game Master announces the result. Host dismisses the pause.</p></div>
+    <div class="card col"><div class="stitle">Your Turn Flow</div><ol class="sm" style="line-height:2;padding-left:14px"><li>Optionally activate your <b>Attack power</b> first</li><li>Select an attack card and target</li><li>Card announced publicly to all players</li><li>Target gets response window</li><li>After last player's turn → Turn Complete screen</li><li>Everyone ready up → Host starts voting</li></ol></div>
+    <div class="card col"><div class="stitle">Response Window</div><ul class="sm" style="line-height:2;padding-left:14px"><li><b>📋 Alibi</b> — Cancel the card</li><li><b>↩️ Deflect</b> — Bounce back (attacker gets response window)</li><li><b>🔀 Redirect</b> — Send to another player (they get response window)</li><li><b>🛡️ Cover</b> — Any bystander can cancel the current attack on target</li><li><b>🛡️ Cat Shield</b> — Counter a Reveal card (anyone can use)</li><li><b>Save Power</b> — The Strategist or The Wildcard active ability</li><li><b>Pass</b> — Accept the effect</li></ul></div>
+    <div class="card col"><div class="stitle">The Game Master's Challenge</div><p class="sm" style="line-height:1.7">When any card is played, The Game Master can pause the game. During the pause they may save the target (like Cover) or double their penalty. Host dismisses the pause.</p></div>
   </div>`,
   cards:`<div class="col" style="padding-bottom:20px">
     <div class="card col"><div class="stitle">Attack Cards (×4 each)</div><div class="col" style="gap:5px">${CARD_DEFS.filter(c=>c.cat==='Attack').map(c=>`<div style="display:flex;gap:8px;padding:8px;background:var(--s2);border-radius:var(--rs)"><span style="font-size:18px">${c.emoji}</span><div><div style="font-weight:800;font-size:12px">${c.name}</div><div class="sm mut">${c.desc}</div></div></div>`).join('')}</div></div>
@@ -347,11 +334,7 @@ const RC={
     <div class="card col" style="border-left:3px solid var(--red)"><div style="font-size:24px;margin-bottom:6px">🐱</div><div class="stitle">DRUNK CAT WINS</div><p class="sm" style="line-height:1.7">Survives all 5 rounds. All Hunters drink! 🍺🍺🍺</p></div>
     <div class="card col" style="border-left:3px solid var(--grn)"><div style="font-size:24px;margin-bottom:6px">🔍</div><div class="stitle">HUNTERS WIN</div><p class="sm" style="line-height:1.7">Vote out the Drunk Cat in Round 5. Drunk Cat drinks big + Sudden Death! ⚡🍺🍺🍺🍺</p></div>
   </div>`,
-  crew:`<div class="col" style="padding-bottom:20px">
-    <div class="card"><p class="sm mut" style="line-height:1.7;margin-bottom:10px">This game was built for the Drunk Cat crew. Each character is inspired by one of us. 🥂</p>
-    ${CKEYS.filter(k=>CHARS[k].inspiration).map(k=>{const c=CHARS[k];return`<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bor)"><div class="av" style="width:28px;height:28px;font-size:14px;background:${c.color}15;border:1.5px solid ${c.color}">${c.emoji}</div><div><div style="font-weight:700;font-size:13px">${c.name}</div><div class="sm mut">${c.inspiration}</div></div></div>`;}).join('')}
-    </div>
-  </div>`
+  crew:`<div class="col" style="padding-bottom:20px"><div class="card"><p class="sm mut" style="line-height:1.7;margin-bottom:10px">This game was built for the Drunk Cat crew. Each character is inspired by one of us. 🥂</p>${CKEYS.filter(k=>CHARS[k].inspiration).map(k=>{const c=CHARS[k];return`<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--bor)"><div class="av" style="width:28px;height:28px;font-size:14px;background:${c.color}15;border:1.5px solid ${c.color}">${c.emoji}</div><div><div style="font-weight:700;font-size:13px">${c.name}</div><div class="sm mut">${c.inspiration}</div></div></div>`;}).join('')}</div></div>`
 };
 function initRules(){
   const tabs=document.getElementById('rtabs');tabs.innerHTML='';
@@ -377,7 +360,7 @@ function wire(){
   document.getElementById('b-start').addEventListener('click',startGame);
   document.getElementById('b-ready').addEventListener('click',goReady);
   document.getElementById('b-start-round').addEventListener('click',startRound);
-  document.getElementById('b-readyvote').addEventListener('click',readyToVote);
+  document.getElementById('b-readyvote').addEventListener('click',markReadyVote);
   document.getElementById('b-startvote').addEventListener('click',startVoting);
   document.getElementById('join-code').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase());
 }
@@ -386,8 +369,13 @@ document.readyState==='loading'?document.addEventListener('DOMContentLoaded',wir
 // ── FIREBASE ──────────────────────────────────────────────────────────────
 function subRoom(){
   if(unsubFn)unsubFn();
-  unsubFn=onValue(roomRef,snap=>{if(!snap.exists())return;gameState=snap.val();route(gameState);});
+  unsubFn=onValue(roomRef,snap=>{
+    if(!snap.exists())return;
+    gameState=snap.val();
+    route(gameState);
+  });
 }
+
 function route(s){
   if(s.status==='lobby')renderLobby(s);
   else if(s.status==='role-reveal')renderRoleReveal(s);
@@ -407,7 +395,7 @@ async function createRoom(){
   roomRef=ref(db,`rooms/${roomCode}`);
   const p={};
   p[myId]={id:myId,name,char:null,isHost:true,penalties:0,hand:[],activePowerUsed:false,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,ready:false,readyVote:false,innerBeastTargets:null};
-  await set(roomRef,{code:roomCode,status:'lobby',host:myId,round:0,totalRounds:5,phase:'turns',turnOrder:[],curTurnIdx:0,subPhase:'play',activePlay:null,completedTurns:{},drunkCat:null,votes:{},skippedVotes:{},recentEvent:null,eventLog:[],roundPlays:[],players:p,punchlineActive:false,innerBeastActive:false,freePourActive:false,challengeActive:null,revealPending:null});
+  await set(roomRef,{code:roomCode,status:'lobby',host:myId,round:0,totalRounds:5,phase:'turns',turnOrder:[],curTurnIdx:0,subPhase:'play',activePlay:null,completedTurns:{},drunkCat:null,votes:{},skippedVotes:{},recentEvent:null,eventLog:[],roundPlays:[],players:p,punchlineActive:false,innerBeastActive:false,freePourActive:false,challengeActive:null,revealPending:null,readyVotes:{}});
   subRoom();ss('s-lobby');
 }
 
@@ -475,19 +463,22 @@ async function startGame(){
   u[`rooms/${roomCode}/freePourActive`]=false;
   u[`rooms/${roomCode}/challengeActive`]=null;
   u[`rooms/${roomCode}/revealPending`]=null;
+  u[`rooms/${roomCode}/readyVotes`]={};
   await update(ref(db),u);
 }
 
 // ── ROLE REVEAL ───────────────────────────────────────────────────────────
 function renderRoleReveal(s){
-  ss('s-role');selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;readyVoteClicked=false;
+  ss('s-role');
+  selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;
+  readyVoteClicked=false;readyClicked=false;
   document.getElementById('reveal-rnd').textContent=s.round;
   const me=s.players[myId];if(!me)return;
   const myDC=isDC(s,myId);
   const c=charOf(me);
   const card=document.getElementById('role-card');
 
-  // Joker passive: one random card from one random player
+  // Joker passive
   let jokerInfo='';
   if(me.char==='joker'){
     const others=Object.values(s.players).filter(p=>p.id!==myId&&(p.hand||[]).length>0);
@@ -495,14 +486,14 @@ function renderRoleReveal(s){
       const rp=others[Math.floor(Math.random()*others.length)];
       const rh=rp.hand||[];
       const rc=cObj(rh[Math.floor(Math.random()*rh.length)]);
-      jokerInfo=`<div style="background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.25);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:4px">🃏 MISDIRECTION — ONLY YOU SEE THIS</div><div class="sm">Spotted <b>${charOf(rp).emoji} ${rp.name}</b> with <span style="color:${rc?rc.color:'#888'}">${rc?rc.emoji+' '+rc.name:'a card'}</span></div></div>`;
+      jokerInfo=`<div style="background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:4px">🃏 MISDIRECTION — ONLY YOU SEE THIS</div><div class="sm">Spotted <b>${charOf(rp).emoji} ${rp.name}</b> with <span style="color:${rc?rc.color:'#888'}">${rc?rc.emoji+' '+rc.name:'a card'}</span></div></div>`;
     }
   }
-  // Strategist passive: card counts
+  // Strategist passive
   let stratInfo='';
   if(me.char==='strategist'){
     const rows=Object.values(s.players).filter(p=>p.id!==myId).map(p=>`<div class="row" style="justify-content:space-between"><span class="sm">${charOf(p).emoji} ${p.name}</span><b class="sm">${(p.hand||[]).length}</b></div>`).join('');
-    stratInfo=`<div style="background:rgba(0,188,212,.06);border:1px solid rgba(0,188,212,.25);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:#00bcd4;font-weight:800;margin-bottom:4px">⚡ READ THE ROOM — ONLY YOU SEE THIS</div>${rows}</div>`;
+    stratInfo=`<div style="background:rgba(0,188,212,.06);border:1px solid rgba(0,188,212,.2);border-radius:var(--rs);padding:10px;margin-top:8px"><div style="font-size:9px;color:#00bcd4;font-weight:800;margin-bottom:4px">⚡ READ THE ROOM — ONLY YOU SEE THIS</div>${rows}</div>`;
   }
 
   if(myDC){
@@ -525,23 +516,27 @@ function renderRoleReveal(s){
       <div style="font-size:11px;color:var(--grn);font-weight:700">🔍 HUNTER — Find the Drunk Cat!</div>${jokerInfo}${stratInfo}`;
   }
 
-  // Wildcard swap
-  if(me.char==='wildcard'&&s.round>1){
-    const wb=el('div');wb.style.cssText='background:rgba(255,152,0,.06);border:1px solid rgba(255,152,0,.25);border-radius:var(--rs);padding:10px;margin-top:8px';
-    wb.innerHTML=`<div style="font-size:9px;color:#ff9800;font-weight:800;margin-bottom:5px">🎲 ADAPTIVE — Swap one card?</div><div class="ac-grid" id="wc-swap"></div>`;
+  // Wildcard swap (fix: functional swap button)
+  if(me.char==='wildcard'){
+    const wb=el('div');wb.style.cssText='background:rgba(255,152,0,.06);border:1px solid rgba(255,152,0,.2);border-radius:var(--rs);padding:10px;margin-top:8px';
+    wb.innerHTML=`<div style="font-size:9px;color:#ff9800;font-weight:800;margin-bottom:5px">🎲 ADAPTIVE — Swap one card from your hand for a random new one</div><div id="wc-swap" class="col" style="gap:5px"></div>`;
     card.appendChild(wb);
     const sc=wb.querySelector('#wc-swap');
     (me.hand||[]).forEach((cid,idx)=>{
       const cd=cObj(cid);if(!cd)return;
-      const btn=el('button','btn bs');btn.style.cssText='font-size:11px;padding:6px 8px';
-      btn.innerHTML=`${cd.emoji} ${cd.name}`;
+      const btn=el('button','btn bs');btn.style.cssText='font-size:11px;padding:7px 8px;text-align:left';
+      btn.innerHTML=`${cd.emoji} Swap <b>${cd.name}</b>`;
       btn.addEventListener('click',async()=>{
-        const pool=DECK.filter(id=>!cObj(id)?.votingOnly&&id!=='catshield');
+        if(btn.disabled)return;
+        btn.disabled=true;btn.style.opacity='.4';
+        const pool=DECK.filter(id=>!cObj(id)?.votingOnly);
         const nc=shuf(pool)[0];
         const h=[...(me.hand||[])];h[idx]=nc;
         await update(ref(db,`rooms/${roomCode}/players/${myId}/hand`),h);
-        toast(`Swapped for ${cObj(nc)?.emoji} ${cObj(nc)?.name}!`);
-        btn.disabled=true;btn.style.opacity='.4';
+        const ncd=cObj(nc);
+        toast(`Swapped for ${ncd?ncd.emoji+' '+ncd.name:'a new card'}!`);
+        // Disable all other swap buttons too
+        sc.querySelectorAll('button').forEach(b=>{b.disabled=true;b.style.opacity='.4';});
       });
       sc.appendChild(btn);
     });
@@ -557,20 +552,43 @@ function renderRoleReveal(s){
   });
 }
 
+// ── READY FLOW ────────────────────────────────────────────────────────────
+// Fix #6: goReady only marks this player ready and moves THEIR screen only
 async function goReady(){
-  // Mark this player as ready
+  if(readyClicked)return;
+  readyClicked=true;
+  // Mark self ready in Firebase
   await update(ref(db,`rooms/${roomCode}/players/${myId}`),{ready:true});
-  // Only show waiting room on THIS player's screen
+  // Move only this player's screen to waiting room
   ss('s-waiting');
-  // If host, also update room status so waiting room renders for host
-  if(gameState&&gameState.host===myId){
-    await update(ref(db,`rooms/${roomCode}`),{status:'waiting-room'});
-  }
+  // Render the waiting room immediately with current state
+  if(gameState)renderWaitingRoom(gameState);
+}
+
+// Fix #7: Host clicking Start Round pulls in remaining players
+async function startRound(){
+  // Auto-mark any unready players as ready
+  const ps=Object.values(gameState.players||{});
+  const u={};
+  ps.forEach(p=>{if(!p.ready)u[`rooms/${roomCode}/players/${p.id}/ready`]=true;});
+  u[`rooms/${roomCode}/status`]='playing';
+  u[`rooms/${roomCode}/subPhase`]='play';
+  u[`rooms/${roomCode}/activePlay`]=null;
+  u[`rooms/${roomCode}/announcement`]=null;
+  u[`rooms/${roomCode}/challengeActive`]=null;
+  await update(ref(db),u);
 }
 
 // ── WAITING ROOM ──────────────────────────────────────────────────────────
+// Fix #6: renderWaitingRoom shows live readiness without moving other screens
 function renderWaitingRoom(s){
-  ss('s-waiting');
+  // Only show s-waiting if current screen is already s-waiting or s-role
+  const cur=document.querySelector('.screen.active');
+  if(cur&&cur.id==='s-waiting'){ss('s-waiting');}
+  else if(cur&&cur.id!=='s-waiting'){
+    // Don't force other players to this screen — they get pulled when host starts
+    return;
+  }
   document.getElementById('wr-rnd').textContent=s.round;
   const ps=Object.values(s.players||{});
   const allReady=ps.every(p=>p.ready);
@@ -579,22 +597,14 @@ function renderWaitingRoom(s){
     const d=el('div','pi');
     d.innerHTML=`<div class="av" style="width:28px;height:28px;font-size:14px;background:${p.ready?'rgba(76,175,125,.15)':'#222'};border:1.5px solid ${p.ready?'var(--grn)':'#444'}">${p.ready?'✓':'⏳'}</div>
       <div style="flex:1;font-size:13px;font-weight:700">${p.name}</div>
-      <span class="tag" style="background:${p.ready?'rgba(76,175,125,.12)':'rgba(100,100,100,.15)'};color:${p.ready?'var(--grn)':'var(--mut)'}">${p.ready?'Ready':'Waiting...'}</span>`;
+      <span class="tag" style="background:${p.ready?'rgba(76,175,125,.12)':'rgba(100,100,100,.12)'};color:${p.ready?'var(--grn)':'var(--mut)'}">${p.ready?'Ready ✓':'Not ready'}</span>`;
     c.appendChild(d);
   });
-  // Mark self as ready if not already
-  const me=s.players[myId];
-  if(me&&!me.ready)update(ref(db,`rooms/${roomCode}/players/${myId}/ready`),true);
-
   document.getElementById('wr-host').style.display=s.host===myId?'block':'none';
   document.getElementById('wr-wait').style.display=s.host===myId?'none':'block';
   if(s.host===myId){
-    document.getElementById('b-start-round').textContent=allReady?'▶️ All Ready — Start Round!':'▶️ Start Round (not everyone ready)';
+    document.getElementById('b-start-round').textContent=allReady?'▶️ Everyone Ready — Start Round!':'▶️ Start Round (pulls in all players)';
   }
-}
-
-async function startRound(){
-  await update(ref(db,`rooms/${roomCode}`),{status:'playing',subPhase:'play',activePlay:null,announcement:null,challengeActive:null});
 }
 
 // ── GAME ──────────────────────────────────────────────────────────────────
@@ -608,9 +618,10 @@ function renderGame(s){
   const activeId=order[idx];
   const ap=s.activePlay;
 
-  // Check for reveal result directed at me
+  // Fix #1: Reveal — check for pending reveal result for me as attacker
+  // Only show if target has already responded (revealPending.responded===true)
   const rp=s.revealPending;
-  if(rp&&rp.actorId===myId&&rp.ts&&rp.ts>revealShownTs&&!rp.dismissed){
+  if(rp&&rp.actorId===myId&&rp.responded===true&&rp.ts>revealShownTs&&!document.getElementById('reveal-ov')){
     revealShownTs=rp.ts;
     showRevealOverlay(s.players[rp.targetId]?.name||'?',rp.isDC);
   }
@@ -636,38 +647,32 @@ function renderGame(s){
     ?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red)">🐱 Drunk Cat</span>`
     :`<span class="tag" style="background:rgba(76,175,125,.12);color:var(--grn)">🔍 Hunter</span>`;
 
-  // Challenge banner
+  // Game Master's Challenge banner
   const chEl=document.getElementById('g-challenge');
   const ch=s.challengeActive;
   if(ch){
     chEl.style.display='block';
-    chEl.innerHTML=`<div style="font-weight:800;color:var(--blu);margin-bottom:4px">⚠️ Dave's Challenge — PAUSED</div>
+    chEl.innerHTML=`<div style="font-weight:800;color:var(--blu);margin-bottom:4px">⚠️ The Game Master's Challenge — PAUSED</div>
       <div class="sm" style="margin-bottom:8px">${ch.message||'The Game Master has challenged this play!'}</div>
       ${ch.result?`<div style="font-weight:700;color:var(--acc);margin-bottom:6px">Result: ${ch.result}</div>`:''}
       ${s.host===myId?`<button class="btn bs bsm" id="b-dismiss-challenge" style="font-size:11px">Dismiss Challenge</button>`:'<div class="sm mut">Waiting for host to dismiss...</div>'}`;
     if(s.host===myId){
-      document.getElementById('b-dismiss-challenge').addEventListener('click',async()=>{
+      document.getElementById('b-dismiss-challenge')?.addEventListener('click',async()=>{
         await update(ref(db,`rooms/${roomCode}`),{challengeActive:null});
       });
     }
-    // Dave can act during challenge
     if(me.char==='gamemaster'&&ch&&!ch.resolved){
       const saveBtn=el('button','btn bs bsm');saveBtn.style.cssText='font-size:11px;border-color:rgba(76,175,125,.4);margin-top:6px';
       saveBtn.textContent='🛡️ Save Target';
       saveBtn.addEventListener('click',async()=>{
-        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🛡️ Dave saved the target! Attack cancelled.',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
-        if(ap&&ap.targetId){u[`rooms/${roomCode}/subPhase`]='play';u[`rooms/${roomCode}/activePlay`]=null;}
-        await update(ref(db),u);
-        await advanceTurn(s,{});
+        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🛡️ The Game Master saved the target! Attack cancelled.',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null};
+        await update(ref(db),u);await advanceTurn(s,{});
       });
       const penBtn=el('button','btn bs bsm');penBtn.style.cssText='font-size:11px;border-color:rgba(232,67,90,.4);margin-top:4px';
       penBtn.textContent='🍺 Double Penalty';
       penBtn.addEventListener('click',async()=>{
-        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🍺 Dave doubled the penalty! Extra drink for target.',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
-        if(ap&&ap.targetId){
-          const tp=s.players[ap.targetId];
-          if(tp&&!tp.penalised){u[`rooms/${roomCode}/players/${ap.targetId}/penalties`]=(tp.penalties||0)+2;u[`rooms/${roomCode}/players/${ap.targetId}/penalised`]=true;}
-        }
+        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🍺 The Game Master doubled the penalty!',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
+        if(ap&&ap.targetId){const tp=s.players[ap.targetId];if(tp&&!tp.penalised){u[`rooms/${roomCode}/players/${ap.targetId}/penalties`]=(tp.penalties||0)+2;u[`rooms/${roomCode}/players/${ap.targetId}/penalised`]=true;}}
         await update(ref(db),u);
       });
       chEl.appendChild(saveBtn);chEl.appendChild(penBtn);
@@ -680,14 +685,13 @@ function renderGame(s){
   const log=s.eventLog||[];
   if(isPream&&log.length){
     evEl.style.display='block';
-    evEl.innerHTML=`<div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:5px">👁️ THE MOTHER — LAST 3 EVENTS</div>`+
-      log.slice(-3).reverse().map(e=>`<div class="sm" style="padding:2px 0;border-bottom:1px solid var(--bor)">${e}</div>`).join('');
+    evEl.innerHTML=`<div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:5px">👁️ THE MOTHER — LAST 3 EVENTS</div>`+log.slice(-3).reverse().map(e=>`<div class="sm" style="padding:2px 0;border-bottom:1px solid var(--bor)">${e}</div>`).join('');
   } else if(s.recentEvent){
     evEl.style.display='block';
     evEl.innerHTML=`<div style="font-size:9px;color:var(--mut);font-weight:700;margin-bottom:3px">LATEST EVENT</div><div style="font-size:13px;font-weight:600">${s.recentEvent}</div>`;
   } else evEl.style.display='none';
 
-  // Announce box
+  // Announce
   const ann=document.getElementById('g-announce');
   if(s.announcement){ann.style.display='block';ann.innerHTML=s.announcement;}else ann.style.display='none';
 
@@ -701,15 +705,15 @@ function renderGame(s){
         <div style="background:var(--s1);border-radius:var(--rs);padding:9px">
           <div class="sm mut" style="margin-bottom:2px">${actor?actor.name:'?'} played against you:</div>
           <div style="display:flex;gap:8px;align-items:center"><span style="font-size:20px">${cd?cd.emoji:''}</span><div><div style="font-weight:800">${cd?cd.name:''}</div><div class="sm mut">${cd?cd.desc:''}</div></div></div>
-          ${cd?`<div class="drama" style="margin-top:4px">${drama(cd)}</div>`:''}
+          ${cd?`<div class="drama" style="margin-top:4px">${drm(cd)}</div>`:''}
         </div>`;
     } else {
       const tgt=s.players[ap.targetId];
       tbox.style.display='block';tbox.className='tbox';
       tbox.innerHTML=`<div style="font-weight:700;font-size:12px;margin-bottom:5px">${actor?actor.name:'?'} played on ${tgt?tgt.name:'?'}:</div>
         <div style="background:var(--s1);border-radius:var(--rs);padding:9px">
-          <div style="display:flex;gap:8px;align-items:center"><span style="font-size:18px">${cObj(ap.cardId)?.emoji||''}</span><div><div style="font-weight:800">${cObj(ap.cardId)?.name||''}</div><div class="sm mut">${cObj(ap.cardId)?.desc||''}</div></div></div>
-          <div class="drama" style="margin-top:3px">${drama(cObj(ap.cardId))}</div>
+          <div style="display:flex;gap:8px;align-items:center"><span style="font-size:18px">${cd?cd.emoji:''}</span><div><div style="font-weight:800">${cd?cd.name:''}</div><div class="sm mut">${cd?cd.desc:''}</div></div></div>
+          <div class="drama" style="margin-top:3px">${drm(cd)}</div>
         </div>
         <div class="sm mut" style="margin-top:5px">⏳ Waiting for ${tgt?tgt.name:'?'} to respond...</div>`;
     }
@@ -757,38 +761,36 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   const greyed=isGreyed(me,s.round);
   const hand=me.hand||[];
 
-  // Attack power button
+  // Attack power
   if(isMyTurn&&!me.activePowerUsed){
     const c=charOf(me);
     if(c.active.type==='Attack'){
-      const pd=el('div');pd.style.cssText='background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.15);border-radius:var(--rs);padding:9px 11px';
+      const pd=el('div');pd.style.cssText='background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.12);border-radius:var(--rs);padding:9px 11px';
       pd.innerHTML=`<div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:4px">⚡ ACTIVATE POWER (OPTIONAL)</div><div class="sm mut" style="margin-bottom:6px">${c.active.desc}</div>`;
-      const btn=el('button','btn bs');btn.style.cssText='font-size:12px;border-color:rgba(245,166,35,.25)';
+      const btn=el('button','btn bs');btn.style.cssText='font-size:12px;border-color:rgba(245,166,35,.2)';
       btn.innerHTML=`⚡ Activate: ${c.active.name}`;
       btn.addEventListener('click',()=>activatePower(s,me));
       pd.appendChild(btn);gc.appendChild(pd);
     }
   }
 
-  // Dave challenge button (shows during any response window)
+  // Game Master's Challenge button (during any response window)
   if(me.char==='gamemaster'&&!me.activePowerUsed&&s.subPhase==='respond'&&ap&&!s.challengeActive){
-    const db2=el('button','btn bs');db2.style.cssText='border-color:rgba(74,158,255,.35);font-size:12px';
-    db2.innerHTML='⚠️ Challenge this play!';
+    const db2=el('button','btn bs');db2.style.cssText='border-color:rgba(74,158,255,.3);font-size:12px';
+    db2.innerHTML='⚠️ The Game Master\'s Challenge!';
     db2.addEventListener('click',async()=>{
       const cd=cObj(ap.cardId);const actor=s.players[ap.actorId];
-      await update(ref(db,`rooms/${roomCode}/challengeActive`),{active:true,message:`${actor?actor.name:'?'} played ${cd?cd.emoji+' '+cd.name:''} — ${me.name} challenged it!`,resolved:false,result:null});
-      await logAndUpdate(s,`⚠️ ${me.name} challenged the play!`,{});
+      await update(ref(db,`rooms/${roomCode}/challengeActive`),{active:true,message:`${actor?actor.name:'?'} played ${cd?cd.emoji+' '+cd.name:''} — The Game Master challenged it!`,resolved:false,result:null});
+      await logAndUpdate(s,`⚠️ The Game Master's Challenge raised by ${me.name}!`,{});
     });
     gc.appendChild(db2);
   }
 
-  // Paranoia
   if(s.round===4){
     const n=el('div');n.style.cssText='font-size:12px;color:var(--red);background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 10px;border-left:3px solid var(--red)';
     n.innerHTML='🔥 <b>Paranoia Round</b> — Final stretch.';gc.appendChild(n);
   }
 
-  // Hand
   ghl.style.display='block';
   ghl.textContent=isMyTurn?'YOUR HAND — select to play':isResponding?'YOUR HAND — respond or pass':'YOUR HAND';
 
@@ -803,7 +805,7 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
     let playable=false;
     if(greyed||me.spotlighted){playable=false;}
     else if(isVO){playable=false;}
-    else if(isRevOnly){playable=isResponding&&ap&&cObj(ap.cardId)?.id==='reveal'&&myDC;}
+    else if(isRevOnly){playable=isResponding&&ap&&cObj(ap.cardId)?.id==='reveal';}
     else if(isMyTurn&&!isRct){
       if(selCard==='snitch'&&selIdx!==null&&selSnitchId===null&&cid!=='snitch')playable=true;
       else if(!(selCard==='snitch'&&selIdx!==null&&selSnitchId===null))playable=true;
@@ -814,15 +816,11 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
     const isSel=(selCard===cid&&selIdx===cardIndex)||(selSnitchId===cid&&selSnitchIdx===cardIndex);
     const d=el('div','ac'+(isSel?' sel':'')+(playable?'':' dis')+(isRct?' rct':''));
     d.style.borderColor=isSel?cd.color:'';
-    d.innerHTML=`<div class="ac-em">${cd.emoji}</div><div class="ac-tp" style="color:${cd.color}">${cd.cat}${isRct?' · Reactive':''}${isVO?' · Voting':''}${isRevOnly?' · DC Only':''}</div><div class="ac-nm">${cd.name}</div><div class="ac-ds">${cd.desc}</div>`;
+    d.innerHTML=`<div class="ac-em">${cd.emoji}</div><div class="ac-tp" style="color:${cd.color}">${cd.cat}${isRct?' · Reactive':''}${isVO?' · Voting':''}${isRevOnly?' · Shield':''}</div><div class="ac-nm">${cd.name}</div><div class="ac-ds">${cd.desc}</div>`;
     if(playable){
       d.addEventListener('click',()=>{
-        if(isMyTurn&&selCard==='snitch'&&selIdx!==null&&selSnitchId===null&&cid!=='snitch'){
-          selSnitchId=cid;selSnitchIdx=cardIndex;
-        } else {
-          if(isSel){selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;}
-          else{selCard=cid;selIdx=cardIndex;selSnitchId=null;selSnitchIdx=null;}
-        }
+        if(isMyTurn&&selCard==='snitch'&&selIdx!==null&&selSnitchId===null&&cid!=='snitch'){selSnitchId=cid;selSnitchIdx=cardIndex;}
+        else{if(isSel){selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;}else{selCard=cid;selIdx=cardIndex;selSnitchId=null;selSnitchIdx=null;}}
         renderGame(s);
       });
     }
@@ -833,45 +831,48 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   if(isMyTurn&&selCard&&selIdx!==null){
     const cd=cObj(selCard);
     if(cd&&selCard==='snitch'&&selSnitchId===null){
-      // Show snitch offer prompt
       const sn=el('div');sn.style.cssText='font-size:11px;background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 10px;border-left:3px solid var(--red)';
-      sn.innerHTML='🤝 <b>Snitch:</b> Tap your card to offer (blind trade — commit first!)';gc.appendChild(sn);
+      sn.innerHTML='🤝 <b>Snitch:</b> Tap your card to offer first (blind trade!)';gc.appendChild(sn);
     } else if(cd&&selCard==='snitch'&&selSnitchId!==null){
-      pickTargets(s,gc,(pid)=>doPlay('snitch',selIdx,pid,s));
+      pickTargets(s,gc,pid=>doPlay('snitch',selIdx,pid,s));
     } else if(cd&&cd.targeted){
-      // Inner Beast: if active, need 2 targets
       if(s.innerBeastActive&&me.char==='sleeper'){
-        const ibTargets=me.innerBeastTargets||[];
+        const ibT=me.innerBeastTargets||[];
         const tt=el('div');tt.style.cssText='font-size:10px;color:var(--pur);font-weight:700;margin-top:2px';
-        tt.textContent=`INNER BEAST — SELECT ${ibTargets.length===0?'FIRST':'SECOND'} TARGET (${ibTargets.length}/2)`;gc.appendChild(tt);
-        Object.values(s.players).filter(p=>p.id!==myId&&!p.disappeared&&!ibTargets.includes(p.id)).forEach(p=>{
-          const pc=charOf(p);
-          const btn=el('button','btn bs');btn.style.marginTop='4px';
+        tt.textContent=`INNER BEAST — SELECT ${ibT.length===0?'1ST':'2ND'} TARGET (${ibT.length}/2)`;gc.appendChild(tt);
+        Object.values(s.players).filter(p=>p.id!==myId&&!p.disappeared&&!ibT.includes(p.id)).forEach(p=>{
+          const pc=charOf(p);const btn=el('button','btn bs');btn.style.marginTop='4px';
           btn.innerHTML=`${pc.emoji} ${p.name}`;
           btn.addEventListener('click',async()=>{
-            const newTargets=[...ibTargets,p.id];
-            await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),newTargets);
-            if(newTargets.length>=2){
-              // Both targets chosen, now execute play on both
-              await doPlay(selCard,selIdx,newTargets[0],s,{innerBeastSecond:newTargets[1]});
-            } else renderGame(s);
+            const nt=[...ibT,p.id];
+            await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),nt);
+            if(nt.length>=2)await doPlay(selCard,selIdx,nt[0],s,{innerBeastSecond:nt[1]});
+            else renderGame(s);
           });
           gc.appendChild(btn);
         });
-      } else {
-        pickTargets(s,gc,(pid)=>doPlay(selCard,selIdx,pid,s));
-      }
+      } else pickTargets(s,gc,pid=>doPlay(selCard,selIdx,pid,s));
     } else if(cd&&!cd.targeted){
       const pb=el('button','btn bp');pb.innerHTML=`Play ${cd.emoji} ${cd.name}`;
       pb.addEventListener('click',()=>doPlay(selCard,selIdx,null,s));gb.appendChild(pb);
     }
   }
+
   if(isMyTurn){
     const pass=el('button','btn bs');pass.textContent='Pass — skip this turn';
     pass.addEventListener('click',()=>doPass(s));gb.appendChild(pass);
   }
 
-  // Response
+  // Fix #2: Cover — show for ANY bystander (not target, not attacker) holding cover during ANY response window
+  if(s.subPhase==='respond'&&ap&&ap.targetId!==myId&&myId!==ap.actorId&&(me.hand||[]).includes('cover')&&cObj(ap.cardId)?.id!=='reveal'){
+    const tgt=s.players[ap.targetId];
+    const covBtn=el('button','btn bs');covBtn.style.cssText='border-color:rgba(74,158,255,.3)';
+    covBtn.innerHTML=`🛡️ Cover — cancel attack on ${tgt?tgt.name:'target'}`;
+    covBtn.addEventListener('click',()=>doBystander((me.hand||[]).indexOf('cover'),ap.targetId,s));
+    gb.appendChild(covBtn);
+  }
+
+  // Response window for target
   if(isResponding&&ap){
     const cd=cObj(ap.cardId);const isReveal=cd&&cd.id==='reveal';
     if(!isReveal){
@@ -879,7 +880,7 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
         if(!(me.hand||[]).includes(rcid))return;
         const rcd=cObj(rcid);
         if(rcid==='redirect'&&selCard==='redirect'){
-          pickTargets(s,gc,(pid)=>doRespond('redirect',(me.hand||[]).indexOf('redirect'),pid,s),true);
+          pickTargets(s,gc,pid=>doRespond('redirect',(me.hand||[]).indexOf('redirect'),pid,s),true);
         } else {
           const rb=el('button','btn bs');rb.style.cssText='border-color:rgba(74,158,255,.25)';
           rb.innerHTML=`${rcd.emoji} ${rcd.name}`;
@@ -902,7 +903,7 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
         }
       }
     } else {
-      // Reveal — only Cat Shield or Pass
+      // Reveal: Cat Shield available to anyone holding it
       if((me.hand||[]).includes('catshield')){
         const csb=el('button','btn bs');csb.style.cssText='border-color:rgba(245,166,35,.35)';
         csb.innerHTML='🛡️ Cat Shield — protect identity!';
@@ -910,18 +911,10 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
         gb.appendChild(csb);
       }
     }
-    // Cover by bystander
-    if(ap.targetId!==myId&&myId!==ap.actorId&&!isReveal&&(me.hand||[]).includes('cover')){
-      const covBtn=el('button','btn bs');covBtn.style.cssText='border-color:rgba(74,158,255,.25)';
-      const tgt=s.players[ap.targetId];
-      covBtn.innerHTML=`🛡️ Cover — protect ${tgt?tgt.name:'target'}`;
-      covBtn.addEventListener('click',()=>doBystander((me.hand||[]).indexOf('cover'),ap.targetId,s));
-      gb.appendChild(covBtn);
-    }
-    // Ghost on own turn
+    // Ghost
     if(me.char==='ghost'&&!me.activePowerUsed&&!isReveal){
       const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b33';
-      ghb.innerHTML='👻 Disappear';
+      ghb.innerHTML='👻 Disappear (this round only)';
       ghb.addEventListener('click',()=>doGhostDisappear(s));gb.appendChild(ghb);
     }
     const passR=el('button','btn bs');passR.textContent='Pass — accept effect';
@@ -931,7 +924,7 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   // Ghost disappear on own turn
   if(me.char==='ghost'&&!me.activePowerUsed&&isMyTurn&&!isResponding){
     const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b33;margin-top:4px';
-    ghb.innerHTML='👻 Disappear (Active Power)';
+    ghb.innerHTML='👻 Disappear this round (Active Power)';
     ghb.addEventListener('click',()=>doGhostDisappear(s));gb.appendChild(ghb);
   }
 
@@ -948,8 +941,7 @@ function pickTargets(s,gc,onPick,excludeActor=false){
   const tt=el('div');tt.style.cssText='font-size:10px;color:var(--mut);font-weight:700;margin-top:2px';
   tt.textContent='SELECT TARGET';gc.appendChild(tt);
   Object.values(s.players).filter(p=>p.id!==myId&&!p.disappeared&&(!excludeActor||!ap||p.id!==ap.actorId)).forEach(p=>{
-    const pc=charOf(p);
-    const btn=el('button','btn bs');btn.style.marginTop='4px';
+    const pc=charOf(p);const btn=el('button','btn bs');btn.style.marginTop='4px';
     btn.innerHTML=`${pc.emoji} ${p.name}`;
     btn.addEventListener('click',()=>onPick(p.id));
     gc.appendChild(btn);
@@ -962,20 +954,10 @@ async function activatePower(s,me){
   const ann=`⚡ <b>${me.name}</b> activated <b>${c.active.name}</b>! 🔥`;
   await update(ref(db),{[`rooms/${roomCode}/announcement`]:ann,[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true});
   await logAndUpdate(s,`⚡ ${me.name} activated ${c.active.name}!`,{});
-
-  if(me.char==='joker'){
-    await update(ref(db,`rooms/${roomCode}`),{punchlineActive:true});
-    toast('Punchline! Everyone skips drawing next round! 😤');
-  } else if(me.char==='sleeper'){
-    await update(ref(db,`rooms/${roomCode}`),{innerBeastActive:true});
-    await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),[]);
-    toast('Inner Beast! Pick 2 targets for your next attack card! 😈');
-  } else if(me.char==='mother'){
-    showCurfewOverlay(s);
-  } else if(me.char==='troublemaker'){
-    await update(ref(db,`rooms/${roomCode}`),{freePourActive:true});
-    toast('Free Pour! Next card = double penalty + skip turn! 🥃');
-  }
+  if(me.char==='joker'){await update(ref(db,`rooms/${roomCode}`),{punchlineActive:true});toast('Punchline! Everyone skips drawing next round! 😤');}
+  else if(me.char==='sleeper'){await update(ref(db,`rooms/${roomCode}`),{innerBeastActive:true});await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),[]);toast('Inner Beast! Pick 2 targets for your next attack card! 😈');}
+  else if(me.char==='mother'){showCurfewOverlay(s);}
+  else if(me.char==='troublemaker'){await update(ref(db,`rooms/${roomCode}`),{freePourActive:true});toast('Free Pour! Next card = double penalty + skip turn! 🥃');}
 }
 
 function showCurfewOverlay(s){
@@ -985,7 +967,7 @@ function showCurfewOverlay(s){
     cards[p.id]={player:p.name,emoji:charOf(p).emoji,card:cObj(h[Math.floor(Math.random()*h.length)])};
   });
   const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--grn);font-weight:800;font-size:16px;text-align:center">🕐 Curfew!<br><span class="sm mut">Privately see one card from each player</span></div>`;
+  ov.innerHTML=`<div style="color:var(--grn);font-weight:800;font-size:16px;text-align:center">🕐 Curfew!<br><span class="sm mut">One card from each player — only YOU see this</span></div>`;
   Object.values(cards).forEach(({player,emoji,card})=>{
     if(!card)return;
     const d=el('div');d.style.cssText='background:var(--s2);border-radius:var(--rs);padding:10px;width:100%;max-width:340px;display:flex;gap:10px;align-items:center';
@@ -1003,37 +985,33 @@ function showStrategistOverlay(s){
   const ov=el('div','ov');
   ov.innerHTML=`<div style="color:var(--pur);font-weight:800;font-size:15px;text-align:center">⚡ Chaos Theory!<br><span class="sm mut">Redirect to whom?</span></div>`;
   targets.forEach(p=>{
-    const pc=charOf(p);
-    const btn=el('button','btn bp');btn.style.cssText='max-width:300px;width:100%';
+    const pc=charOf(p);const btn=el('button','btn bp');btn.style.cssText='max-width:300px;width:100%';
     btn.innerHTML=`${pc.emoji} ${p.name}`;
     btn.addEventListener('click',()=>{document.body.removeChild(ov);doRespondPower(s,'strategist',p.id);});
     ov.appendChild(btn);
   });
   const cn=el('button','btn bs');cn.style.cssText='max-width:300px;width:100%';cn.textContent='Cancel';
-  cn.addEventListener('click',()=>document.body.removeChild(ov));
-  ov.appendChild(cn);document.body.appendChild(ov);
+  cn.addEventListener('click',()=>document.body.removeChild(ov));ov.appendChild(cn);document.body.appendChild(ov);
 }
 
-// ── REVEAL OVERLAY ────────────────────────────────────────────────────────
+// ── FIX #1: Reveal overlay — persists until dismissed ─────────────────────
 function showRevealOverlay(targetName,isTargetDC){
-  // Check if already open
   if(document.getElementById('reveal-ov'))return;
   const ov=el('div','ov');ov.id='reveal-ov';
   ov.innerHTML=`<div style="font-size:10px;color:var(--acc);font-weight:800;letter-spacing:2px;text-align:center">🕵️ REVEAL RESULT — ONLY YOU SEE THIS</div>
     <div style="font-size:52px;text-align:center">${isTargetDC?'🐱':'🔍'}</div>
     <div style="font-size:20px;font-weight:900;text-align:center;color:${isTargetDC?'var(--red)':'var(--grn)'}">${targetName} is ${isTargetDC?'THE DRUNK CAT! 😱':'NOT the Drunk Cat.'}</div>
-    <div class="sm mut ctr">${isTargetDC?'You found them! Use this wisely...':'Keep looking — the cat is still out there.'}</div>
-    <button class="btn bp" id="dismiss-reveal" style="max-width:300px;width:100%">Got it 🕵️</button>`;
+    <div class="sm mut ctr">${isTargetDC?'You found them! Use this wisely...':'Keep looking — the cat is out there.'}</div>
+    <button class="btn bp" id="dismiss-reveal" style="max-width:300px;width:100%">Got it — Dismiss 🕵️</button>`;
   ov.querySelector('#dismiss-reveal').addEventListener('click',async()=>{
-    document.body.removeChild(ov);
-    await update(ref(db,`rooms/${roomCode}/revealPending/dismissed`),true);
+    ov.remove();
+    await update(ref(db,`rooms/${roomCode}/revealPending`),{dismissed:true});
   });
   document.body.appendChild(ov);
 }
 
-// ── EXPOSE OVERLAY ────────────────────────────────────────────────────────
 function showExposeOverlay(targetId,s,afterDone){
-  const tp=s.players[targetId];if(!tp)return;
+  const tp=s.players[targetId];if(!tp){if(afterDone)afterDone();return;}
   const hand=tp.hand||[];if(!hand.length){toast('Target has no cards!');if(afterDone)afterDone();return;}
   const ov=el('div','ov');
   ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🔍 Exposed!<br><span class="sm mut">${tp.name} — choose a card to reveal</span></div>`;
@@ -1042,34 +1020,15 @@ function showExposeOverlay(targetId,s,afterDone){
     const btn=el('button','btn bs');btn.style.cssText='max-width:340px;width:100%;text-align:left;display:flex;gap:8px;align-items:center';
     btn.innerHTML=`<span style="font-size:18px">${cd.emoji}</span><div><div style="font-weight:700">${cd.name}</div><div class="sm mut">${cd.desc}</div></div>`;
     btn.addEventListener('click',async()=>{
-      document.body.removeChild(ov);
-      const ev=`🔍 Expose: ${tp.name} revealed ${cd.emoji} <b>${cd.name}</b>!`;
+      ov.remove();
+      const ev=`🔍 ${tp.name} revealed ${cd.emoji} ${cd.name}! ${drm(cObj('expose'))}`;
       const lg=[...(s.eventLog||[]),ev].slice(-20);
-      const ann=`🔍 ${tp.name} revealed: ${cd.emoji} ${cd.name} — ${cd.desc}`;
-      await update(ref(db),{[`rooms/${roomCode}/recentEvent`]:ev,[`rooms/${roomCode}/eventLog`]:lg,[`rooms/${roomCode}/announcement`]:ann});
+      await update(ref(db),{[`rooms/${roomCode}/recentEvent`]:ev,[`rooms/${roomCode}/eventLog`]:lg,[`rooms/${roomCode}/announcement`]:`🔍 ${tp.name} revealed: ${cd.emoji} ${cd.name} — ${cd.desc}`});
       if(afterDone)afterDone();
     });
     ov.appendChild(btn);
   });
   document.body.appendChild(ov);
-}
-
-// ── SNITCH OFFER OVERLAY ──────────────────────────────────────────────────
-function showSnitchOfferOverlay(s){
-  const me=s.players[myId];
-  const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🤝 Snitch!<br><span class="sm mut">Select YOUR card to offer (blind trade)</span></div>`;
-  (me.hand||[]).forEach((cid,idx)=>{
-    if(cid==='snitch')return;
-    const cd=cObj(cid);if(!cd)return;
-    const btn=el('button','btn bs');btn.style.cssText='max-width:340px;width:100%;text-align:left;display:flex;gap:8px;align-items:center';
-    btn.innerHTML=`<span style="font-size:18px">${cd.emoji}</span><div><div style="font-weight:700">${cd.name}</div><div class="sm mut">${cd.desc}</div></div>`;
-    btn.addEventListener('click',()=>{selSnitchId=cid;selSnitchIdx=idx;document.body.removeChild(ov);renderGame(s);});
-    ov.appendChild(btn);
-  });
-  const cn=el('button','btn bs');cn.style.cssText='max-width:340px;width:100%';cn.textContent='Cancel';
-  cn.addEventListener('click',()=>{selCard=null;selIdx=null;document.body.removeChild(ov);renderGame(s);});
-  ov.appendChild(cn);document.body.appendChild(ov);
 }
 
 // ── PLAY LOGIC ────────────────────────────────────────────────────────────
@@ -1084,13 +1043,14 @@ async function doPlay(cardId,cardIdx,targetId,s,extra={}){
   const ev=`${me.name} played ${cd.emoji} ${cd.name}${tPlayer?' on '+tPlayer.name:''}`;
   const u={[`rooms/${roomCode}/players/${myId}/hand`]:hand};
 
-  // Snitch with response window
+  // Snitch — open response window
   if(cardId==='snitch'&&targetId){
     if(!selSnitchId){showSnitchOfferOverlay(s);return;}
-    // Open response window for target first
     u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'snitch',targetId,snitchOfferId:selSnitchId,snitchOfferIdx:selSnitchIdx};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`🤝 ${me.name} played Snitch on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
+    u[`rooms/${roomCode}/announcement`]=`🤝 ${me.name} played Snitch on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
+    u[`rooms/${roomCode}/roundPlays`]=plays;
     selCard=null;selIdx=null;
     await logAndUpdate(s,ev,u);return;
   }
@@ -1099,47 +1059,43 @@ async function doPlay(cardId,cardIdx,targetId,s,extra={}){
   if(me.char==='troublemaker'&&targetId&&tPlayer&&!s.freePourActive&&!tPlayer.penalised){
     u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tPlayer.penalties||0)+1;
   }
-
   // Free Pour
   if(s.freePourActive&&targetId&&tPlayer){
     if(!tPlayer.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tPlayer.penalties||0)+2;u[`rooms/${roomCode}/players/${targetId}/penalised`]=true;}
     u[`rooms/${roomCode}/players/${targetId}/spotlighted`]=true;
     u[`rooms/${roomCode}/freePourActive`]=false;
   }
-
-  // Inner Beast: apply to both targets
+  // Inner Beast
   if(s.innerBeastActive&&extra.innerBeastSecond){
     const targets=[targetId,extra.innerBeastSecond];
-    for(const tid of targets){
-      const tp=s.players[tid];if(!tp)continue;
-      await applyEffectU(cardId,tid,s,u);
-      if(me.char==='troublemaker'&&!tp.penalised){u[`rooms/${roomCode}/players/${tid}/penalties`]=(tp.penalties||0)+1;}
-    }
-    u[`rooms/${roomCode}/innerBeastActive`]=false;
-    u[`rooms/${roomCode}/players/${myId}/innerBeastTargets`]=null;
+    for(const tid of targets){const tp=s.players[tid];if(!tp)continue;await applyEffectU(cardId,tid,s,u);if(me.char==='troublemaker'&&!tp.penalised)u[`rooms/${roomCode}/players/${tid}/penalties`]=(tp.penalties||0)+1;}
+    u[`rooms/${roomCode}/innerBeastActive`]=false;u[`rooms/${roomCode}/players/${myId}/innerBeastTargets`]=null;
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:`${tPlayer?tPlayer.name:'?'} & ${s.players[extra.innerBeastSecond]?.name||'?'}`,ts:Date.now()}];
+    u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev+' [Inner Beast — both targets hit!]',u);
-    await advanceTurn(s,u);
-    selCard=null;selIdx=null;return;
+    await advanceTurn(s,u);selCard=null;selIdx=null;return;
   }
 
-  // Reveal
+  // Fix #1: Reveal — store isDC in revealPending, set responded:false
   if(cardId==='reveal'&&targetId){
-    const isTargetDC=isDC(s,targetId);
     u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'reveal',targetId};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/revealPending`]={actorId:myId,targetId,isDC:isTargetDC,ts:Date.now(),dismissed:false};
-    u[`rooms/${roomCode}/announcement`]=`🕵️ ${me.name} played Reveal on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
+    // Store reveal result but mark responded:false — attacker cannot see yet
+    u[`rooms/${roomCode}/revealPending`]={actorId:myId,targetId,isDC:isDC(s,targetId),ts:Date.now(),responded:false,dismissed:false};
+    u[`rooms/${roomCode}/announcement`]=`🕵️ ${me.name} played Reveal on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
+    u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev,u);selCard=null;selIdx=null;return;
   }
-
   // Expose
   if(cardId==='expose'&&targetId){
     u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'expose',targetId};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`🔍 ${me.name} played Expose on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
+    u[`rooms/${roomCode}/announcement`]=`🔍 ${me.name} played Expose on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
+    u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev,u);selCard=null;selIdx=null;return;
   }
-
   // Cover check
   if(targetId&&tPlayer?.covered){
     u[`rooms/${roomCode}/players/${targetId}/covered`]=false;
@@ -1147,18 +1103,16 @@ async function doPlay(cardId,cardIdx,targetId,s,extra={}){
     await logAndUpdate(s,`🛡️ ${tPlayer.name} was covered — ${cd.name} cancelled!`,u);
     await advanceTurn(s,u);return;
   }
-
   if(cd.targeted&&targetId){
     u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId,targetId};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`${cd.emoji} ${me.name} played ${cd.name} on ${tPlayer?tPlayer.name:'?'}! ${drama(cd)}`;
-    // Log the play for turn complete screen
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null}];
+    u[`rooms/${roomCode}/announcement`]=`${cd.emoji} ${me.name} played ${cd.name} on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
     u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev,u);
   } else {
     await applyEffectU(cardId,myId,s,u);
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:null}];
+    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:null,ts:Date.now()}];
     u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev,u);
     await advanceTurn(s,u);
@@ -1176,9 +1130,9 @@ async function doRespond(type,cardIdx,redirectId,s){
 
   if(type==='pass'){
     if(ap.cardId==='reveal'){
-      // Reveal passes — show result to attacker. Result already stored in revealPending
-      await logAndUpdate(s,`${me.name} accepted Reveal — result shown to ${actor?actor.name:'?'} privately`,u);
-      // Attacker's client will pick this up via revealPending in renderGame
+      // Fix #1: Mark responded:true so attacker can now see the result
+      u[`rooms/${roomCode}/revealPending/responded`]=true;
+      await logAndUpdate(s,`${me.name} accepted Reveal`,u);
     } else if(ap.cardId==='expose'){
       await logAndUpdate(s,`${me.name} accepted Expose — choosing card...`,u);
       showExposeOverlay(ap.targetId,s,()=>advanceTurn(s,{}));return;
@@ -1192,16 +1146,13 @@ async function doRespond(type,cardIdx,redirectId,s){
       const actorHand=[...(actorPlayer?.hand||[])];
       tHand[rndIdx]=ap.snitchOfferId;
       actorHand.push(gotCard);
-      // Remove snitch card from attacker hand
-      const si=actorHand.indexOf('snitch');if(si>-1)actorHand.splice(si,1);
       u[`rooms/${roomCode}/players/${ap.actorId}/hand`]=actorHand;
       u[`rooms/${roomCode}/players/${myId}/hand`]=tHand;
-      const gotCd=cObj(gotCard);const offeredCd=cObj(ap.snitchOfferId);
-      const ev2=`🤝 Snitch complete! ${actor?actor.name:'?'} got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}, ${me.name} got ${offeredCd?offeredCd.emoji+' '+offeredCd.name:'?'}`;
+      const gotCd=cObj(gotCard);const offCd=cObj(ap.snitchOfferId);
+      const ev2=`🤝 Snitch: ${actor?actor.name:'?'} gave ${offCd?offCd.emoji+' '+offCd.name:'?'}, got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}`;
       u[`rooms/${roomCode}/announcement`]=ev2;
       await logAndUpdate(s,ev2,u);
-      // Show result to both parties
-      toast(`You gave ${offeredCd?offeredCd.emoji+' '+offeredCd.name:'?'} — got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}`);
+      toast(`You gave ${offCd?offCd.emoji+' '+offCd.name:'?'} — got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}`);
       await advanceTurn(s,u);return;
     } else {
       await applyEffectU(ap.cardId,myId,s,u);
@@ -1209,13 +1160,12 @@ async function doRespond(type,cardIdx,redirectId,s){
     }
   } else if(type==='alibi'){
     rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
-    await logAndUpdate(s,`${me.name} used 📋 Alibi! ${drama(cObj('alibi'))}`,u);
+    await logAndUpdate(s,`${me.name} used 📋 Alibi! ${drm(cObj('alibi'))}`,u);
   } else if(type==='deflect'){
     rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
-    // Open response window for attacker
     u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:ap.cardId,targetId:ap.actorId,deflectedBy:myId};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`↩️ ${me.name} deflected ${cObj(ap.cardId)?.name||''} back to ${actor?actor.name:'?'}! ${drama(cObj('deflect'))}`;
+    u[`rooms/${roomCode}/announcement`]=`↩️ ${me.name} deflected ${cObj(ap.cardId)?.name||''} back to ${actor?actor.name:'?'}! ${drm(cObj('deflect'))}`;
     await logAndUpdate(s,`${me.name} used ↩️ Deflect! Back to ${actor?actor.name:'?'}!`,{...u,[`rooms/${roomCode}/players/${myId}/hand`]:hand});
     selCard=null;return;
   } else if(type==='redirect'&&redirectId){
@@ -1223,7 +1173,7 @@ async function doRespond(type,cardIdx,redirectId,s){
     const rp=s.players[redirectId];
     u[`rooms/${roomCode}/activePlay`]={actorId:ap.actorId,cardId:ap.cardId,targetId:redirectId,redirectedBy:myId};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`🔀 ${me.name} redirected ${cObj(ap.cardId)?.name||''} to ${rp?rp.name:'?'}! ${drama(cObj('redirect'))}`;
+    u[`rooms/${roomCode}/announcement`]=`🔀 ${me.name} redirected ${cObj(ap.cardId)?.name||''} to ${rp?rp.name:'?'}! ${drm(cObj('redirect'))}`;
     await logAndUpdate(s,`${me.name} redirected to ${rp?rp.name:'?'}!`,{...u,[`rooms/${roomCode}/players/${myId}/hand`]:hand});
     selCard=null;return;
   } else if(type==='catshield'){
@@ -1242,13 +1192,12 @@ async function doBystander(cardIdx,targetId,s){
   if(cardIdx>=0)hand.splice(cardIdx,1);
   const tgt=s.players[targetId];
   const u={[`rooms/${roomCode}/players/${myId}/hand`]:hand,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
-  await logAndUpdate(s,`${me.name} used 🛡️ Cover to protect ${tgt?tgt.name:'?'}! ${drama(cObj('cover'))}`,u);
+  await logAndUpdate(s,`${me.name} used 🛡️ Cover to protect ${tgt?tgt.name:'?'}! ${drm(cObj('cover'))}`,u);
   await advanceTurn(s,u);
 }
 
 async function doRespondPower(s,charKey,redirectId=null){
-  const me=s.players[myId];
-  const ap=s.activePlay;if(!ap)return;
+  const me=s.players[myId];const ap=s.activePlay;if(!ap)return;
   const c=charOf(me);
   const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/announcement`]:null};
   if(charKey==='strategist'&&redirectId){
@@ -1269,15 +1218,17 @@ async function doWildPlay(s){
   const actor=s.players[ap.actorId];const cd=cObj(ap.cardId);
   const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
   await applyEffectU(ap.cardId,ap.actorId,s,u);
-  u[`rooms/${roomCode}/announcement`]=`🎲 Wild Play! ${me.name} copied ${cd?cd.emoji+' '+cd.name:''} and used it on ${actor?actor.name:'?'}!`;
-  await logAndUpdate(s,`${me.name} used Wild Play on ${actor?actor.name:'?'}!`,u);
+  u[`rooms/${roomCode}/announcement`]=`🎲 Wild Play! ${me.name} used ${cd?cd.emoji+' '+cd.name:''} on ${actor?actor.name:'?'}!`;
+  await logAndUpdate(s,`${me.name} Wild Play on ${actor?actor.name:'?'}!`,u);
   await advanceTurn(s,u);selCard=null;
 }
 
+// Fix #3: Ghost disappear — only marks disappeared for current round
 async function doGhostDisappear(s){
   const me=s.players[myId];
+  // disappeared is reset at end of each round in endVoting, so this only affects current round
   const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/players/${myId}/disappeared`]:true,[`rooms/${roomCode}/announcement`]:null};
-  await logAndUpdate(s,`👻 ${me.name} disappeared for this round!`,u);
+  await logAndUpdate(s,`👻 ${me.name} disappeared for this round only!`,u);
   await advanceTurn(s,u);
 }
 
@@ -1287,18 +1238,30 @@ async function doPass(s){
   await advanceTurn(s,{});
 }
 
-// ── EFFECT ────────────────────────────────────────────────────────────────
+function showSnitchOfferOverlay(s){
+  const me=s.players[myId];
+  const ov=el('div','ov');
+  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🤝 Snitch!<br><span class="sm mut">Select YOUR card to offer (blind trade)</span></div>`;
+  (me.hand||[]).forEach((cid,idx)=>{
+    if(cid==='snitch')return;
+    const cd=cObj(cid);if(!cd)return;
+    const btn=el('button','btn bs');btn.style.cssText='max-width:340px;width:100%;text-align:left;display:flex;gap:8px;align-items:center';
+    btn.innerHTML=`<span style="font-size:18px">${cd.emoji}</span><div><div style="font-weight:700">${cd.name}</div><div class="sm mut">${cd.desc}</div></div>`;
+    btn.addEventListener('click',()=>{selSnitchId=cid;selSnitchIdx=idx;ov.remove();renderGame(s);});
+    ov.appendChild(btn);
+  });
+  const cn=el('button','btn bs');cn.style.cssText='max-width:340px;width:100%';cn.textContent='Cancel';
+  cn.addEventListener('click',()=>{selCard=null;selIdx=null;ov.remove();renderGame(s);});
+  ov.appendChild(cn);document.body.appendChild(ov);
+}
+
+// ── APPLY EFFECT ──────────────────────────────────────────────────────────
 async function applyEffectU(cardId,targetId,s,u){
   const tp=s.players[targetId];if(!tp)return;
-  if(['accuse','waterfall','onthehouse'].includes(cardId)){
-    if(!tp.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tp.penalties||0)+1;}
-  } else if(cardId==='blackout'){
-    if(!tp.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tp.penalties||0)+3;}
-  } else if(cardId==='spotlight'){
-    u[`rooms/${roomCode}/players/${targetId}/spotlighted`]=true;
-  } else if(cardId==='cover'){
-    u[`rooms/${roomCode}/players/${targetId}/covered`]=true;
-  }
+  if(['accuse','waterfall','onthehouse'].includes(cardId)){if(!tp.penalised)u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tp.penalties||0)+1;}
+  else if(cardId==='blackout'){if(!tp.penalised)u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tp.penalties||0)+3;}
+  else if(cardId==='spotlight')u[`rooms/${roomCode}/players/${targetId}/spotlighted`]=true;
+  else if(cardId==='cover')u[`rooms/${roomCode}/players/${targetId}/covered`]=true;
 }
 
 // ── ADVANCE TURN ──────────────────────────────────────────────────────────
@@ -1319,10 +1282,10 @@ async function advanceTurn(s,extra={}){
     next++;
   }
   if(next>=order.length){
-    // All turns done — go to turn complete screen
+    // Fix #9: All turns done — move to turn-complete with current roundPlays intact
     extra[`rooms/${roomCode}/status`]='turn-complete';
     extra[`rooms/${roomCode}/readyVotes`]={};
-    await logAndUpdate(s,'🎴 All turns complete! Preparing to vote...',extra);
+    await logAndUpdate(s,'🎴 All turns complete!',extra);
   } else {
     extra[`rooms/${roomCode}/curTurnIdx`]=next;
     await update(ref(db),extra);
@@ -1337,22 +1300,25 @@ async function logAndUpdate(s,evStr,extra={}){
 }
 
 // ── TURN COMPLETE ─────────────────────────────────────────────────────────
+// Fix #8 & #9: Mirror waiting room flow, show all plays
 function renderTurnComplete(s){
   ss('s-turncomplete');
   document.getElementById('tc-rnd').textContent=s.round;
-  readyVoteClicked=false;
 
-  // Cards played this round
+  // Fix #9: Show all cards played this round
   const playsEl=document.getElementById('tc-plays');playsEl.innerHTML='';
   const plays=s.roundPlays||[];
-  if(!plays.length){playsEl.innerHTML='<div class="sm mut">No cards logged this round.</div>';}
-  else plays.forEach(p=>{
-    const d=el('div','pi');
-    d.innerHTML=`<span style="font-size:18px">${p.emoji}</span><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.actor} played ${p.card}${p.target?' on '+p.target:''}</div></div>`;
-    playsEl.appendChild(d);
-  });
+  if(!plays.length){
+    playsEl.innerHTML='<div class="sm mut ctr">No cards played this round.</div>';
+  } else {
+    plays.forEach(p=>{
+      const d=el('div','pi');
+      d.innerHTML=`<span style="font-size:18px">${p.emoji}</span><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.actor} played ${p.card}${p.target?' on '+p.target:''}</div></div>`;
+      playsEl.appendChild(d);
+    });
+  }
 
-  // Vote standings (counts only, no attribution, Ghost excluded rounds 1-4)
+  // Vote standings
   const votesEl=document.getElementById('tc-votes');votesEl.innerHTML='';
   const isFinal=s.round>=s.totalRounds;
   const tally={};
@@ -1360,7 +1326,7 @@ function renderTurnComplete(s){
   Object.entries(s.votes||{}).forEach(([vid,v])=>{
     if(!v)return;
     const voter=s.players[vid];
-    if(!isFinal&&voter?.char==='ghost')return; // Ghost vote invisible rounds 1-4
+    if(!isFinal&&voter?.char==='ghost')return;
     if(tally[v]!==undefined)tally[v]++;
   });
   Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
@@ -1370,25 +1336,36 @@ function renderTurnComplete(s){
     votesEl.appendChild(d);
   });
 
-  // Ready to vote button
-  const me=s.players[myId];
-  const rvBtn=document.getElementById('b-readyvote');
+  // Fix #8: Readiness list (mirrors waiting room)
+  const readyList=document.getElementById('tc-ready-list');readyList.innerHTML='';
   const readyVotes=s.readyVotes||{};
-  const alreadyReady=readyVotes[myId];
-  rvBtn.textContent=alreadyReady?'✓ Ready to Vote':'✓ Ready to Vote';
-  rvBtn.style.opacity=alreadyReady?'.5':'1';
-  rvBtn.disabled=!!alreadyReady;
+  Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
+    const pc=charOf(p);const isReady=!!readyVotes[p.id];
+    const d=el('div','pi');
+    d.innerHTML=`<div class="av" style="width:26px;height:26px;font-size:13px;background:${isReady?'rgba(76,175,125,.15)':'#222'};border:1.5px solid ${isReady?'var(--grn)':'#444'}">${isReady?'✓':'⏳'}</div>
+      <div style="flex:1;font-size:13px;font-weight:700">${p.name}</div>
+      <span class="tag" style="background:${isReady?'rgba(76,175,125,.12)':'rgba(100,100,100,.12)'};color:${isReady?'var(--grn)':'var(--mut)'}">${isReady?'Ready ✓':'Not ready'}</span>`;
+    readyList.appendChild(d);
+  });
+
+  // Ready to vote button
+  const rvBtn=document.getElementById('b-readyvote');
+  const myReady=!!readyVotes[myId];
+  rvBtn.textContent=myReady?'✓ Ready to Vote':'✓ Ready to Vote';
+  rvBtn.style.opacity=myReady?'.5':'1';
+  rvBtn.disabled=myReady;
 
   // Host controls
-  const allReady=Object.values(s.players).every(p=>p.disappeared||(s.readyVotes||{})[p.id]);
+  const allReady=Object.values(s.players).filter(p=>!p.disappeared).every(p=>readyVotes[p.id]);
   document.getElementById('tc-host').style.display=s.host===myId?'block':'none';
   document.getElementById('tc-wait').style.display=s.host===myId?'none':'block';
   if(s.host===myId){
-    document.getElementById('b-startvote').textContent=allReady?'🗳️ Everyone Ready — Start Voting!':'🗳️ Start Voting';
+    document.getElementById('b-startvote').textContent=allReady?'🗳️ Everyone Ready — Start Voting!':'🗳️ Start Voting (pulls in all)';
   }
 }
 
-async function readyToVote(){
+// Fix #8: Mark ready to vote — updates Firebase so list updates live
+async function markReadyVote(){
   if(readyVoteClicked)return;
   readyVoteClicked=true;
   await update(ref(db,`rooms/${roomCode}/readyVotes/${myId}`),true);
@@ -1396,19 +1373,24 @@ async function readyToVote(){
 }
 
 async function startVoting(){
-  await update(ref(db,`rooms/${roomCode}`),{status:'voting'});
+  // Auto-mark any unready players as ready
+  const ps=Object.values(gameState.players||{}).filter(p=>!p.disappeared);
+  const u={};
+  const rv=gameState.readyVotes||{};
+  ps.forEach(p=>{if(!rv[p.id])u[`rooms/${roomCode}/readyVotes/${p.id}`]=true;});
+  u[`rooms/${roomCode}/status`]='voting';
+  await update(ref(db),u);
 }
 
 // ── VOTING SCREEN ─────────────────────────────────────────────────────────
 function renderVotingScreen(s){
-  ss('s-game'); // reuse game screen for voting
+  ss('s-game');
   const me=s.players[myId];if(!me)return;
   const myDC=isDC(s,myId);
 
   document.getElementById('g-code').textContent=s.code;
   document.getElementById('g-rnd').textContent=s.round;
   document.getElementById('g-tot').textContent=s.totalRounds;
-
   const pips=document.getElementById('g-pips');pips.innerHTML='';
   for(let i=1;i<=s.totalRounds;i++){
     const p=el('div','pip'+(i<s.round?' done':i===s.round?' act':''));p.textContent=i;pips.appendChild(p);
@@ -1421,13 +1403,11 @@ function renderVotingScreen(s){
   document.getElementById('g-challenge').style.display='none';
 
   const gc=document.getElementById('g-action');
-  const gh=document.getElementById('g-hand');
   const gb=document.getElementById('g-bot');
   const ghl=document.getElementById('g-hlabel');
-  gc.innerHTML='';gh.innerHTML='';gb.innerHTML='';ghl.style.display='none';
+  gc.innerHTML='';document.getElementById('g-hand').innerHTML='';gb.innerHTML='';ghl.style.display='none';
   renderVoting(s,me,myDC,gc,gb);
 
-  // Player strip
   const gps=document.getElementById('g-ps');gps.innerHTML='';
   Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
     const pc=charOf(p);const cnt=Object.values(s.votes||{}).filter(v=>v===p.id).length;
@@ -1442,16 +1422,15 @@ function renderVoting(s,me,myDC,gc,gb){
   const myVote=s.votes&&s.votes[myId];
   const mySkipped=s.skippedVotes&&s.skippedVotes[myId];
   const isFinal=s.round>=s.totalRounds;
-  const isGhost=me.char==='ghost';
-  const showGhostVotes=(me.char==='mother'||isGhost);
+  const showGhostVotes=me.char==='mother'||me.char==='ghost';
 
   const info=el('div');info.style.cssText='background:rgba(232,67,90,.05);border:1px solid rgba(232,67,90,.2);border-radius:var(--r);padding:11px 13px';
   info.innerHTML=`<div style="font-weight:800;color:var(--red);margin-bottom:3px">🗳️ VOTING${isFinal?' — FINAL ELIMINATION!':''}</div>
-    <div class="sm mut">${isFinal?'Most votes eliminated. Catch the Drunk Cat!':'Most votes = 🍺 drink + cards greyed next round (once only).'}</div>`;
+    <div class="sm mut">${isFinal?'Most votes = eliminated. Catch the Drunk Cat!':'Most votes = 🍺 drink + cards greyed next round.'}</div>`;
   gc.appendChild(info);
 
-  if(isGhost&&!isFinal){
-    const gn=el('div');gn.style.cssText='background:rgba(96,125,139,.08);border:1px solid rgba(96,125,139,.25);border-radius:var(--rs);padding:8px 11px;font-size:12px';
+  if(me.char==='ghost'&&!isFinal){
+    const gn=el('div');gn.style.cssText='background:rgba(96,125,139,.08);border:1px solid rgba(96,125,139,.2);border-radius:var(--rs);padding:8px 11px;font-size:12px';
     gn.innerHTML='👻 <b>Phantom Vote:</b> Your vote is invisible this round. In Round 5 it counts!';
     gc.appendChild(gn);
   }
@@ -1461,8 +1440,7 @@ function renderVoting(s,me,myDC,gc,gb){
     vt.textContent='TAP TO LOCK YOUR VOTE';gc.appendChild(vt);
     Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
       const pc=charOf(p);
-      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length
-        :Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
+      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length:Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
       const btn=el('div','vbtn');
       btn.innerHTML=`<span>${pc.emoji} ${p.name}${p.id===myId?' (You)':''}</span>${vCnt>0?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red)">🗳️${vCnt}</span>`:''}`;
       btn.addEventListener('click',()=>castVote(p.id,s));
@@ -1473,16 +1451,13 @@ function renderVoting(s,me,myDC,gc,gb){
   } else {
     const vp=myVote?s.players[myVote]:null;
     const locked=el('div');locked.style.cssText='background:rgba(232,67,90,.05);border:1px solid rgba(232,67,90,.2);border-radius:var(--rs);padding:10px 12px';
-    locked.innerHTML=mySkipped?`<div style="font-weight:700">✓ Skipped this round</div>`
-      :`<div style="font-weight:700">🔒 Locked: <span style="color:var(--red)">${vp?charOf(vp).emoji+' '+vp.name:'?'}</span></div><div class="sm mut" style="margin-top:2px">Carries forward — use Vote Change to unlock</div>`;
+    locked.innerHTML=mySkipped?`<div style="font-weight:700">✓ Skipped this round</div>`:`<div style="font-weight:700">🔒 Locked: <span style="color:var(--red)">${vp?charOf(vp).emoji+' '+vp.name:'?'}</span></div><div class="sm mut" style="margin-top:2px">Carries forward — Vote Change to unlock</div>`;
     gc.appendChild(locked);
 
-    // Tally
     const tallyDiv=el('div','col');tallyDiv.style.marginTop='6px';
     Object.values(s.players).filter(p=>!p.disappeared).forEach(p=>{
       const pc=charOf(p);
-      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length
-        :Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
+      let vCnt=showGhostVotes?Object.values(s.votes||{}).filter(v=>v===p.id).length:Object.entries(s.votes||{}).filter(([vid,v])=>v===p.id&&s.players[vid]?.char!=='ghost').length;
       const d=el('div','row');d.style.cssText='justify-content:space-between;padding:4px 0';
       d.innerHTML=`<span class="sm">${pc.emoji} ${p.name}${p.id===myId?' (You)':''}</span>${vCnt>0?`<span class="tag" style="background:rgba(232,67,90,.12);color:var(--red);font-size:10px">🗳️${vCnt}</span>`:'<span class="sm mut">–</span>'}`;
       tallyDiv.appendChild(d);
@@ -1515,17 +1490,10 @@ function renderVoting(s,me,myDC,gc,gb){
   }
 }
 
-async function castVote(targetId,s){
-  await update(ref(db,`rooms/${roomCode}/votes`),{[myId]:targetId});
-  toast(`🔒 Locked on ${s.players[targetId]?.name||'?'}`);
-}
-async function skipVote(s){
-  await update(ref(db,`rooms/${roomCode}/skippedVotes`),{[myId]:true});
-  toast('Vote skipped');
-}
+async function castVote(targetId,s){await update(ref(db,`rooms/${roomCode}/votes`),{[myId]:targetId});toast(`🔒 Locked on ${s.players[targetId]?.name||'?'}`);}
+async function skipVote(s){await update(ref(db,`rooms/${roomCode}/skippedVotes`),{[myId]:true});toast('Vote skipped');}
 async function useVoteChange(s){
-  const me=s.players[myId];
-  const h=[...(me.hand||[])];const i=h.indexOf('votechange');if(i>-1)h.splice(i,1);
+  const me=s.players[myId];const h=[...(me.hand||[])];const i=h.indexOf('votechange');if(i>-1)h.splice(i,1);
   await update(ref(db),{[`rooms/${roomCode}/players/${myId}/hand`]:h,[`rooms/${roomCode}/votes/${myId}`]:null,[`rooms/${roomCode}/skippedVotes/${myId}`]:null});
   toast('Vote unlocked! 🗳️');
 }
@@ -1535,8 +1503,7 @@ async function endVoting(s){
   const tally={};players.forEach(p=>{tally[p.id]=0;});
   const isFinal=s.round>=s.totalRounds;
   Object.entries(s.votes||{}).forEach(([vid,v])=>{
-    if(!v)return;
-    const voter=s.players[vid];
+    if(!v)return;const voter=s.players[vid];
     if(!isFinal&&voter?.char==='ghost')return;
     if(tally[v]!==undefined)tally[v]++;
   });
@@ -1560,10 +1527,9 @@ async function endVoting(s){
 
   const newOrder=shuf(players.map(p=>p.id));
   players.forEach(p=>{
-    if(!s.punchlineActive){
-      u[`rooms/${roomCode}/players/${p.id}/hand`]=drawOne(p.id===s.drunkCat,p.hand,p.char);
-    }
+    if(!s.punchlineActive)u[`rooms/${roomCode}/players/${p.id}/hand`]=drawOne(p.id===s.drunkCat,p.hand,p.char);
     u[`rooms/${roomCode}/players/${p.id}/spotlighted`]=false;
+    // Fix #3: Reset disappeared each round end
     u[`rooms/${roomCode}/players/${p.id}/disappeared`]=false;
     u[`rooms/${roomCode}/players/${p.id}/covered`]=false;
     u[`rooms/${roomCode}/players/${p.id}/ready`]=false;
@@ -1591,7 +1557,7 @@ async function endVoting(s){
   u[`rooms/${roomCode}/recentEvent`]=evStr;
   u[`rooms/${roomCode}/eventLog`]=lg;
   u[`rooms/${roomCode}/skippedVotes`]={};
-  u[`rooms/${roomCode}/roundPlays`]=[];
+  u[`rooms/${roomCode}/roundPlays`]=[];  // Reset plays for next round
   u[`rooms/${roomCode}/readyVotes`]={};
   await update(ref(db),u);
 }
@@ -1610,40 +1576,4 @@ function renderResults(s){
   Object.entries(r.tally||{}).sort((a,b)=>b[1]-a[1]).forEach(([id,v])=>{
     const p=s.players[id];if(!p)return;const ch=charOf(p);
     const d=el('div','pi');
-    d.innerHTML=`<div class="av" style="width:24px;height:24px;font-size:12px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1;font-size:13px;font-weight:700">${p.name}</div><div style="font-weight:800;color:${v>0?'var(--red)':'var(--mut)'}">${v} vote${v!==1?'s':''}</div>`;
-    rt.appendChild(d);
-  });
-
-  const ra=document.getElementById('res-acts');ra.innerHTML='';
-  if(gameState&&gameState.host===myId){
-    const btn=el('button','btn bp');btn.textContent=`▶️ Start Round ${(r.round||0)+1}`;
-    btn.addEventListener('click',async()=>{
-      await update(ref(db),{[`rooms/${roomCode}/status`]:'role-reveal',[`rooms/${roomCode}/round`]:(r.round||0)+1,[`rooms/${roomCode}/roundResult`]:null});
-      selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;revealShownTs=0;readyVoteClicked=false;
-    });
-    ra.appendChild(btn);
-  } else {
-    const w=el('div');w.style.cssText='color:var(--mut);font-size:13px;text-align:center';
-    w.textContent='Waiting for host to start next round...';ra.appendChild(w);
-  }
-}
-
-// ── FINAL ─────────────────────────────────────────────────────────────────
-function renderFinal(s){
-  ss('s-final');
-  const r=s.finalResult||{};const dc=r.drunkCat?s.players[r.drunkCat]:null;const dcc=dc?charOf(dc):{emoji:'🐱',color:'var(--red)',name:'?'};
-  document.getElementById('fin-top').innerHTML=r.winner==='drunkcat'
-    ?`<div style="font-size:56px">🐱🎉</div><div style="font-size:22px;font-weight:900;margin:10px 0;color:var(--red)">The Drunk Cat Wins!</div>${dc?`<div style="font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat!</div>`:''}<div class="sm mut" style="margin-top:8px">All Hunters drink! 🍺🍺🍺</div>`
-    :`<div style="font-size:56px">🔍🎉</div><div style="font-size:22px;font-weight:900;margin:10px 0;color:var(--grn)">Hunters Win!</div>${dc?`<div style="font-weight:700;color:${dcc.color}">${dcc.emoji} ${dc.name} was the Drunk Cat!</div>`:''}<div class="sm mut" style="margin-top:8px">Drunk Cat drinks big! 🍺🍺🍺🍺</div><div style="margin-top:10px;font-size:13px;color:var(--acc);font-weight:700">⚡ SUDDEN DEATH — everyone drinks!</div>`;
-
-  const fr=document.getElementById('fin-rev');fr.innerHTML='';
-  Object.values(s.players).forEach(p=>{
-    const ch=charOf(p);const myIsdc=p.id===s.drunkCat;
-    const d=el('div','pi');d.style.borderColor=myIsdc?'var(--red)':'transparent';
-    d.innerHTML=`<div class="av" style="width:26px;height:26px;font-size:13px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.name}${myIsdc?' 🐱':''}</div><div class="sm mut">${ch.name}</div></div><div class="sm" style="font-weight:700;color:${myIsdc?'var(--red)':'var(--grn)'}">${myIsdc?'Drunk Cat':'Hunter'}</div>`;
-    fr.appendChild(d);
-  });
-}
-</script>
-</body>
-</html>
+    d.innerHTML=`<div class="av" style="width:24px;height:24px;font-size:12px;background:${ch.color}15;border:1.5px solid ${ch.color}">${ch.emoji}</div><div style="flex:1;font-size:13px;font-weight:700">${p.name}</div><div style="font-weight:800;color:${v>0?'var(--red)':'var(--mut
