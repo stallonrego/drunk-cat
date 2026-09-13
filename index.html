@@ -51,7 +51,7 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
 .tbox.resp{border-color:var(--red)}
 .vbtn{background:var(--s2);border:1.5px solid var(--bor);border-radius:var(--rs);padding:10px 12px;cursor:pointer;font-weight:600;font-size:13px;width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .vbtn.voted{border-color:var(--red);background:rgba(232,67,90,.07)}
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:24px 16px;overflow-y:auto}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:24px 16px;overflow-y:auto}
 .rtab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;background:var(--s2);color:var(--mut);border:none;cursor:pointer;flex-shrink:0;white-space:nowrap}
 .rtab.act{background:var(--acc);color:#000}
 .rtabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
@@ -65,6 +65,21 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
 .drama{font-style:italic;color:var(--mut);font-size:11px;margin-top:3px}
 .announce{background:var(--s2);border-radius:var(--r);padding:11px 13px;border-left:3px solid var(--acc);font-size:13px}
 .challenge-banner{background:rgba(74,158,255,.08);border:1.5px solid var(--blu);border-radius:var(--r);padding:12px 14px}
+.mdl{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:300;display:flex;padding:10px;overflow-y:auto}
+.mdl-in{background:var(--s1);border:1.5px solid var(--bor);border-radius:16px;padding:14px;width:100%;max-width:420px;margin:auto;display:flex;flex-direction:column;gap:9px}
+.mdl-ctx{display:flex;gap:10px;align-items:center;font-size:10px;color:var(--mut);font-weight:800;letter-spacing:.5px;border-bottom:1px solid var(--bor);padding-bottom:8px;flex-wrap:wrap}
+.mdl-h{font-size:17px;font-weight:900}
+.tgl{display:flex;gap:10px;align-items:center;background:var(--s2);border:1.5px solid var(--bor);border-radius:var(--rs);padding:9px 11px;cursor:pointer}
+.tgl.on{border-color:var(--acc);background:rgba(245,166,35,.07)}
+.tgl-sw{width:34px;height:19px;border-radius:12px;background:#3a3a3a;position:relative;flex-shrink:0;transition:background .15s}
+.tgl.on .tgl-sw{background:var(--acc)}
+.tgl-sw:after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;transition:transform .15s}
+.tgl.on .tgl-sw:after{transform:translateX(15px)}
+.opt{background:var(--s2);border:1.5px solid var(--bor);border-radius:var(--rs);padding:9px 11px;cursor:pointer;display:flex;gap:9px;align-items:center;width:100%;text-align:left;color:var(--txt);font-size:13px;font-weight:600}
+.opt.sel{border-color:var(--acc);background:rgba(245,166,35,.07)}
+.opt.dis{opacity:.35;pointer-events:none}
+.chainrow{font-size:11px;color:var(--mut);padding:4px 0;border-bottom:1px solid var(--bor)}
+.chainrow:last-child{border-bottom:none;color:var(--txt);font-weight:700}
 </style>
 </head>
 <body>
@@ -78,6 +93,7 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
       <button class="btn bp" onclick="navCreate()">🏠 Create Room</button>
       <button class="btn bs" onclick="navJoin()">📱 Join Room</button>
       <button class="btn bs" onclick="navRules()">📖 How to Play</button>
+      <button class="btn bs" onclick="navRejoin()" style="font-size:12px;color:var(--mut)">🔄 Rejoin a Game</button>
     </div>
     <div class="ctr mut" style="font-size:11px">Dedicated to Stallon, Anuja, Pream, Grace, Dave & Lynn 🥂</div>
   </div>
@@ -114,6 +130,19 @@ label{font-size:11px;color:var(--mut);font-weight:700;display:block;margin-botto
       <div class="mbox"><div style="font-size:28px">🎲</div><div style="font-weight:700;margin:5px 0">Character: Mystery</div><div class="mut sm">Randomly assigned at game start</div></div>
       <button class="btn bp" onclick="if(window._joinRoom)window._joinRoom()">Join Room 🍺</button>
     </div>
+  </div>
+</div>
+
+<!-- REJOIN -->
+<div class="screen" id="s-rejoin">
+  <div style="max-width:400px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:12px">
+    <div class="row"><button class="btn bs bsm" onclick="navLanding()">← Back</button><h2 style="font-size:18px;font-weight:800">Rejoin Game</h2></div>
+    <div class="card col">
+      <div class="sm mut">Lost your screen or refreshed? Enter the room code and pick your seat — your hand, votes and character are exactly as you left them.</div>
+      <label>ROOM CODE</label><input id="rj-code" placeholder="XXXX" maxlength="4" style="text-transform:uppercase;font-size:24px;text-align:center;letter-spacing:6px" oninput="this.value=this.value.toUpperCase()"/>
+      <button class="btn bp" onclick="if(window._findSeats)window._findSeats()">Find My Seat 🔍</button>
+    </div>
+    <div class="card col" id="rj-seats-box" style="display:none"><div class="stitle">TAP YOUR NAME TO TAKE BACK YOUR SEAT</div><div id="rj-seats" class="col"></div></div>
   </div>
 </div>
 
@@ -230,7 +259,8 @@ function navCreate(){showScreen('s-create');}
 function navJoin(){showScreen('s-join');}
 function navRules(){showScreen('s-rules');if(window._initRules)window._initRules();}
 function navLanding(){showScreen('s-landing');}
-function navReload(){location.reload();}
+function navReload(){try{localStorage.removeItem('drunkcat_session');}catch(e){}location.reload();}
+function navRejoin(){showScreen('s-rejoin');}
 </script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
@@ -316,6 +346,16 @@ function drawOne(isDC,hand,ch){
 let myId,roomCode,myName,gameState,roomRef,unsubFn;
 let selCard=null,selIdx=null,selSnitchId=null,selSnitchIdx=null;
 let revealShownTs=0,readyVoteClicked=false,readyClicked=false;
+// ── DRAFT TURN STATE — nothing is committed to Firebase until Confirm ─────
+let draft=null;              // {cardId,cardIdx,targetId,secondTargetId,offerId,offerIdx}
+let powerDraft=false;        // attack power toggled on, not yet committed
+let curfewPeeked=false;      // Curfew's peek is irreversible once taken
+let lastResId=null;          // resolution overlay already seen on this device
+let modalOpen=null;          // 'play' | 'respond' | 'bystander' | 'pass' | null
+let respondDismissed=null;   // activePlay signature the player minimised
+let firstSnap=true;
+let playSeq=0;
+function clearDraft(){draft=null;powerDraft=false;selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;}
 
 // ── UTILS ─────────────────────────────────────────────────────────────────
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -326,6 +366,65 @@ function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className
 const isDC=(s,id)=>s&&s.drunkCat===id;
 const isGreyed=(p,rnd)=>p&&p.penaltyRound===rnd;
 
+// ── SESSION PERSISTENCE — survive a refresh ───────────────────────────────
+const SKEY='drunkcat_session';
+function saveSession(){try{localStorage.setItem(SKEY,JSON.stringify({roomCode,myId,myName,ts:Date.now()}));}catch(e){}}
+function loadSession(){try{const r=localStorage.getItem(SKEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+function clearSession(){try{localStorage.removeItem(SKEY);}catch(e){}}
+
+// ── ROUND PLAYS — keyed writes so no client can clobber another's entry ───
+function addPlay(u,entry){
+  const k=`p${Date.now()}_${playSeq++}_${Math.random().toString(36).slice(2,5)}`;
+  u[`rooms/${roomCode}/roundPlays/${k}`]={ts:Date.now(),...entry};
+}
+function playList(s){
+  const rp=s.roundPlays||{};
+  const arr=Array.isArray(rp)?rp.slice():Object.values(rp);
+  return arr.filter(Boolean).sort((a,b)=>(a.ts||0)-(b.ts||0));
+}
+
+// ── RESOLUTION — every play chain ends with a popup everyone must dismiss ─
+function setResolution(u,res){
+  u[`rooms/${roomCode}/resolution`]={id:`r${Date.now()}_${Math.random().toString(36).slice(2,6)}`,ts:Date.now(),...res};
+}
+function maybeShowResolution(s){
+  const r=s&&s.resolution;
+  if(!r||!r.id||r.id===lastResId)return;
+  if(document.getElementById('res-ov'))return;
+  lastResId=r.id;
+  const ov=el('div','ov');ov.id='res-ov';
+  const chain=(r.chain||[]).filter(Boolean).map(c=>`<div class="chainrow">${c}</div>`).join('');
+  ov.innerHTML=`<div style="max-width:360px;width:100%;margin:auto;display:flex;flex-direction:column;gap:11px">
+    <div class="ctr" style="font-size:46px">${r.emoji||'🎴'}</div>
+    <div class="ctr" style="font-size:19px;font-weight:900;color:${r.color||'var(--acc)'}">${r.title||'Resolved'}</div>
+    ${r.detail?`<div class="ctr sm mut">${r.detail}</div>`:''}
+    ${chain?`<div class="card col" style="gap:0"><div class="stitle" style="margin-bottom:4px">HOW IT PLAYED OUT</div>${chain}</div>`:''}
+    <button class="btn bp" id="res-ok">Continue →</button></div>`;
+  ov.querySelector('#res-ok').addEventListener('click',()=>ov.remove());
+  document.body.appendChild(ov);
+}
+
+// ── MODAL SHELL ───────────────────────────────────────────────────────────
+const apSig=ap=>ap?`${ap.actorId}|${ap.cardId}|${ap.targetId}|${ap.redirectedBy||''}|${ap.deflectedBy||''}|${(ap.chain||[]).length}`:'';
+function closeModal(){const m=document.getElementById('mdl');if(m)m.remove();modalOpen=null;}
+function ctxLine(s){
+  const order=s.turnOrder||[];const i=s.curTurnIdx||0;
+  const pips=order.map((pid,n)=>{const p=s.players[pid];if(!p)return '';return `<span style="opacity:${n===i?1:.35}">${charOf(p).emoji}</span>`;}).join('');
+  const tal={};Object.entries(s.votes||{}).forEach(([vid,v])=>{if(v&&s.players[vid]?.char!=='ghost')tal[v]=(tal[v]||0)+1;});
+  const lead=Object.keys(tal).sort((a,b)=>tal[b]-tal[a])[0];
+  const lp=lead?s.players[lead]:null;
+  return `<span>ROUND ${s.round}/${s.totalRounds}</span><span style="letter-spacing:2px">${pips}</span>${lp?`<span>🗳️ ${lp.name.split(' ')[0]} ${tal[lead]}</span>`:'<span>🗳️ no votes yet</span>'}`;
+}
+function modalShell(s,bodyEl,mode){
+  closeModal();                      // must run BEFORE modalOpen is set
+  const m=el('div','mdl');m.id='mdl';
+  const inn=el('div','mdl-in');
+  const ctx=el('div','mdl-ctx');ctx.innerHTML=ctxLine(s);
+  inn.appendChild(ctx);inn.appendChild(bodyEl);
+  m.appendChild(inn);document.body.appendChild(m);
+  modalOpen=mode||null;
+}
+
 // ── RULES ─────────────────────────────────────────────────────────────────
 const RTABS=[{id:"overview",label:"Overview"},{id:"turns",label:"Turns"},{id:"cards",label:"Cards"},{id:"powers",label:"Powers"},{id:"voting",label:"Voting"},{id:"winning",label:"Winning"},{id:"crew",label:"The Crew"}];
 const RC={
@@ -335,8 +434,8 @@ const RC={
     <div class="card col"><div class="stitle">Key Rules</div><ul class="sm" style="line-height:2;padding-left:14px"><li>Character emojis are <b>public</b> — powers are <b>hidden</b></li><li>Only the Drunk Cat's identity is secret</li><li>Cards persist across rounds — draw 1 new card each round</li><li>Votes carry forward — only Vote Change card changes them</li><li>Each player penalised once maximum total</li></ul></div>
   </div>`,
   turns:`<div class="col" style="padding-bottom:20px">
-    <div class="card col"><div class="stitle">Your Turn Flow</div><ol class="sm" style="line-height:2;padding-left:14px"><li>Optionally activate your <b>Attack power</b> first</li><li>Select an attack card and target</li><li>Card announced publicly to all players</li><li>Target gets response window</li><li>After last player's turn → Turn Complete screen</li><li>Everyone ready up → Host starts voting</li></ol></div>
-    <div class="card col"><div class="stitle">Response Window</div><ul class="sm" style="line-height:2;padding-left:14px"><li><b>📋 Alibi</b> — Cancel the card</li><li><b>↩️ Deflect</b> — Bounce back (attacker gets response window)</li><li><b>🔀 Redirect</b> — Send to another player (they get response window)</li><li><b>🛡️ Cover</b> — Any bystander can cancel the current attack on target</li><li><b>🛡️ Cat Shield</b> — Counter a Reveal card (anyone can use)</li><li><b>Save Power</b> — The Strategist or The Wildcard active ability</li><li><b>Pass</b> — Accept the effect</li></ul></div>
+    <div class="card col"><div class="stitle">Your Turn Flow</div><ol class="sm" style="line-height:2;padding-left:14px"><li>Tap a card — a play window opens with everything in one place</li><li>Toggle your <b>Attack power</b> on or off, pick your target, then Confirm</li><li>Nothing is committed until you Confirm — <b>Undo</b> resets your turn</li><li>Card announced publicly to all players</li><li>Target gets response window</li><li>After last player's turn → Turn Complete screen</li><li>Everyone ready up → Host starts voting</li></ol></div>
+    <div class="card col"><div class="stitle">Response Window</div><ul class="sm" style="line-height:2;padding-left:14px"><li><b>📋 Alibi</b> — Cancel the card</li><li><b>↩️ Deflect</b> — Bounce back (attacker gets response window)</li><li><b>🔀 Redirect</b> — Send to another player (they get response window)</li><li><b>🛡️ Cover</b> — Any bystander can cancel the current attack on target</li><li><b>🛡️ Cat Shield</b> — Counter a Reveal card (anyone can use)</li><li><b>Save Power</b> — The Strategist or The Wildcard active ability</li><li><b>Pass</b> — Accept the effect</li></ul><p class="sm mut" style="line-height:1.7;margin-top:6px">The response window opens as a full screen so you can see exactly what hit you and every save you hold. Every play chain ends with a result popup that all players must dismiss before the round moves on.</p></div>
     <div class="card col"><div class="stitle">The Game Master's Challenge</div><p class="sm" style="line-height:1.7">When any card is played, The Game Master can pause the game. During the pause they may save the target (like Cover) or double their penalty. Host dismisses the pause.</p></div>
   </div>`,
   cards:`<div class="col" style="padding-bottom:20px">
@@ -375,6 +474,7 @@ window._startRound=startRound;
 window._markReadyVote=markReadyVote;
 window._startVoting=startVoting;
 window._initRules=initRules;
+window._findSeats=findSeats;
 // ss() is already defined in the plain script above as showScreen()
 
 // ── FIREBASE ──────────────────────────────────────────────────────────────
@@ -383,7 +483,9 @@ function subRoom(){
   unsubFn=onValue(roomRef,snap=>{
     if(!snap.exists())return;
     gameState=snap.val();
+    if(firstSnap){firstSnap=false;lastResId=gameState.resolution?gameState.resolution.id:null;}
     route(gameState);
+    maybeShowResolution(gameState);
   });
 }
 
@@ -405,8 +507,9 @@ async function createRoom(){
   myId=uid();myName=name;roomCode=genCode();
   roomRef=ref(db,`rooms/${roomCode}`);
   const p={};
-  p[myId]={id:myId,name,char:null,isHost:true,penalties:0,hand:[],activePowerUsed:false,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,ready:false,readyVote:false,innerBeastTargets:null};
-  await set(roomRef,{code:roomCode,status:'lobby',host:myId,round:0,totalRounds:5,phase:'turns',turnOrder:[],curTurnIdx:0,subPhase:'play',activePlay:null,completedTurns:{},drunkCat:null,votes:{},skippedVotes:{},recentEvent:null,eventLog:[],roundPlays:[],players:p,punchlineActive:false,innerBeastActive:false,freePourActive:false,challengeActive:null,revealPending:null,readyVotes:{}});
+  p[myId]={id:myId,name,char:null,isHost:true,penalties:0,hand:[],activePowerUsed:false,challengeUsed:false,finalVerdictUsed:false,online:true,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,ready:false,readyVote:false,innerBeastTargets:null};
+  await set(roomRef,{code:roomCode,status:'lobby',host:myId,round:0,totalRounds:5,phase:'turns',turnOrder:[],curTurnIdx:0,subPhase:'play',activePlay:null,completedTurns:{},drunkCat:null,votes:{},skippedVotes:{},recentEvent:null,eventLog:[],roundPlays:{},resolution:null,players:p,punchlineActive:false,innerBeastActive:false,freePourActive:false,challengeActive:null,revealPending:null,readyVotes:{}});
+  saveSession();
   subRoom();ss('s-lobby');
 }
 
@@ -419,7 +522,8 @@ async function joinRoom(){
   const snap=await get(roomRef);
   if(!snap.exists()){toast('Room not found!');return;}
   if(snap.val().status!=='lobby'){toast('Game already started!');return;}
-  await update(ref(db,`rooms/${code}/players/${myId}`),{id:myId,name,char:null,isHost:false,penalties:0,hand:[],activePowerUsed:false,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,ready:false,readyVote:false,innerBeastTargets:null});
+  await update(ref(db,`rooms/${code}/players/${myId}`),{id:myId,name,char:null,isHost:false,penalties:0,hand:[],activePowerUsed:false,challengeUsed:false,finalVerdictUsed:false,online:true,penaltyRound:0,penalised:false,spotlighted:false,disappeared:false,covered:false,ready:false,readyVote:false,innerBeastTargets:null});
+  saveSession();
   subRoom();ss('s-lobby');
 }
 
@@ -468,7 +572,8 @@ async function startGame(){
   u[`rooms/${roomCode}/skippedVotes`]={};
   u[`rooms/${roomCode}/recentEvent`]='🎮 Game starts — characters assigned!';
   u[`rooms/${roomCode}/eventLog`]=['🎮 Game starts — characters assigned!'];
-  u[`rooms/${roomCode}/roundPlays`]=[];
+  u[`rooms/${roomCode}/roundPlays`]={};
+  u[`rooms/${roomCode}/resolution`]=null;
   u[`rooms/${roomCode}/punchlineActive`]=false;
   u[`rooms/${roomCode}/innerBeastActive`]=false;
   u[`rooms/${roomCode}/freePourActive`]=false;
@@ -481,7 +586,7 @@ async function startGame(){
 // ── ROLE REVEAL ───────────────────────────────────────────────────────────
 function renderRoleReveal(s){
   ss('s-role');
-  selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;
+  clearDraft();closeModal();curfewPeeked=false;respondDismissed=null;
   readyVoteClicked=false;readyClicked=false;
   document.getElementById('reveal-rnd').textContent=s.round;
   const me=s.players[myId];if(!me)return;
@@ -672,17 +777,21 @@ function renderGame(s){
         await update(ref(db,`rooms/${roomCode}`),{challengeActive:null});
       });
     }
-    if(me.char==='gamemaster'&&ch&&!ch.resolved){
+    if(me.char==='gamemaster'&&ch&&!ch.resolved&&!me.challengeUsed){
       const saveBtn=el('button','btn bs bsm');saveBtn.style.cssText='font-size:11px;border-color:rgba(76,175,125,.4);margin-top:6px';
       saveBtn.textContent='🛡️ Save Target';
       saveBtn.addEventListener('click',async()=>{
-        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🛡️ The Game Master saved the target! Attack cancelled.',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null};
-        await update(ref(db),u);await advanceTurn(s,{});
+        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🛡️ The Game Master saved the target! Attack cancelled.',[`rooms/${roomCode}/players/${myId}/challengeUsed`]:true,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null};
+        const tn=ap&&ap.targetId?(s.players[ap.targetId]?.name||'?'):'the target';
+        addPlay(u,{actor:me.name,card:"Game Master's Challenge",emoji:'⚠️',target:tn});
+        setResolution(u,{emoji:'⚠️',title:'The Game Master intervened',color:'var(--blu)',detail:`${tn} was saved — the attack is cancelled.`,chain:[...(ap&&ap.chain?ap.chain:[]),`⚠️ The Game Master saved ${tn}!`]});
+        await update(ref(db),u);await advanceTurn(s,u);
       });
       const penBtn=el('button','btn bs bsm');penBtn.style.cssText='font-size:11px;border-color:rgba(232,67,90,.4);margin-top:4px';
       penBtn.textContent='🍺 Double Penalty';
       penBtn.addEventListener('click',async()=>{
-        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🍺 The Game Master doubled the penalty!',[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
+        const u={[`rooms/${roomCode}/challengeActive/resolved`]:true,[`rooms/${roomCode}/challengeActive/result`]:'🍺 The Game Master doubled the penalty!',[`rooms/${roomCode}/players/${myId}/challengeUsed`]:true};
+        addPlay(u,{actor:me.name,card:"Game Master's Challenge",emoji:'⚠️',target:ap&&ap.targetId?(s.players[ap.targetId]?.name||null):null});
         if(ap&&ap.targetId){const tp=s.players[ap.targetId];if(tp&&!tp.penalised){u[`rooms/${roomCode}/players/${ap.targetId}/penalties`]=(tp.penalties||0)+2;u[`rooms/${roomCode}/players/${ap.targetId}/penalised`]=true;}}
         await update(ref(db),u);
       });
@@ -769,32 +878,18 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   const ap=s.activePlay;
   const isMyTurn=activeId===myId&&s.subPhase==='play'&&!me.disappeared;
   const isResponding=s.subPhase==='respond'&&ap&&ap.targetId===myId;
+  const isBystander=s.subPhase==='respond'&&ap&&ap.targetId!==myId&&ap.actorId!==myId;
   const greyed=isGreyed(me,s.round);
   const hand=me.hand||[];
 
-  // Attack power
-  if(isMyTurn&&!me.activePowerUsed){
-    const c=charOf(me);
-    if(c.active.type==='Attack'){
-      const pd=el('div');pd.style.cssText='background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.12);border-radius:var(--rs);padding:9px 11px';
-      pd.innerHTML=`<div style="font-size:9px;color:var(--acc);font-weight:800;margin-bottom:4px">⚡ ACTIVATE POWER (OPTIONAL)</div><div class="sm mut" style="margin-bottom:6px">${c.active.desc}</div>`;
-      const btn=el('button','btn bs');btn.style.cssText='font-size:12px;border-color:rgba(245,166,35,.2)';
-      btn.innerHTML=`⚡ Activate: ${c.active.name}`;
-      btn.addEventListener('click',()=>activatePower(s,me));
-      pd.appendChild(btn);gc.appendChild(pd);
-    }
-  }
+  // Close modals that no longer apply
+  if(modalOpen==='respond'&&!isResponding)closeModal();
+  if((modalOpen==='play'||modalOpen==='pass')&&!isMyTurn)closeModal();
+  if(modalOpen==='bystander'&&!isBystander)closeModal();
 
-  // Game Master's Challenge button (during any response window)
-  if(me.char==='gamemaster'&&!me.activePowerUsed&&s.subPhase==='respond'&&ap&&!s.challengeActive){
-    const db2=el('button','btn bs');db2.style.cssText='border-color:rgba(74,158,255,.3);font-size:12px';
-    db2.innerHTML='⚠️ The Game Master\'s Challenge!';
-    db2.addEventListener('click',async()=>{
-      const cd=cObj(ap.cardId);const actor=s.players[ap.actorId];
-      await update(ref(db,`rooms/${roomCode}/challengeActive`),{active:true,message:`${actor?actor.name:'?'} played ${cd?cd.emoji+' '+cd.name:''} — The Game Master challenged it!`,resolved:false,result:null});
-      await logAndUpdate(s,`⚠️ The Game Master's Challenge raised by ${me.name}!`,{});
-    });
-    gc.appendChild(db2);
+  // Response window opens as a modal automatically
+  if(isResponding&&modalOpen!=='respond'&&respondDismissed!==apSig(ap)&&!s.challengeActive&&!document.getElementById('res-ov')){
+    openRespondModal(s);
   }
 
   if(s.round===4){
@@ -803,7 +898,7 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   }
 
   ghl.style.display='block';
-  ghl.textContent=isMyTurn?'YOUR HAND — select to play':isResponding?'YOUR HAND — respond or pass':'YOUR HAND';
+  ghl.textContent=isMyTurn?'YOUR HAND — tap a card to play':isResponding?'YOUR HAND':'YOUR HAND';
 
   if(!hand.length){
     const n=el('div','ac dis');n.style.gridColumn='span 2';
@@ -813,127 +908,44 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   hand.forEach((cid,cardIndex)=>{
     const cd=cObj(cid);if(!cd)return;
     const isVO=cd.votingOnly,isRct=cd.reactive,isRevOnly=cd.revealOnly;
-    let playable=false;
-    if(greyed||me.spotlighted){playable=false;}
-    else if(isVO){playable=false;}
-    else if(isRevOnly){playable=isResponding&&ap&&cObj(ap.cardId)?.id==='reveal';}
-    else if(isMyTurn&&!isRct){
-      if(selCard==='snitch'&&selIdx!==null&&selSnitchId===null&&cid!=='snitch')playable=true;
-      else if(!(selCard==='snitch'&&selIdx!==null&&selSnitchId===null))playable=true;
-    } else if(isResponding&&isRct&&!isRevOnly){
-      playable=!(ap&&cObj(ap.cardId)?.id==='reveal');
-    }
-
-    const isSel=(selCard===cid&&selIdx===cardIndex)||(selSnitchId===cid&&selSnitchIdx===cardIndex);
-    const d=el('div','ac'+(isSel?' sel':'')+(playable?'':' dis')+(isRct?' rct':''));
-    d.style.borderColor=isSel?cd.color:'';
+    const playable=isMyTurn&&!greyed&&!me.spotlighted&&!isVO&&!isRct&&!isRevOnly;
+    const d=el('div','ac'+(playable?'':' dis')+(isRct?' rct':''));
+    d.style.borderColor=cd.cat==='Attack'?'rgba(232,67,90,.25)':cd.cat==='Save'?'rgba(74,158,255,.25)':'rgba(245,166,35,.25)';
     d.innerHTML=`<div class="ac-em">${cd.emoji}</div><div class="ac-tp" style="color:${cd.color}">${cd.cat}${isRct?' · Reactive':''}${isVO?' · Voting':''}${isRevOnly?' · Shield':''}</div><div class="ac-nm">${cd.name}</div><div class="ac-ds">${cd.desc}</div>`;
-    if(playable){
-      d.addEventListener('click',()=>{
-        if(isMyTurn&&selCard==='snitch'&&selIdx!==null&&selSnitchId===null&&cid!=='snitch'){selSnitchId=cid;selSnitchIdx=cardIndex;}
-        else{if(isSel){selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;}else{selCard=cid;selIdx=cardIndex;selSnitchId=null;selSnitchIdx=null;}}
-        renderGame(s);
-      });
-    }
+    if(playable)d.addEventListener('click',()=>openPlayModal(s,cid,cardIndex));
     gh.appendChild(d);
   });
 
-  // Targeting
-  if(isMyTurn&&selCard&&selIdx!==null){
-    const cd=cObj(selCard);
-    if(cd&&selCard==='snitch'&&selSnitchId===null){
-      const sn=el('div');sn.style.cssText='font-size:11px;background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 10px;border-left:3px solid var(--red)';
-      sn.innerHTML='🤝 <b>Snitch:</b> Tap your card to offer first (blind trade!)';gc.appendChild(sn);
-    } else if(cd&&selCard==='snitch'&&selSnitchId!==null){
-      pickTargets(s,gc,pid=>doPlay('snitch',selIdx,pid,s));
-    } else if(cd&&cd.targeted){
-      if(s.innerBeastActive&&me.char==='sleeper'){
-        const ibT=me.innerBeastTargets||[];
-        const tt=el('div');tt.style.cssText='font-size:10px;color:var(--pur);font-weight:700;margin-top:2px';
-        tt.textContent=`INNER BEAST — SELECT ${ibT.length===0?'1ST':'2ND'} TARGET (${ibT.length}/2)`;gc.appendChild(tt);
-        Object.values(s.players).filter(p=>p.id!==myId&&!p.disappeared&&!ibT.includes(p.id)).forEach(p=>{
-          const pc=charOf(p);const btn=el('button','btn bs');btn.style.marginTop='4px';
-          btn.innerHTML=`${pc.emoji} ${p.name}`;
-          btn.addEventListener('click',async()=>{
-            const nt=[...ibT,p.id];
-            await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),nt);
-            if(nt.length>=2)await doPlay(selCard,selIdx,nt[0],s,{innerBeastSecond:nt[1]});
-            else renderGame(s);
-          });
-          gc.appendChild(btn);
-        });
-      } else pickTargets(s,gc,pid=>doPlay(selCard,selIdx,pid,s));
-    } else if(cd&&!cd.targeted){
-      const pb=el('button','btn bp');pb.innerHTML=`Play ${cd.emoji} ${cd.name}`;
-      pb.addEventListener('click',()=>doPlay(selCard,selIdx,null,s));gb.appendChild(pb);
-    }
+  // ── Buttons ──
+  if(isResponding&&ap){
+    const b=el('button','btn bp');b.innerHTML='⚡ Open response window';
+    b.addEventListener('click',()=>{respondDismissed=null;openRespondModal(s);});
+    gb.appendChild(b);
+  }
+
+  if(isBystander&&((hand.includes('cover')&&cObj(ap.cardId)?.id!=='reveal')||(me.char==='gamemaster'&&!me.challengeUsed&&!s.challengeActive))){
+    const b=el('button','btn bs');b.style.cssText='border-color:rgba(74,158,255,.3)';
+    b.innerHTML='👀 Step in — view the attack';
+    b.addEventListener('click',()=>openBystanderModal(s));
+    gb.appendChild(b);
   }
 
   if(isMyTurn){
     const pass=el('button','btn bs');pass.textContent='Pass — skip this turn';
-    pass.addEventListener('click',()=>doPass(s));gb.appendChild(pass);
-  }
-
-  // Fix #2: Cover — show for ANY bystander (not target, not attacker) holding cover during ANY response window
-  if(s.subPhase==='respond'&&ap&&ap.targetId!==myId&&myId!==ap.actorId&&(me.hand||[]).includes('cover')&&cObj(ap.cardId)?.id!=='reveal'){
-    const tgt=s.players[ap.targetId];
-    const covBtn=el('button','btn bs');covBtn.style.cssText='border-color:rgba(74,158,255,.3)';
-    covBtn.innerHTML=`🛡️ Cover — cancel attack on ${tgt?tgt.name:'target'}`;
-    covBtn.addEventListener('click',()=>doBystander((me.hand||[]).indexOf('cover'),ap.targetId,s));
-    gb.appendChild(covBtn);
-  }
-
-  // Response window for target
-  if(isResponding&&ap){
-    const cd=cObj(ap.cardId);const isReveal=cd&&cd.id==='reveal';
-    if(!isReveal){
-      ['alibi','deflect','redirect'].forEach(rcid=>{
-        if(!(me.hand||[]).includes(rcid))return;
-        const rcd=cObj(rcid);
-        if(rcid==='redirect'&&selCard==='redirect'){
-          pickTargets(s,gc,pid=>doRespond('redirect',(me.hand||[]).indexOf('redirect'),pid,s),true);
-        } else {
-          const rb=el('button','btn bs');rb.style.cssText='border-color:rgba(74,158,255,.25)';
-          rb.innerHTML=`${rcd.emoji} ${rcd.name}`;
-          rb.addEventListener('click',()=>{
-            if(rcid==='redirect'){selCard='redirect';selIdx=(me.hand||[]).indexOf('redirect');renderGame(s);}
-            else doRespond(rcid,(me.hand||[]).indexOf(rcid),null,s);
-          });gb.appendChild(rb);
-        }
-      });
-      if(!me.activePowerUsed){
-        const ch2=charOf(me);
-        if(ch2.active.type==='Save'){
-          const pwrBtn=el('button','btn bs');pwrBtn.style.cssText=`border-color:${ch2.color}33`;
-          pwrBtn.innerHTML=`⚡ ${ch2.active.name}`;
-          pwrBtn.addEventListener('click',()=>{
-            if(me.char==='strategist')showStrategistOverlay(s);
-            else if(me.char==='wildcard')doWildPlay(s);
-            else if(me.char==='ghost')doGhostDisappear(s);
-          });gb.appendChild(pwrBtn);
-        }
-      }
-    } else {
-      // Reveal: Cat Shield available to anyone holding it
-      if((me.hand||[]).includes('catshield')){
-        const csb=el('button','btn bs');csb.style.cssText='border-color:rgba(245,166,35,.35)';
-        csb.innerHTML='🛡️ Cat Shield — protect identity!';
-        csb.addEventListener('click',()=>doRespond('catshield',(me.hand||[]).indexOf('catshield'),null,s));
-        gb.appendChild(csb);
-      }
-    }
-    // Ghost
-    if(me.char==='ghost'&&!me.activePowerUsed&&!isReveal){
-      const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b33';
-      ghb.innerHTML='👻 Disappear (this round only)';
-      ghb.addEventListener('click',()=>doGhostDisappear(s));gb.appendChild(ghb);
-    }
-    const passR=el('button','btn bs');passR.textContent='Pass — accept effect';
-    passR.addEventListener('click',()=>doRespond('pass',null,null,s));gb.appendChild(passR);
+    pass.addEventListener('click',()=>openPassModal(s));gb.appendChild(pass);
+    const un=el('button','btn bs');un.style.cssText='font-size:12px;color:var(--mut)';
+    un.textContent='↩️ Undo — reset my turn';
+    un.addEventListener('click',()=>{
+      const hadPower=powerDraft;
+      clearDraft();closeModal();
+      toast(hadPower&&curfewPeeked?'Turn reset (Curfew peek already spent)':'Turn reset — start again');
+      renderGame(s);
+    });
+    gb.appendChild(un);
   }
 
   // Ghost disappear on own turn
-  if(me.char==='ghost'&&!me.activePowerUsed&&isMyTurn&&!isResponding){
+  if(me.char==='ghost'&&!me.activePowerUsed&&isMyTurn){
     const ghb=el('button','btn bs');ghb.style.cssText='border-color:#607d8b33;margin-top:4px';
     ghb.innerHTML='👻 Disappear this round (Active Power)';
     ghb.addEventListener('click',()=>doGhostDisappear(s));gb.appendChild(ghb);
@@ -942,9 +954,294 @@ function renderTurns(s,me,myDC,gc,gh,ghl,gb){
   // Host controls
   if(gameState&&gameState.host===myId){
     const row=el('div','row');row.style.marginTop='4px';
-    const fa=el('button','btn bs bsm');fa.style.cssText='color:var(--mut);font-size:11px;flex:1';fa.textContent='⏭ Force Advance';fa.addEventListener('click',()=>advanceTurn(s,{}));
+    const fa=el('button','btn bs bsm');fa.style.cssText='color:var(--mut);font-size:11px;flex:1';fa.textContent='⏭ Force Advance';
+    fa.addEventListener('click',()=>{closeModal();advanceTurn(s,{});});
     row.appendChild(fa);gb.appendChild(row);
   }
+}
+
+// ── PLAY MODAL — card, power toggle, target, all in one window ────────────
+function openPlayModal(s,cardId,cardIdx){
+  const me=s.players[myId];const cd=cObj(cardId);if(!cd)return;
+  draft={cardId,cardIdx,targetId:null,secondTargetId:null,offerId:null,offerIdx:null};
+  modalOpen='play';
+  const dramaTxt=drm(cd);
+  const body=el('div','col');
+  const paint=()=>{
+    body.innerHTML='';
+    const ch=charOf(me);
+    const hasAtkPower=ch.active&&ch.active.type==='Attack'&&!me.activePowerUsed;
+    const need2=powerDraft&&me.char==='sleeper';
+    let step=1;
+
+    const h=el('div');
+    h.innerHTML=`<div class="mdl-h">${cd.emoji} ${cd.name}</div>
+      <div class="sm mut" style="margin-top:3px;line-height:1.5">${cd.desc}</div>
+      <div class="drama">${dramaTxt}</div>`;
+    body.appendChild(h);
+
+    if(hasAtkPower){
+      const t=el('div','tgl'+(powerDraft?' on':''));
+      t.innerHTML=`<div class="tgl-sw"></div><div style="flex:1"><div style="font-size:13px;font-weight:800;color:var(--acc)">⚡ ${ch.active.name}</div><div class="sm mut" style="line-height:1.45">${ch.active.desc}</div></div>`;
+      t.addEventListener('click',()=>{
+        if(me.char==='mother'&&curfewPeeked&&powerDraft){toast('Curfew peek already taken — it stays on');return;}
+        powerDraft=!powerDraft;
+        if(powerDraft&&me.char==='mother'&&!curfewPeeked){curfewPeeked=true;showCurfewOverlay(s);}
+        if(!powerDraft)draft.secondTargetId=null;
+        paint();
+      });
+      body.appendChild(t);
+    }
+
+    if(cardId==='snitch'){
+      const others=(me.hand||[]).map((id,i)=>({id,i})).filter(o=>o.i!==cardIdx);
+      const lbl=el('div','stitle');lbl.textContent=`${step++}. CARD YOU OFFER — blind trade`;body.appendChild(lbl);
+      if(!others.length){
+        const w=el('div','sm mut');w.textContent='You have no other card to offer — Snitch cannot be played.';body.appendChild(w);
+      }
+      others.forEach(o=>{
+        const ocd=cObj(o.id);if(!ocd)return;
+        const b=el('button','opt'+(draft.offerIdx===o.i?' sel':''));
+        b.innerHTML=`<span style="font-size:17px">${ocd.emoji}</span><span style="flex:1">${ocd.name}<div class="sm mut" style="font-weight:500">${ocd.cat}</div></span>${draft.offerIdx===o.i?'<span style="color:var(--acc)">✓</span>':''}`;
+        b.addEventListener('click',()=>{draft.offerId=o.id;draft.offerIdx=o.i;paint();});
+        body.appendChild(b);
+      });
+    }
+
+    if(cd.targeted){
+      const lbl=el('div','stitle');
+      lbl.textContent=`${step++}. ${need2?'SELECT 2 TARGETS':'SELECT TARGET'}`;body.appendChild(lbl);
+      Object.values(s.players).filter(p=>p.id!==myId&&!p.disappeared).forEach(p=>{
+        const pc=charOf(p);
+        const sel=draft.targetId===p.id||draft.secondTargetId===p.id;
+        const b=el('button','opt'+(sel?' sel':''));
+        b.innerHTML=`<span style="font-size:17px">${pc.emoji}</span><span style="flex:1">${p.name}${p.covered?' <span class="sm" style="color:var(--blu)">🛡️ covered</span>':''}</span>${sel?'<span style="color:var(--acc)">✓</span>':''}`;
+        b.addEventListener('click',()=>{
+          if(need2){
+            if(draft.targetId===p.id)draft.targetId=null;
+            else if(draft.secondTargetId===p.id)draft.secondTargetId=null;
+            else if(!draft.targetId)draft.targetId=p.id;
+            else if(!draft.secondTargetId)draft.secondTargetId=p.id;
+            else{draft.targetId=p.id;draft.secondTargetId=null;}
+          } else draft.targetId=draft.targetId===p.id?null:p.id;
+          paint();
+        });
+        body.appendChild(b);
+      });
+    }
+
+    const okTargets=!cd.targeted||(draft.targetId&&(!need2||draft.secondTargetId));
+    const okOffer=cardId!=='snitch'||!!draft.offerId;
+    const valid=okTargets&&okOffer;
+    const ok=el('button','btn bp');ok.style.marginTop='4px';
+    ok.textContent=valid?`✓ Confirm & play ${cd.name}`:'Finish the steps above';
+    ok.disabled=!valid;ok.style.opacity=valid?'1':'.4';
+    ok.addEventListener('click',async()=>{
+      if(!valid)return;
+      ok.disabled=true;ok.textContent='Playing...';
+      const ex={};
+      if(powerDraft)ex.power=me.char;
+      if(draft.secondTargetId)ex.secondTargetId=draft.secondTargetId;
+      if(draft.offerId)ex.offerId=draft.offerId;
+      const t=draft.targetId,ci=draft.cardIdx;
+      closeModal();
+      await doPlay(cardId,ci,t,s,ex);
+    });
+    body.appendChild(ok);
+
+    const un=el('button','btn bs');un.style.fontSize='12px';
+    un.textContent='↩️ Undo — nothing has been played yet';
+    un.addEventListener('click',()=>{clearDraft();closeModal();renderGame(s);});
+    body.appendChild(un);
+  };
+  paint();
+  modalShell(s,body,'play');
+}
+
+// ── PASS MODAL — lets a power be used without playing a card ──────────────
+function openPassModal(s){
+  const me=s.players[myId];const ch=charOf(me);
+  const hasAtkPower=ch.active&&ch.active.type==='Attack'&&!me.activePowerUsed;
+  modalOpen='pass';
+  const body=el('div','col');
+  const paint=()=>{
+    body.innerHTML='';
+    const h=el('div');
+    h.innerHTML=`<div class="mdl-h">🚶 Pass your turn</div><div class="sm mut" style="margin-top:3px">You play no card this turn. Nothing is committed until you confirm.</div>`;
+    body.appendChild(h);
+    if(hasAtkPower){
+      const t=el('div','tgl'+(powerDraft?' on':''));
+      t.innerHTML=`<div class="tgl-sw"></div><div style="flex:1"><div style="font-size:13px;font-weight:800;color:var(--acc)">⚡ ${ch.active.name}</div><div class="sm mut" style="line-height:1.45">${ch.active.desc}</div></div>`;
+      t.addEventListener('click',()=>{
+        if(me.char==='sleeper'){toast('Inner Beast needs an attack card — play one instead');return;}
+        if(me.char==='mother'&&curfewPeeked&&powerDraft){toast('Curfew peek already taken — it stays on');return;}
+        powerDraft=!powerDraft;
+        if(powerDraft&&me.char==='mother'&&!curfewPeeked){curfewPeeked=true;showCurfewOverlay(s);}
+        paint();
+      });
+      body.appendChild(t);
+    }
+    const ok=el('button','btn bp');ok.textContent=powerDraft?`✓ Use ${ch.active.name} & pass`:'✓ Confirm pass';
+    ok.addEventListener('click',async()=>{ok.disabled=true;const p=powerDraft?me.char:null;closeModal();await doPass(s,p);});
+    body.appendChild(ok);
+    const un=el('button','btn bs');un.style.fontSize='12px';un.textContent='↩️ Undo — go back to my hand';
+    un.addEventListener('click',()=>{clearDraft();closeModal();renderGame(s);});
+    body.appendChild(un);
+  };
+  paint();
+  modalShell(s,body,'pass');
+}
+
+// ── RESPONSE MODAL — full view of the attack and every save available ─────
+function openRespondModal(s){
+  const me=s.players[myId];const ap=s.activePlay;if(!ap)return;
+  const cd=cObj(ap.cardId);const actor=s.players[ap.actorId];
+  const isReveal=cd&&cd.id==='reveal';
+  modalOpen='respond';
+  let mode=null;          // null | 'redirect' | 'deflect-snitch'
+  let dfOffer=null,dfOfferIdx=null,rdTarget=null;
+  const body=el('div','col');
+  const hand=me.hand||[];
+  const paint=()=>{
+    body.innerHTML='';
+    const h=el('div');
+    h.innerHTML=`<div style="font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--red)">⚡ PLAYED AGAINST YOU</div>
+      <div class="mdl-h" style="margin-top:6px">${cd?cd.emoji:''} ${cd?cd.name:''}</div>
+      <div class="sm mut" style="margin-top:3px">from <b style="color:var(--txt)">${actor?charOf(actor).emoji+' '+actor.name:'?'}</b>${ap.redirectedBy?` · redirected by ${s.players[ap.redirectedBy]?.name||'?'}`:''}${ap.deflectedBy?' · deflected back':''}${ap.powerName?` · ⚡ ${ap.powerName}`:''}</div>
+      <div style="margin-top:8px;background:var(--s2);border-radius:var(--rs);padding:10px 11px;font-size:12px;line-height:1.5">${cd?cd.desc:''}</div>`;
+    body.appendChild(h);
+    if(ap.cardId==='snitch'&&ap.snitchOfferId){
+      const oc=cObj(ap.snitchOfferId);
+      const n=el('div');n.style.cssText='font-size:11px;color:var(--mut);background:rgba(232,67,90,.05);border-radius:var(--rs);padding:8px 10px';
+      n.innerHTML=`🤝 They are offering <b style="color:${oc?oc.color:'#888'}">${oc?oc.emoji+' '+oc.name:'a card'}</b> — you lose one card at random.`;
+      body.appendChild(n);
+    }
+    if((ap.chain||[]).length>1){
+      const c=el('div');c.style.cssText='background:var(--s2);border-radius:var(--rs);padding:8px 10px';
+      c.innerHTML=`<div class="stitle" style="margin-bottom:3px">SO FAR</div>`+(ap.chain||[]).map(x=>`<div class="chainrow">${x}</div>`).join('');
+      body.appendChild(c);
+    }
+
+    // ── Redirect target picker ──
+    if(mode==='redirect'){
+      const lbl=el('div','stitle');lbl.textContent='SEND IT TO WHOM?';body.appendChild(lbl);
+      Object.values(s.players).filter(p=>p.id!==myId&&p.id!==ap.actorId&&!p.disappeared).forEach(p=>{
+        const b=el('button','opt'+(rdTarget===p.id?' sel':''));
+        b.innerHTML=`<span style="font-size:17px">${charOf(p).emoji}</span><span style="flex:1">${p.name}</span>${rdTarget===p.id?'<span style="color:var(--acc)">✓</span>':''}`;
+        b.addEventListener('click',()=>{rdTarget=p.id;paint();});
+        body.appendChild(b);
+      });
+      const ok=el('button','btn bp');ok.textContent=rdTarget?'✓ Confirm redirect':'Pick a player';
+      ok.disabled=!rdTarget;ok.style.opacity=rdTarget?'1':'.4';
+      ok.addEventListener('click',async()=>{ok.disabled=true;closeModal();await doRespond('redirect',hand.indexOf('redirect'),rdTarget,s);});
+      body.appendChild(ok);
+      const bk=el('button','btn bs');bk.style.fontSize='12px';bk.textContent='↩️ Undo — back to my options';
+      bk.addEventListener('click',()=>{mode=null;rdTarget=null;paint();});
+      body.appendChild(bk);
+      return;
+    }
+
+    // ── Deflecting a Snitch: you must offer your own card ──
+    if(mode==='deflect-snitch'){
+      const lbl=el('div','stitle');lbl.textContent='YOUR OFFER — you become the snitcher';body.appendChild(lbl);
+      hand.forEach((oid,oi)=>{
+        if(oid==='deflect'&&oi===hand.indexOf('deflect'))return;
+        const ocd=cObj(oid);if(!ocd)return;
+        const b=el('button','opt'+(dfOfferIdx===oi?' sel':''));
+        b.innerHTML=`<span style="font-size:17px">${ocd.emoji}</span><span style="flex:1">${ocd.name}</span>${dfOfferIdx===oi?'<span style="color:var(--acc)">✓</span>':''}`;
+        b.addEventListener('click',()=>{dfOffer=oid;dfOfferIdx=oi;paint();});
+        body.appendChild(b);
+      });
+      const ok=el('button','btn bp');ok.textContent=dfOffer?'✓ Confirm deflect':'Pick a card to offer';
+      ok.disabled=!dfOffer;ok.style.opacity=dfOffer?'1':'.4';
+      ok.addEventListener('click',async()=>{ok.disabled=true;closeModal();await doRespond('deflect',hand.indexOf('deflect'),null,s,{offerId:dfOffer});});
+      body.appendChild(ok);
+      const bk=el('button','btn bs');bk.style.fontSize='12px';bk.textContent='↩️ Undo — back to my options';
+      bk.addEventListener('click',()=>{mode=null;dfOffer=null;dfOfferIdx=null;paint();});
+      body.appendChild(bk);
+      return;
+    }
+
+    // ── Option list ──
+    const lbl=el('div','stitle');lbl.textContent='YOUR OPTIONS';body.appendChild(lbl);
+    const addOpt=(emoji,name,desc,color,fn)=>{
+      const b=el('button','opt');b.style.borderColor=color+'44';
+      b.innerHTML=`<span style="font-size:17px">${emoji}</span><span style="flex:1">${name}<div class="sm mut" style="font-weight:500;line-height:1.4">${desc}</div></span>`;
+      b.addEventListener('click',fn);body.appendChild(b);
+    };
+
+    if(isReveal){
+      if(hand.includes('catshield'))addOpt('🛡️','Cat Shield','Block the Reveal — your identity stays secret.','#f5a623',async()=>{closeModal();await doRespond('catshield',hand.indexOf('catshield'),null,s);});
+      else{const n=el('div','sm mut');n.textContent='Only a Cat Shield can stop a Reveal — you are not holding one.';body.appendChild(n);}
+    } else {
+      ['alibi','deflect','redirect'].forEach(rid=>{
+        if(!hand.includes(rid))return;
+        const rcd=cObj(rid);
+        addOpt(rcd.emoji,rcd.name,rcd.desc,rcd.color,async()=>{
+          if(rid==='redirect'){mode='redirect';paint();return;}
+          if(rid==='deflect'&&ap.cardId==='snitch'){mode='deflect-snitch';paint();return;}
+          closeModal();await doRespond(rid,hand.indexOf(rid),null,s);
+        });
+      });
+      const ch2=charOf(me);
+      if(!me.activePowerUsed&&ch2.active&&ch2.active.type==='Save'){
+        addOpt('⚡',ch2.active.name,ch2.active.desc,ch2.color,()=>{
+          closeModal();
+          if(me.char==='strategist')showStrategistOverlay(s);
+          else if(me.char==='wildcard')doWildPlay(s);
+          else if(me.char==='ghost')doGhostDisappear(s);
+        });
+      }
+      if(me.char==='gamemaster'&&!me.challengeUsed&&!s.challengeActive){
+        addOpt('⚠️',"Game Master's Challenge",'Pause the game — then save the target or double the penalty.','#4a9eff',async()=>{
+          closeModal();await raiseChallenge(s);
+        });
+      }
+    }
+    const pb=el('button','btn bs');pb.style.marginTop='4px';pb.textContent='Pass — accept the effect';
+    pb.addEventListener('click',async()=>{pb.disabled=true;closeModal();await doRespond('pass',null,null,s);});
+    body.appendChild(pb);
+    const mn=el('button','btn bs');mn.style.cssText='font-size:12px;color:var(--mut)';mn.textContent='Minimise — decide in a second';
+    mn.addEventListener('click',()=>{respondDismissed=apSig(ap);closeModal();renderGame(s);});
+    body.appendChild(mn);
+  };
+  paint();
+  modalShell(s,body,'respond');
+}
+
+// ── BYSTANDER MODAL — Cover / Challenge with the full picture ─────────────
+function openBystanderModal(s){
+  const me=s.players[myId];const ap=s.activePlay;if(!ap)return;
+  const cd=cObj(ap.cardId);const actor=s.players[ap.actorId];const tgt=s.players[ap.targetId];
+  modalOpen='bystander';
+  const body=el('div','col');
+  body.innerHTML=`<div style="font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--blu)">👀 SOMEONE ELSE IS UNDER ATTACK</div>
+    <div class="mdl-h" style="margin-top:6px">${cd?cd.emoji:''} ${cd?cd.name:''}</div>
+    <div class="sm mut" style="margin-top:3px"><b style="color:var(--txt)">${actor?actor.name:'?'}</b> → <b style="color:var(--txt)">${tgt?tgt.name:'?'}</b></div>
+    <div style="margin-top:8px;background:var(--s2);border-radius:var(--rs);padding:10px 11px;font-size:12px;line-height:1.5">${cd?cd.desc:''}</div>`;
+  if((me.hand||[]).includes('cover')&&cd&&cd.id!=='reveal'){
+    const b=el('button','opt');b.style.borderColor='#4a9eff44';
+    b.innerHTML=`<span style="font-size:17px">🛡️</span><span style="flex:1">Cover ${tgt?tgt.name:'them'}<div class="sm mut" style="font-weight:500">Cancel this attack. You cannot cover yourself.</div></span>`;
+    b.addEventListener('click',async()=>{closeModal();await doBystander((me.hand||[]).indexOf('cover'),ap.targetId,s);});
+    body.appendChild(b);
+  }
+  if(me.char==='gamemaster'&&!me.challengeUsed&&!s.challengeActive){
+    const b=el('button','opt');b.style.borderColor='#4a9eff44';
+    b.innerHTML=`<span style="font-size:17px">⚠️</span><span style="flex:1">Game Master's Challenge<div class="sm mut" style="font-weight:500">Pause the game — save the target or double their penalty.</div></span>`;
+    b.addEventListener('click',async()=>{closeModal();await raiseChallenge(s);});
+    body.appendChild(b);
+  }
+  const cl=el('button','btn bs');cl.textContent='Close — stay out of it';
+  cl.addEventListener('click',()=>{closeModal();renderGame(s);});
+  body.appendChild(cl);
+  modalShell(s,body,'bystander');
+}
+
+async function raiseChallenge(s){
+  const me=s.players[myId];const ap=s.activePlay;if(!ap)return;
+  const cd=cObj(ap.cardId);const actor=s.players[ap.actorId];
+  await update(ref(db,`rooms/${roomCode}/challengeActive`),{active:true,message:`${actor?actor.name:'?'} played ${cd?cd.emoji+' '+cd.name:''} — The Game Master challenged it!`,resolved:false,result:null});
+  await logAndUpdate(s,`⚠️ The Game Master's Challenge raised by ${me.name}!`,{});
 }
 
 function pickTargets(s,gc,onPick,excludeActor=false){
@@ -959,18 +1256,7 @@ function pickTargets(s,gc,onPick,excludeActor=false){
   });
 }
 
-// ── POWER ACTIVATION ──────────────────────────────────────────────────────
-async function activatePower(s,me){
-  const c=charOf(me);
-  const ann=`⚡ <b>${me.name}</b> activated <b>${c.active.name}</b>! 🔥`;
-  await update(ref(db),{[`rooms/${roomCode}/announcement`]:ann,[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true});
-  await logAndUpdate(s,`⚡ ${me.name} activated ${c.active.name}!`,{});
-  if(me.char==='joker'){await update(ref(db,`rooms/${roomCode}`),{punchlineActive:true});toast('Punchline! Everyone skips drawing next round! 😤');}
-  else if(me.char==='sleeper'){await update(ref(db,`rooms/${roomCode}`),{innerBeastActive:true});await update(ref(db,`rooms/${roomCode}/players/${myId}/innerBeastTargets`),[]);toast('Inner Beast! Pick 2 targets for your next attack card! 😈');}
-  else if(me.char==='mother'){showCurfewOverlay(s);}
-  else if(me.char==='troublemaker'){await update(ref(db,`rooms/${roomCode}`),{freePourActive:true});toast('Free Pour! Next card = double penalty + skip turn! 🥃');}
-}
-
+// ── POWER ACTIVATION (powers are now committed with the card in doPlay) ───
 function showCurfewOverlay(s){
   const cards={};
   Object.values(s.players).filter(p=>p.id!==myId).forEach(p=>{
@@ -1021,21 +1307,26 @@ function showRevealOverlay(targetName,isTargetDC){
   document.body.appendChild(ov);
 }
 
-function showExposeOverlay(targetId,s,afterDone){
-  const tp=s.players[targetId];if(!tp){if(afterDone)afterDone();return;}
-  const hand=tp.hand||[];if(!hand.length){toast('Target has no cards!');if(afterDone)afterDone();return;}
+function showExposeOverlay(targetId,s,ap){
+  const tp=s.players[targetId];
+  const finish=(evLine,detail)=>{
+    const u={};
+    setResolution(u,{emoji:'🔍',title:'Exposed!',color:'var(--red)',detail,chain:[...(ap&&ap.chain?ap.chain:[]),evLine]});
+    u[`rooms/${roomCode}/announcement`]=null;
+    logAndUpdate(s,evLine,u).then(()=>advanceTurn(s,u));
+  };
+  if(!tp){finish('🔍 Expose fizzled — target not found.','');return;}
+  const hand=tp.hand||[];
+  if(!hand.length){finish(`🔍 ${tp.name} had no cards to expose!`,'Empty hand — nothing to show.');return;}
   const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🔍 Exposed!<br><span class="sm mut">${tp.name} — choose a card to reveal</span></div>`;
+  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🔍 Exposed!<br><span class="sm mut">${tp.name} — choose a card to reveal to everyone</span></div>`;
   hand.forEach(cid=>{
     const cd=cObj(cid);if(!cd)return;
     const btn=el('button','btn bs');btn.style.cssText='max-width:340px;width:100%;text-align:left;display:flex;gap:8px;align-items:center';
     btn.innerHTML=`<span style="font-size:18px">${cd.emoji}</span><div><div style="font-weight:700">${cd.name}</div><div class="sm mut">${cd.desc}</div></div>`;
-    btn.addEventListener('click',async()=>{
+    btn.addEventListener('click',()=>{
       ov.remove();
-      const ev=`🔍 ${tp.name} revealed ${cd.emoji} ${cd.name}! ${drm(cObj('expose'))}`;
-      const lg=[...(s.eventLog||[]),ev].slice(-20);
-      await update(ref(db),{[`rooms/${roomCode}/recentEvent`]:ev,[`rooms/${roomCode}/eventLog`]:lg,[`rooms/${roomCode}/announcement`]:`🔍 ${tp.name} revealed: ${cd.emoji} ${cd.name} — ${cd.desc}`});
-      if(afterDone)afterDone();
+      finish(`🔍 ${tp.name} revealed ${cd.emoji} ${cd.name}!`,`${cd.emoji} ${cd.name} is now public knowledge.`);
     });
     ov.appendChild(btn);
   });
@@ -1043,227 +1334,313 @@ function showExposeOverlay(targetId,s,afterDone){
 }
 
 // ── PLAY LOGIC ────────────────────────────────────────────────────────────
+// Applies a card's effect to whoever ends up accepting it, honouring
+// Free Pour and the Troublemaker's passive. Returns a human-readable extra.
+async function applyResolve(s,u,ap,accepterId){
+  const tp=s.players[accepterId];if(!tp)return '';
+  const cd=cObj(ap.cardId);
+  await applyEffectU(ap.cardId,accepterId,s,u);
+  const actor=s.players[ap.actorId];
+  if(ap.fp){
+    if(!tp.penalised){u[`rooms/${roomCode}/players/${accepterId}/penalties`]=(tp.penalties||0)+2;u[`rooms/${roomCode}/players/${accepterId}/penalised`]=true;}
+    u[`rooms/${roomCode}/players/${accepterId}/spotlighted`]=true;
+    return ' 🥃 Free Pour — double drink, and they skip their next turn!';
+  }
+  if(actor&&actor.char==='troublemaker'&&cd&&cd.targeted&&!tp.penalised){
+    u[`rooms/${roomCode}/players/${accepterId}/penalties`]=(tp.penalties||0)+1;
+    return ' 🥃 Pour Heavy — one extra drink.';
+  }
+  return '';
+}
+
 async function doPlay(cardId,cardIdx,targetId,s,extra={}){
   const cd=cObj(cardId);if(!cd)return;
   const me=s.players[myId];
   const hand=[...(me.hand||[])];
-  if(cardIdx!==null&&cardIdx>=0)hand.splice(cardIdx,1);
+  if(cardIdx!==null&&cardIdx>=0&&cardIdx<hand.length&&hand[cardIdx]===cardId)hand.splice(cardIdx,1);
   else{const i=hand.indexOf(cardId);if(i>-1)hand.splice(i,1);}
 
   const tPlayer=targetId?s.players[targetId]:null;
-  const ev=`${me.name} played ${cd.emoji} ${cd.name}${tPlayer?' on '+tPlayer.name:''}`;
   const u={[`rooms/${roomCode}/players/${myId}/hand`]:hand};
 
-  // Snitch — open response window
+  // Power is committed in the SAME write as the card — never before Confirm
+  const pc=charOf(me);
+  const powerKey=extra.power||null;
+  const powerName=powerKey?pc.active.name:null;
+  if(powerKey){
+    u[`rooms/${roomCode}/players/${myId}/activePowerUsed`]=true;
+    if(powerKey==='joker')u[`rooms/${roomCode}/punchlineActive`]=true;
+  }
+  const fp=powerKey==='troublemaker'||!!s.freePourActive;
+  if(s.freePourActive)u[`rooms/${roomCode}/freePourActive`]=false;
+  const ev=`${me.name} played ${cd.emoji} ${cd.name}${tPlayer?' on '+tPlayer.name:''}${powerName?` [⚡ ${powerName}]`:''}`;
+  const chain=[ev];
+  addPlay(u,{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,power:powerName||null});
+  clearDraft();
+
+  // ── Inner Beast: both targets hit immediately, no response window ──
+  if(powerKey==='sleeper'&&extra.secondTargetId&&targetId){
+    const ids=[targetId,extra.secondTargetId];
+    let det='';
+    for(const tid of ids)det+=await applyResolve(s,u,{actorId:myId,cardId,targetId:tid,fp},tid);
+    const names=ids.map(id=>s.players[id]?.name||'?').join(' & ');
+    const line=`😴 Inner Beast — ${cd.emoji} ${cd.name} hit ${names}!`;
+    u[`rooms/${roomCode}/announcement`]=null;
+    setResolution(u,{emoji:'😴',title:'Inner Beast!',color:'var(--pur)',detail:`${cd.name} landed on both targets.${det}`,chain:[...chain,line]});
+    await logAndUpdate(s,line,u);
+    await advanceTurn(s,u);return;
+  }
+
+  // ── Snitch: offer stays in hand until the trade actually resolves ──
   if(cardId==='snitch'&&targetId){
-    if(!selSnitchId){showSnitchOfferOverlay(s);return;}
-    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'snitch',targetId,snitchOfferId:selSnitchId,snitchOfferIdx:selSnitchIdx};
+    if(!extra.offerId){toast('Pick a card to offer first');return;}
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'snitch',targetId,snitchOfferId:extra.offerId,chain,fp,powerName:powerName||null};
     u[`rooms/${roomCode}/subPhase`]='respond';
     u[`rooms/${roomCode}/announcement`]=`🤝 ${me.name} played Snitch on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
-    u[`rooms/${roomCode}/roundPlays`]=plays;
-    selCard=null;selIdx=null;
     await logAndUpdate(s,ev,u);return;
   }
 
-  // Grace passive
-  if(me.char==='troublemaker'&&targetId&&tPlayer&&!s.freePourActive&&!tPlayer.penalised){
-    u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tPlayer.penalties||0)+1;
-  }
-  // Free Pour
-  if(s.freePourActive&&targetId&&tPlayer){
-    if(!tPlayer.penalised){u[`rooms/${roomCode}/players/${targetId}/penalties`]=(tPlayer.penalties||0)+2;u[`rooms/${roomCode}/players/${targetId}/penalised`]=true;}
-    u[`rooms/${roomCode}/players/${targetId}/spotlighted`]=true;
-    u[`rooms/${roomCode}/freePourActive`]=false;
-  }
-  // Inner Beast
-  if(s.innerBeastActive&&extra.innerBeastSecond){
-    const targets=[targetId,extra.innerBeastSecond];
-    for(const tid of targets){const tp=s.players[tid];if(!tp)continue;await applyEffectU(cardId,tid,s,u);if(me.char==='troublemaker'&&!tp.penalised)u[`rooms/${roomCode}/players/${tid}/penalties`]=(tp.penalties||0)+1;}
-    u[`rooms/${roomCode}/innerBeastActive`]=false;u[`rooms/${roomCode}/players/${myId}/innerBeastTargets`]=null;
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:`${tPlayer?tPlayer.name:'?'} & ${s.players[extra.innerBeastSecond]?.name||'?'}`,ts:Date.now()}];
-    u[`rooms/${roomCode}/roundPlays`]=plays;
-    await logAndUpdate(s,ev+' [Inner Beast — both targets hit!]',u);
-    await advanceTurn(s,u);selCard=null;selIdx=null;return;
-  }
-
-  // Fix #1: Reveal — store isDC in revealPending, set responded:false
+  // ── Reveal ──
   if(cardId==='reveal'&&targetId){
-    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'reveal',targetId};
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'reveal',targetId,chain,fp,powerName:powerName||null};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    // Store reveal result but mark responded:false — attacker cannot see yet
     u[`rooms/${roomCode}/revealPending`]={actorId:myId,targetId,isDC:isDC(s,targetId),ts:Date.now(),responded:false,dismissed:false};
     u[`rooms/${roomCode}/announcement`]=`🕵️ ${me.name} played Reveal on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
-    u[`rooms/${roomCode}/roundPlays`]=plays;
-    await logAndUpdate(s,ev,u);selCard=null;selIdx=null;return;
+    await logAndUpdate(s,ev,u);return;
   }
-  // Expose
+
+  // ── Expose ──
   if(cardId==='expose'&&targetId){
-    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'expose',targetId};
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:'expose',targetId,chain,fp,powerName:powerName||null};
     u[`rooms/${roomCode}/subPhase`]='respond';
     u[`rooms/${roomCode}/announcement`]=`🔍 ${me.name} played Expose on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
-    u[`rooms/${roomCode}/roundPlays`]=plays;
-    await logAndUpdate(s,ev,u);selCard=null;selIdx=null;return;
+    await logAndUpdate(s,ev,u);return;
   }
-  // Cover check
-  if(targetId&&tPlayer?.covered){
+
+  // ── Target already covered ──
+  if(targetId&&tPlayer&&tPlayer.covered){
     u[`rooms/${roomCode}/players/${targetId}/covered`]=false;
-    selCard=null;selIdx=null;
-    await logAndUpdate(s,`🛡️ ${tPlayer.name} was covered — ${cd.name} cancelled!`,u);
+    const line=`🛡️ ${tPlayer.name} was covered — ${cd.name} cancelled!`;
+    u[`rooms/${roomCode}/announcement`]=null;
+    setResolution(u,{emoji:'🛡️',title:'Blocked by Cover',color:'var(--blu)',detail:`${tPlayer.name} was already protected. Nothing happens.`,chain:[...chain,line]});
+    await logAndUpdate(s,line,u);
     await advanceTurn(s,u);return;
   }
+
+  // ── Standard targeted card: opens a response window ──
   if(cd.targeted&&targetId){
-    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId,targetId};
+    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId,targetId,chain,fp,powerName:powerName||null};
     u[`rooms/${roomCode}/subPhase`]='respond';
     u[`rooms/${roomCode}/announcement`]=`${cd.emoji} ${me.name} played ${cd.name} on ${tPlayer?tPlayer.name:'?'}! ${drm(cd)}`;
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:tPlayer?tPlayer.name:null,ts:Date.now()}];
-    u[`rooms/${roomCode}/roundPlays`]=plays;
     await logAndUpdate(s,ev,u);
-  } else {
-    await applyEffectU(cardId,myId,s,u);
-    const plays=[...(s.roundPlays||[]),{actor:me.name,card:cd.name,emoji:cd.emoji,target:null,ts:Date.now()}];
-    u[`rooms/${roomCode}/roundPlays`]=plays;
-    await logAndUpdate(s,ev,u);
-    await advanceTurn(s,u);
+    return;
   }
-  selCard=null;selIdx=null;
+
+  // ── Untargeted ──
+  await applyEffectU(cardId,myId,s,u);
+  u[`rooms/${roomCode}/announcement`]=null;
+  setResolution(u,{emoji:cd.emoji,title:`${me.name} played ${cd.name}`,color:cd.color,detail:cd.desc,chain});
+  await logAndUpdate(s,ev,u);
+  await advanceTurn(s,u);
 }
 
-async function doRespond(type,cardIdx,redirectId,s){
+async function doRespond(type,cardIdx,redirectId,s,opts={}){
   const me=s.players[myId];
   const ap=s.activePlay;if(!ap)return;
   const actor=s.players[ap.actorId];
+  const cd=cObj(ap.cardId);
   const hand=[...(me.hand||[])];
+  const chain=[...(ap.chain||[])];
   const u={[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
   const rm=idx=>{if(idx!==null&&idx>=0&&idx<hand.length)hand.splice(idx,1);};
+  const note=(name,emoji)=>addPlay(u,{actor:me.name,card:name,emoji,target:actor?actor.name:null});
 
   if(type==='pass'){
+    // ── Reveal ──
     if(ap.cardId==='reveal'){
-      // Fix #1: Mark responded:true so attacker can now see the result
       u[`rooms/${roomCode}/revealPending/responded`]=true;
-      await logAndUpdate(s,`${me.name} accepted Reveal`,u);
-    } else if(ap.cardId==='expose'){
-      await logAndUpdate(s,`${me.name} accepted Expose — choosing card...`,u);
-      showExposeOverlay(ap.targetId,s,()=>advanceTurn(s,{}));return;
-    } else if(ap.cardId==='snitch'){
-      // Execute blind swap
-      const tHand=[...(me.hand||[])];
-      if(!tHand.length){await advanceTurn(s,u);return;}
-      const rndIdx=Math.floor(Math.random()*tHand.length);
-      const gotCard=tHand[rndIdx];
+      const line=`🕵️ ${me.name} accepted the Reveal — the result went privately to ${actor?actor.name:'?'}.`;
+      chain.push(line);
+      setResolution(u,{emoji:'🕵️',title:'Identity checked',color:'var(--acc)',detail:`Only ${actor?actor.name:'the attacker'} saw the answer. Everyone else is still guessing.`,chain});
+      await logAndUpdate(s,line,u);
+      await advanceTurn(s,u);return;
+    }
+    // ── Expose ──
+    if(ap.cardId==='expose'){
+      chain.push(`${me.name} accepted the Expose`);
+      await logAndUpdate(s,`${me.name} accepted Expose — choosing a card...`,{});
+      showExposeOverlay(ap.targetId,s,{...ap,chain});
+      return;
+    }
+    // ── Snitch: the blind trade actually happens here ──
+    if(ap.cardId==='snitch'){
       const actorPlayer=s.players[ap.actorId];
       const actorHand=[...(actorPlayer?.hand||[])];
-      tHand[rndIdx]=ap.snitchOfferId;
+      const offerId=ap.snitchOfferId;
+      const offIdx=offerId?actorHand.indexOf(offerId):-1;
+      const tHand=[...(me.hand||[])];
+      if(!offerId||offIdx<0||!tHand.length){
+        const why=!tHand.length?`${me.name} had no cards — the trade fizzled!`:'The offered card was gone — the trade fizzled!';
+        chain.push(`🤝 ${why}`);
+        setResolution(u,{emoji:'🤝',title:'Trade fizzled',color:'var(--mut)',detail:why,chain});
+        await logAndUpdate(s,`🤝 Snitch fizzled — ${why}`,u);
+        await advanceTurn(s,u);return;
+      }
+      const rndIdx=Math.floor(Math.random()*tHand.length);
+      const gotCard=tHand[rndIdx];
+      tHand[rndIdx]=offerId;              // target receives the offered card
+      actorHand.splice(offIdx,1);         // FIX: the offer actually leaves the snitcher's hand
       actorHand.push(gotCard);
       u[`rooms/${roomCode}/players/${ap.actorId}/hand`]=actorHand;
       u[`rooms/${roomCode}/players/${myId}/hand`]=tHand;
-      const gotCd=cObj(gotCard);const offCd=cObj(ap.snitchOfferId);
-      const ev2=`🤝 Snitch: ${actor?actor.name:'?'} gave ${offCd?offCd.emoji+' '+offCd.name:'?'}, got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}`;
-      u[`rooms/${roomCode}/announcement`]=ev2;
-      await logAndUpdate(s,ev2,u);
-      toast(`You gave ${offCd?offCd.emoji+' '+offCd.name:'?'} — got ${gotCd?gotCd.emoji+' '+gotCd.name:'?'}`);
+      const gotCd=cObj(gotCard),offCd=cObj(offerId);
+      const line=`🤝 ${actor?actor.name:'?'} gave ${offCd?offCd.emoji+' '+offCd.name:'?'} and took ${gotCd?gotCd.emoji+' '+gotCd.name:'?'} from ${me.name}`;
+      chain.push(line);
+      setResolution(u,{emoji:'🤝',title:'Blind trade done!',color:'var(--red)',detail:`${actor?actor.name:'?'} handed over ${offCd?offCd.emoji+' '+offCd.name:'a card'} and walked away with a card from ${me.name}'s hand.`,chain});
+      await logAndUpdate(s,line,u);
+      toast(`You gave up ${gotCd?gotCd.emoji+' '+gotCd.name:'a card'}, received ${offCd?offCd.emoji+' '+offCd.name:'a card'}`);
       await advanceTurn(s,u);return;
-    } else {
-      await applyEffectU(ap.cardId,myId,s,u);
-      await logAndUpdate(s,`${me.name} accepted ${cObj(ap.cardId)?.emoji||''} ${cObj(ap.cardId)?.name||''}`,u);
     }
-  } else if(type==='alibi'){
-    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
-    await logAndUpdate(s,`${me.name} used 📋 Alibi! ${drm(cObj('alibi'))}`,u);
-  } else if(type==='deflect'){
-    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
-    u[`rooms/${roomCode}/activePlay`]={actorId:myId,cardId:ap.cardId,targetId:ap.actorId,deflectedBy:myId};
-    u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`↩️ ${me.name} deflected ${cObj(ap.cardId)?.name||''} back to ${actor?actor.name:'?'}! ${drm(cObj('deflect'))}`;
-    await logAndUpdate(s,`${me.name} used ↩️ Deflect! Back to ${actor?actor.name:'?'}!`,{...u,[`rooms/${roomCode}/players/${myId}/hand`]:hand});
-    selCard=null;return;
-  } else if(type==='redirect'&&redirectId){
-    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
-    const rp=s.players[redirectId];
-    u[`rooms/${roomCode}/activePlay`]={actorId:ap.actorId,cardId:ap.cardId,targetId:redirectId,redirectedBy:myId};
-    u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`🔀 ${me.name} redirected ${cObj(ap.cardId)?.name||''} to ${rp?rp.name:'?'}! ${drm(cObj('redirect'))}`;
-    await logAndUpdate(s,`${me.name} redirected to ${rp?rp.name:'?'}!`,{...u,[`rooms/${roomCode}/players/${myId}/hand`]:hand});
-    selCard=null;return;
-  } else if(type==='catshield'){
-    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
-    u[`rooms/${roomCode}/revealPending`]=null;
-    u[`rooms/${roomCode}/announcement`]='🛡️ Sorry! Identity protected! Nice try! 😸';
-    await logAndUpdate(s,`${me.name} used 🛡️ Cat Shield! Identity protected!`,u);
+    // ── Everything else ──
+    const det=await applyResolve(s,u,ap,myId);
+    const line=`${me.name} accepted ${cd?cd.emoji+' '+cd.name:''}`;
+    chain.push(line+det);
+    setResolution(u,{emoji:cd?cd.emoji:'🎴',title:`${cd?cd.name:'Card'} landed on ${me.name}`,color:cd?cd.color:'var(--acc)',detail:(cd?cd.desc:'')+det,chain});
+    await logAndUpdate(s,line,u);
+    await advanceTurn(s,u);return;
   }
-  selCard=null;
-  await advanceTurn(s,u);
+
+  if(type==='alibi'){
+    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
+    note('Alibi','📋');
+    const line=`📋 ${me.name} played Alibi — ${cd?cd.name:'the card'} cancelled! ${drm(cObj('alibi'))}`;
+    chain.push(line);
+    setResolution(u,{emoji:'📋',title:'Alibi!',color:'var(--blu)',detail:`${me.name} walked away clean. ${cd?cd.name:'The card'} does nothing.`,chain});
+    await logAndUpdate(s,line,u);
+    await advanceTurn(s,u);return;
+  }
+
+  if(type==='deflect'){
+    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
+    note('Deflect','↩️');
+    const line=`↩️ ${me.name} deflected ${cd?cd.name:'it'} straight back at ${actor?actor.name:'?'}! ${drm(cObj('deflect'))}`;
+    chain.push(line);
+    const nap={actorId:myId,cardId:ap.cardId,targetId:ap.actorId,deflectedBy:myId,chain,fp:ap.fp||false,powerName:ap.powerName||null};
+    // Deflecting a Snitch makes YOU the snitcher — you offer your own card
+    if(ap.cardId==='snitch')nap.snitchOfferId=opts.offerId||null;
+    u[`rooms/${roomCode}/activePlay`]=nap;
+    u[`rooms/${roomCode}/subPhase`]='respond';
+    u[`rooms/${roomCode}/announcement`]=line;
+    await logAndUpdate(s,line,u);return;
+  }
+
+  if(type==='redirect'&&redirectId){
+    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
+    note('Redirect','🔀');
+    const rp=s.players[redirectId];
+    const line=`🔀 ${me.name} redirected ${cd?cd.name:'it'} onto ${rp?rp.name:'?'}! ${drm(cObj('redirect'))}`;
+    chain.push(line);
+    u[`rooms/${roomCode}/activePlay`]={actorId:ap.actorId,cardId:ap.cardId,targetId:redirectId,redirectedBy:myId,chain,fp:ap.fp||false,snitchOfferId:ap.snitchOfferId||null,powerName:ap.powerName||null};
+    u[`rooms/${roomCode}/subPhase`]='respond';
+    u[`rooms/${roomCode}/announcement`]=line;
+    await logAndUpdate(s,line,u);return;
+  }
+
+  if(type==='catshield'){
+    rm(cardIdx);u[`rooms/${roomCode}/players/${myId}/hand`]=hand;
+    note('Cat Shield','🛡️');
+    u[`rooms/${roomCode}/revealPending`]=null;
+    const line=`🛡️ ${me.name} played Cat Shield — the Reveal is blocked!`;
+    chain.push(line);
+    setResolution(u,{emoji:'🛡️',title:'Identity protected!',color:'var(--acc)',detail:`${actor?actor.name:'The attacker'} learned nothing. Nice try! 😸`,chain});
+    await logAndUpdate(s,line,u);
+    await advanceTurn(s,u);return;
+  }
 }
 
 async function doBystander(cardIdx,targetId,s){
   const me=s.players[myId];
+  const ap=s.activePlay;
   const hand=[...(me.hand||[])];
   if(cardIdx>=0)hand.splice(cardIdx,1);
   const tgt=s.players[targetId];
+  const cd=ap?cObj(ap.cardId):null;
   const u={[`rooms/${roomCode}/players/${myId}/hand`]:hand,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
-  await logAndUpdate(s,`${me.name} used 🛡️ Cover to protect ${tgt?tgt.name:'?'}! ${drm(cObj('cover'))}`,u);
+  addPlay(u,{actor:me.name,card:'Cover',emoji:'🛡️',target:tgt?tgt.name:null});
+  const line=`🛡️ ${me.name} covered ${tgt?tgt.name:'?'} — ${cd?cd.name:'the attack'} cancelled! ${drm(cObj('cover'))}`;
+  setResolution(u,{emoji:'🛡️',title:'Covered!',color:'var(--blu)',detail:`${me.name} stepped in for ${tgt?tgt.name:'them'}. ${cd?cd.name:'The attack'} does nothing.`,chain:[...(ap&&ap.chain?ap.chain:[]),line]});
+  await logAndUpdate(s,line,u);
   await advanceTurn(s,u);
 }
 
 async function doRespondPower(s,charKey,redirectId=null){
   const me=s.players[myId];const ap=s.activePlay;if(!ap)return;
   const c=charOf(me);
+  const chain=[...(ap.chain||[])];
   const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/announcement`]:null};
   if(charKey==='strategist'&&redirectId){
     const rp=s.players[redirectId];
-    u[`rooms/${roomCode}/activePlay`]={actorId:ap.actorId,cardId:ap.cardId,targetId:redirectId,redirectedBy:myId};
+    const line=`⚡ ${me.name} used Chaos Theory — sent it to ${rp?rp.name:'?'}!`;
+    chain.push(line);
+    u[`rooms/${roomCode}/activePlay`]={actorId:ap.actorId,cardId:ap.cardId,targetId:redirectId,redirectedBy:myId,chain,fp:ap.fp||false,snitchOfferId:ap.snitchOfferId||null,powerName:ap.powerName||null};
     u[`rooms/${roomCode}/subPhase`]='respond';
-    u[`rooms/${roomCode}/announcement`]=`⚡ ${me.name} used Chaos Theory — redirected to ${rp?rp.name:'?'}!`;
-    await logAndUpdate(s,`${me.name} used ⚡ Chaos Theory to ${rp?rp.name:'?'}!`,u);
-    selCard=null;return;
+    u[`rooms/${roomCode}/announcement`]=line;
+    addPlay(u,{actor:me.name,card:'Chaos Theory',emoji:'⚡',target:rp?rp.name:null});
+    await logAndUpdate(s,line,u);
+    return;
   }
   u[`rooms/${roomCode}/subPhase`]='play';u[`rooms/${roomCode}/activePlay`]=null;
-  await logAndUpdate(s,`${me.name} used ⚡ ${c.active.name}!`,u);
-  await advanceTurn(s,u);selCard=null;
+  const line=`⚡ ${me.name} used ${c.active.name}!`;
+  chain.push(line);
+  setResolution(u,{emoji:'⚡',title:c.active.name,color:c.color,detail:c.active.desc,chain});
+  await logAndUpdate(s,line,u);
+  await advanceTurn(s,u);
 }
 
 async function doWildPlay(s){
   const me=s.players[myId];const ap=s.activePlay;if(!ap)return;
   const actor=s.players[ap.actorId];const cd=cObj(ap.cardId);
+  const chain=[...(ap.chain||[])];
   const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/subPhase`]:'play',[`rooms/${roomCode}/activePlay`]:null,[`rooms/${roomCode}/announcement`]:null};
   await applyEffectU(ap.cardId,ap.actorId,s,u);
-  u[`rooms/${roomCode}/announcement`]=`🎲 Wild Play! ${me.name} used ${cd?cd.emoji+' '+cd.name:''} on ${actor?actor.name:'?'}!`;
-  await logAndUpdate(s,`${me.name} Wild Play on ${actor?actor.name:'?'}!`,u);
-  await advanceTurn(s,u);selCard=null;
-}
-
-// Fix #3: Ghost disappear — only marks disappeared for current round
-async function doGhostDisappear(s){
-  const me=s.players[myId];
-  // disappeared is reset at end of each round in endVoting, so this only affects current round
-  const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/players/${myId}/disappeared`]:true,[`rooms/${roomCode}/announcement`]:null};
-  await logAndUpdate(s,`👻 ${me.name} disappeared for this round only!`,u);
+  const line=`🎲 Wild Play! ${me.name} bounced ${cd?cd.emoji+' '+cd.name:''} onto ${actor?actor.name:'?'}!`;
+  chain.push(line);
+  addPlay(u,{actor:me.name,card:'Wild Play',emoji:'🎲',target:actor?actor.name:null});
+  setResolution(u,{emoji:'🎲',title:'Wild Play!',color:'#ff9800',detail:`${cd?cd.name:'The card'} hit ${actor?actor.name:'the attacker'} instead.`,chain});
+  await logAndUpdate(s,line,u);
   await advanceTurn(s,u);
 }
 
-async function doPass(s){
-  selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;
-  await logAndUpdate(s,`${s.players[myId]?.name||'?'} passed`,{[`rooms/${roomCode}/announcement`]:null});
-  await advanceTurn(s,{});
+async function doGhostDisappear(s){
+  const me=s.players[myId];const ap=s.activePlay;
+  const chain=[...(ap&&ap.chain?ap.chain:[])];
+  const u={[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true,[`rooms/${roomCode}/players/${myId}/disappeared`]:true,[`rooms/${roomCode}/announcement`]:null};
+  const line=`👻 ${me.name} vanished for the rest of this round!`;
+  chain.push(line);
+  addPlay(u,{actor:me.name,card:'Disappear',emoji:'👻',target:null});
+  setResolution(u,{emoji:'👻',title:'Disappeared!',color:'#607d8b',detail:'Untargetable for the rest of the round — but they can still vote.',chain});
+  await logAndUpdate(s,line,u);
+  await advanceTurn(s,u);
 }
 
-function showSnitchOfferOverlay(s){
+async function doPass(s,powerKey=null){
   const me=s.players[myId];
-  const ov=el('div','ov');
-  ov.innerHTML=`<div style="color:var(--red);font-weight:800;font-size:15px;text-align:center">🤝 Snitch!<br><span class="sm mut">Select YOUR card to offer (blind trade)</span></div>`;
-  (me.hand||[]).forEach((cid,idx)=>{
-    if(cid==='snitch')return;
-    const cd=cObj(cid);if(!cd)return;
-    const btn=el('button','btn bs');btn.style.cssText='max-width:340px;width:100%;text-align:left;display:flex;gap:8px;align-items:center';
-    btn.innerHTML=`<span style="font-size:18px">${cd.emoji}</span><div><div style="font-weight:700">${cd.name}</div><div class="sm mut">${cd.desc}</div></div>`;
-    btn.addEventListener('click',()=>{selSnitchId=cid;selSnitchIdx=idx;ov.remove();renderGame(s);});
-    ov.appendChild(btn);
-  });
-  const cn=el('button','btn bs');cn.style.cssText='max-width:340px;width:100%';cn.textContent='Cancel';
-  cn.addEventListener('click',()=>{selCard=null;selIdx=null;ov.remove();renderGame(s);});
-  ov.appendChild(cn);document.body.appendChild(ov);
+  const u={[`rooms/${roomCode}/announcement`]:null};
+  let line=`${me.name} passed`;
+  if(powerKey){
+    const pc=charOf(me);
+    u[`rooms/${roomCode}/players/${myId}/activePowerUsed`]=true;
+    if(powerKey==='joker')u[`rooms/${roomCode}/punchlineActive`]=true;
+    if(powerKey==='troublemaker')u[`rooms/${roomCode}/freePourActive`]=true;
+    line=`⚡ ${me.name} used ${pc.active.name}, then passed`;
+    addPlay(u,{actor:me.name,card:pc.active.name,emoji:'⚡',target:null});
+    setResolution(u,{emoji:'⚡',title:pc.active.name,color:pc.color,detail:pc.active.desc,chain:[line]});
+  } else {
+    setResolution(u,{emoji:'🚶',title:`${me.name} passed`,color:'var(--mut)',detail:'No card played this turn.',chain:[line]});
+  }
+  clearDraft();
+  await logAndUpdate(s,line,u);
+  await advanceTurn(s,u);
 }
 
 // ── APPLY EFFECT ──────────────────────────────────────────────────────────
@@ -1318,13 +1695,13 @@ function renderTurnComplete(s){
 
   // Fix #9: Show all cards played this round
   const playsEl=document.getElementById('tc-plays');playsEl.innerHTML='';
-  const plays=s.roundPlays||[];
+  const plays=playList(s);
   if(!plays.length){
     playsEl.innerHTML='<div class="sm mut ctr">No cards played this round.</div>';
   } else {
     plays.forEach(p=>{
       const d=el('div','pi');
-      d.innerHTML=`<span style="font-size:18px">${p.emoji}</span><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.actor} played ${p.card}${p.target?' on '+p.target:''}</div></div>`;
+      d.innerHTML=`<span style="font-size:18px">${p.emoji}</span><div style="flex:1"><div style="font-size:13px;font-weight:700">${p.actor} played ${p.card}${p.target?' on '+p.target:''}</div>${p.power?`<div class="sm" style="color:var(--acc)">⚡ ${p.power}</div>`:''}</div>`;
       playsEl.appendChild(d);
     });
   }
@@ -1482,13 +1859,23 @@ function renderVoting(s,me,myDC,gc,gb){
     }
   }
 
-  if(me.char==='gamemaster'&&!me.activePowerUsed){
-    const dvb=el('button','btn bs');dvb.style.cssText='border-color:rgba(74,158,255,.25);font-size:12px;margin-top:4px';
-    dvb.innerHTML='🎮 Final Verdict — Wipe all votes!';
+  // Final Verdict — own flag, never consumed by the Challenge, and it stays
+  // on screen for the whole voting phase whether or not you have voted.
+  if(me.char==='gamemaster'&&!me.finalVerdictUsed){
+    const box=el('div');box.style.cssText='background:rgba(74,158,255,.06);border:1.5px solid rgba(74,158,255,.35);border-radius:var(--r);padding:11px 12px;margin-top:8px';
+    box.innerHTML=`<div style="font-size:9px;color:var(--blu);font-weight:800;letter-spacing:1px;margin-bottom:4px">🎮 YOUR POWER — ONCE PER GAME</div><div class="sm mut" style="margin-bottom:8px">Wipe every vote on the table and force the whole room to vote again — including you.</div>`;
+    const dvb=el('button','btn bs');dvb.style.cssText='border-color:rgba(74,158,255,.5);font-size:12px';
+    dvb.innerHTML='🎮 Final Verdict — wipe all votes';
     dvb.addEventListener('click',async()=>{
-      const u={[`rooms/${roomCode}/votes`]:{},[`rooms/${roomCode}/skippedVotes`]:{},[`rooms/${roomCode}/players/${myId}/activePowerUsed`]:true};
+      dvb.disabled=true;
+      const u={[`rooms/${roomCode}/votes`]:{},[`rooms/${roomCode}/skippedVotes`]:{},[`rooms/${roomCode}/players/${myId}/finalVerdictUsed`]:true};
+      setResolution(u,{emoji:'🎮',title:'Final Verdict!',color:'var(--blu)',detail:'Every vote has been wiped. The whole room votes again from scratch.',chain:[`🎮 ${me.name} used Final Verdict — all votes wiped!`]});
       await logAndUpdate(s,`${me.name} used 🎮 Final Verdict — votes wiped!`,u);
-    });gb.appendChild(dvb);
+    });
+    box.appendChild(dvb);gc.appendChild(box);
+  } else if(me.char==='gamemaster'){
+    const n=el('div');n.style.cssText='font-size:11px;color:var(--mut);margin-top:6px';
+    n.innerHTML='🎮 Final Verdict already used this game.';gc.appendChild(n);
   }
 
   if(gameState&&gameState.host===myId){
@@ -1546,6 +1933,7 @@ async function endVoting(s){
     u[`rooms/${roomCode}/players/${p.id}/ready`]=false;
     u[`rooms/${roomCode}/players/${p.id}/readyVote`]=false;
     u[`rooms/${roomCode}/players/${p.id}/innerBeastTargets`]=null;
+    u[`rooms/${roomCode}/players/${p.id}/covered`]=false;
   });
 
   const evStr=penPlayer&&!penPlayer.penalised?`${charOf(penPlayer).emoji} ${penPlayer.name} gets most votes — 🍺 drink!`:'No new penalty — votes carry forward.';
@@ -1568,7 +1956,8 @@ async function endVoting(s){
   u[`rooms/${roomCode}/recentEvent`]=evStr;
   u[`rooms/${roomCode}/eventLog`]=lg;
   u[`rooms/${roomCode}/skippedVotes`]={};
-  u[`rooms/${roomCode}/roundPlays`]=[];  // Reset plays for next round
+  u[`rooms/${roomCode}/roundPlays`]={};   // Reset plays for next round
+  u[`rooms/${roomCode}/resolution`]=null;
   u[`rooms/${roomCode}/readyVotes`]={};
   await update(ref(db),u);
 }
@@ -1599,13 +1988,79 @@ function renderResults(s){
       // Reset ready flags for new round
       Object.values(s.players).forEach(p=>{u[`rooms/${roomCode}/players/${p.id}/ready`]=false;});
       await update(ref(db),u);
-      selCard=null;selIdx=null;selSnitchId=null;selSnitchIdx=null;revealShownTs=0;readyVoteClicked=false;readyClicked=false;
+      clearDraft();closeModal();curfewPeeked=false;respondDismissed=null;
+      revealShownTs=0;readyVoteClicked=false;readyClicked=false;
     });
     ra.appendChild(btn);
   } else {
     const w=el('div');w.style.cssText='color:var(--mut);font-size:13px;text-align:center';
     w.textContent='Waiting for host to start next round...';ra.appendChild(w);
   }
+}
+
+// ── REJOIN / RECLAIM A SEAT ───────────────────────────────────────────────
+async function findSeats(){
+  const code=(document.getElementById('rj-code').value||'').trim().toUpperCase();
+  if(code.length<4){toast('Enter the 4-letter room code');return;}
+  let snap;
+  try{snap=await get(ref(db,`rooms/${code}`));}catch(e){toast('Could not reach the room');return;}
+  if(!snap.exists()){toast('Room not found!');return;}
+  const s=snap.val();
+  const box=document.getElementById('rj-seats-box');
+  const list=document.getElementById('rj-seats');
+  list.innerHTML='';box.style.display='block';
+  const ps=Object.values(s.players||{});
+  if(!ps.length){list.innerHTML='<div class="sm mut">Nobody is in this room yet.</div>';return;}
+  const take=async p=>{
+    myId=p.id;myName=p.name;roomCode=code;
+    roomRef=ref(db,`rooms/${code}`);
+    saveSession();
+    try{await update(ref(db,`rooms/${code}/players/${myId}`),{online:true,lastSeen:Date.now()});}catch(e){}
+    firstSnap=true;
+    subRoom();
+    toast(`Welcome back, ${p.name}! 🐱`);
+  };
+  ps.forEach(p=>{
+    const ch=p.char?charOf(p):{emoji:'🎲'};
+    const b=el('button','opt');
+    b.innerHTML=`<span style="font-size:18px">${ch.emoji}</span><span style="flex:1">${p.name}${p.isHost?' 👑':''}</span>`;
+    b.addEventListener('click',()=>{
+      list.innerHTML='';
+      const q=el('div','col');
+      q.innerHTML=`<div class="sm" style="line-height:1.6">Take back <b>${p.name}</b>'s seat? Your hand, character and votes come back exactly as they were. If anyone else is still on this seat, they'll be signed out.</div>`;
+      const yes=el('button','btn bp');yes.textContent=`✓ Yes, I'm ${p.name}`;
+      yes.addEventListener('click',()=>take(p));
+      const no=el('button','btn bs');no.style.fontSize='12px';no.textContent='↩️ Back to the list';
+      no.addEventListener('click',()=>findSeats());
+      q.appendChild(yes);q.appendChild(no);list.appendChild(q);
+    });
+    list.appendChild(b);
+  });
+}
+
+async function tryAutoRejoin(){
+  const sess=loadSession();
+  if(!sess||!sess.roomCode||!sess.myId)return;
+  if(Date.now()-(sess.ts||0)>1000*60*60*10){clearSession();return;}
+  try{
+    const snap=await get(ref(db,`rooms/${sess.roomCode}`));
+    if(!snap.exists()){clearSession();return;}
+    const s=snap.val();
+    if(!s.players||!s.players[sess.myId]){
+      // Seat is gone — offer the reclaim list instead of dumping them out
+      document.getElementById('rj-code').value=sess.roomCode;
+      showScreen('s-rejoin');
+      await findSeats();
+      return;
+    }
+    myId=sess.myId;myName=sess.myName;roomCode=sess.roomCode;
+    roomRef=ref(db,`rooms/${roomCode}`);
+    saveSession();
+    try{await update(ref(db,`rooms/${roomCode}/players/${myId}`),{online:true,lastSeen:Date.now()});}catch(e){}
+    firstSnap=true;
+    subRoom();
+    toast('Reconnected — right where you left off 🐱');
+  }catch(e){console.error('Auto-rejoin failed:',e);}
 }
 
 // ── FINAL ─────────────────────────────────────────────────────────────────
@@ -1624,6 +2079,9 @@ function renderFinal(s){
     fr.appendChild(d);
   });
 }
+
+// Kick off a reconnect attempt as soon as Firebase is ready
+if(db)tryAutoRejoin();
 </script>
 </body>
 </html>
